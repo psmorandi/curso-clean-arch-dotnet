@@ -31,19 +31,13 @@
 
         private static bool IsInvalidLength(string cpf) => cpf.Length != 11;
 
-        private static bool IsBlockedCpf(string cpf)
-        {
-            var cpfNumbers = cpf.ToList();
-            return cpfNumbers.TrueForAll(c => c == cpf[0]);
-        }
+        private static bool IsBlockedCpf(string cpf) => cpf.ToList().TrueForAll(c => c == cpf[0]);
 
         private static int CalculateVerificationDigit(string cpf, int factor, int max)
         {
             var multiplierFactor = factor;
             var total = cpf.ToArray().Take(max).Sum(digit => int.Parse(digit.ToString()) * multiplierFactor--);
-
             var resultModule11 = total % 11;
-
             return (resultModule11 < 2) ? 0 : (11 - resultModule11);
         }
 
