@@ -1,6 +1,7 @@
 ﻿namespace CleanArch.School.UnitTests
 {
-    using Application.Validators;
+    using System;
+    using Application;
     using Xunit;
 
     public class CpfValidatorTests
@@ -14,10 +15,7 @@
         [InlineData("444.444.444-44")]
         public void Should_Return_Invalid_To_Cpf_With_Repeated_Digits(string cpf)
         {
-            ICpfValidator cpfValidator = new CpfValidator();
-            var isValid = cpfValidator.IsValid(cpf);
-
-            Assert.False(isValid);
+            Assert.Throws<Exception>(() => new Cpf(cpf));
         }
 
         [Theory]
@@ -26,10 +24,7 @@
         [InlineData("")]
         public void Should_Return_Invalid_To_Invalid_Verification_Digits(string cpf)
         {
-            ICpfValidator cpfValidator = new CpfValidator();
-            var isValid = cpfValidator.IsValid(cpf);
-
-            Assert.False(isValid);
+            Assert.Throws<Exception>(() => new Cpf(cpf));
         }
 
         [Theory]
@@ -39,10 +34,7 @@
         [InlineData("832.081.519-34")]
         public void Should_Return_Valid_To_Valid_Cpf(string cpf)
         {
-            ICpfValidator cpfValidator = new CpfValidator();
-            var isValid = cpfValidator.IsValid(cpf);
-
-            Assert.True(isValid);
+            Assert.False(new Cpf(cpf).Value == string.Empty);
         }
     }
 }

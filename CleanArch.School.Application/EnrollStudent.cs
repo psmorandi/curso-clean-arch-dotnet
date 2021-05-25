@@ -3,32 +3,25 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text.RegularExpressions;
-    using Extensions;
-    using Validators;
 
     public class EnrollStudent
     {
-        private readonly ICpfValidator cpfValidator;
-        private readonly Regex nameValidationRegex = new Regex("^([A-Za-z]+ )+([A-Za-z])+$", RegexOptions.Compiled);
-        private readonly ICollection<Student> students;
+        private readonly ICollection<Enrollment> enrollments;
 
-        public EnrollStudent(ICpfValidator cpfValidator)
+        public EnrollStudent()
         {
-            this.cpfValidator = cpfValidator;
-            this.students = new List<Student>();
+            this.enrollments = new List<Enrollment>();
         }
 
-        public void Execute(EnrollmentRequest enrollmentRequest)
+        public Enrollment Execute(EnrollmentRequest enrollmentRequest)
         {
-            var student = enrollmentRequest.Student;
-            if (!this.nameValidationRegex.IsMatch(student.Name)) throw new Exception("Invalid student name.");
-            if (!this.cpfValidator.IsValid(student.Cpf)) throw new Exception("Invalid student cpf.");
-            if (this.IsAlreadyStored(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
-            this.students.Add(student);
+            var student = new Student(enrollmentRequest.StudentName, enrollmentRequest.Cpf);
+            if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
+            var enrollment = new Enrollment(student);
+            this.enrollments.Add(enrollment);
+            return enrollment;
         }
 
-        private bool IsAlreadyStored(Student student)
-            => this.students.Any(_ => _.Cpf.OnlyNumbers() == student.Cpf.OnlyNumbers());
+        private bool IsAlreadyEnrolled(Student student) => this.enrollments.Any(_ => _.Student.Cpf.Value == student.Cpf.Value);
     }
 }

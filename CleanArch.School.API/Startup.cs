@@ -1,7 +1,6 @@
 namespace CleanArch.School.API
 {
     using Application;
-    using Application.Validators;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
@@ -42,7 +41,6 @@ namespace CleanArch.School.API
         {
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "CleanArch.School.API", Version = "v1" }); });
-            services.AddSingleton<ICpfValidator, CpfValidator>();
             services.AddTransient<EnrollStudent>();
         }
     }

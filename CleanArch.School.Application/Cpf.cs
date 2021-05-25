@@ -1,18 +1,26 @@
-﻿namespace CleanArch.School.Application.Validators
+﻿namespace CleanArch.School.Application
 {
     using System;
     using System.Linq;
     using Extensions;
 
-    // ReSharper disable InconsistentNaming
-    public class CpfValidator : ICpfValidator
+    public class Cpf
     {
+        // ReSharper disable InconsistentNaming
         private const int FACTOR_DIGIT_1 = 10;
         private const int FACTOR_DIGIT_2 = 11;
         private const int MAX_DIGITS_1 = 9;
         private const int MAX_DIGITS_2 = 10;
 
-        bool ICpfValidator.IsValid(string cpf)
+        public Cpf(string value)
+        {
+            if(!IsValid(value)) throw new Exception("Invalid cpf.");
+            this.Value = value.OnlyNumbers();
+        }
+
+        public string Value { get; }
+
+        private static bool IsValid(string cpf)
         {
             var cpfOnlyNumbers = cpf.OnlyNumbers();
             if (IsInvalidLength(cpfOnlyNumbers) || IsBlockedCpf(cpfOnlyNumbers)) return false;
