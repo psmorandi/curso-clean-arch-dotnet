@@ -11,25 +11,25 @@
     {
         public Data()
         {
-            var levelEF1 = new Level
+            var levelEF1 = new LevelTable
                            {
                                Code = "EF1",
                                Description = "Ensino Fundamental I"
                            };
 
-            var levelEF2 = new Level
+            var levelEF2 = new LevelTable
                            {
                                Code = "EF2",
                                Description = "Ensino Fundamental II"
                            };
-            var levelEM = new Level
+            var levelEM = new LevelTable
                           {
                               Code = "EM",
                               Description = "Ensino Médio"
                           };
-            this.Levels = new List<Level> { levelEF1, levelEF2, levelEM };
+            this.Levels = new List<LevelTable> { levelEF1, levelEF2, levelEM };
 
-            var moduleAno1 = new Module
+            var moduleAno1 = new ModuleTable
                              {
                                  Level = levelEF1,
                                  Code = "1",
@@ -37,7 +37,7 @@
                                  MinimumAge = 6,
                                  Price = 15000
                              };
-            var moduleAno2 = new Module
+            var moduleAno2 = new ModuleTable
                              {
                                  Level = levelEF1,
                                  Code = "2",
@@ -45,7 +45,7 @@
                                  MinimumAge = 7,
                                  Price = 15000
                              };
-            var moduleAno3 = new Module
+            var moduleAno3 = new ModuleTable
                              {
                                  Level = levelEF1,
                                  Code = "3",
@@ -53,7 +53,7 @@
                                  MinimumAge = 8,
                                  Price = 15000
                              };
-            var moduleAno4 = new Module
+            var moduleAno4 = new ModuleTable
                              {
                                  Level = levelEF1,
                                  Code = "4",
@@ -61,7 +61,7 @@
                                  MinimumAge = 9,
                                  Price = 15000
                              };
-            var moduleAno5 = new Module
+            var moduleAno5 = new ModuleTable
                              {
                                  Level = levelEF1,
                                  Code = "5",
@@ -69,7 +69,7 @@
                                  MinimumAge = 10,
                                  Price = 15000
                              };
-            var moduleAno6 = new Module
+            var moduleAno6 = new ModuleTable
                              {
                                  Level = levelEF2,
                                  Code = "6",
@@ -77,7 +77,7 @@
                                  MinimumAge = 11,
                                  Price = 14000
                              };
-            var moduleAno7 = new Module
+            var moduleAno7 = new ModuleTable
                              {
                                  Level = levelEF2,
                                  Code = "7",
@@ -85,7 +85,7 @@
                                  MinimumAge = 12,
                                  Price = 14000
                              };
-            var moduleAno8 = new Module
+            var moduleAno8 = new ModuleTable
                              {
                                  Level = levelEF2,
                                  Code = "8",
@@ -93,7 +93,7 @@
                                  MinimumAge = 13,
                                  Price = 14000
                              };
-            var moduleAno9 = new Module
+            var moduleAno9 = new ModuleTable
                              {
                                  Level = levelEF2,
                                  Code = "9",
@@ -101,7 +101,7 @@
                                  MinimumAge = 14,
                                  Price = 14000
                              };
-            var moduleEM1 = new Module
+            var moduleEM1 = new ModuleTable
                             {
                                 Level = levelEM,
                                 Code = "1",
@@ -109,7 +109,7 @@
                                 MinimumAge = 15,
                                 Price = 17000
                             };
-            var moduleEM2 = new Module
+            var moduleEM2 = new ModuleTable
                             {
                                 Level = levelEM,
                                 Code = "2",
@@ -117,7 +117,7 @@
                                 MinimumAge = 16,
                                 Price = 17000
                             };
-            var moduleEM3 = new Module
+            var moduleEM3 = new ModuleTable
                             {
                                 Level = levelEM,
                                 Code = "3",
@@ -125,14 +125,14 @@
                                 MinimumAge = 17,
                                 Price = 17000
                             };
-            this.Modules = new List<Module>
+            this.Modules = new List<ModuleTable>
                            {
                                moduleAno1, moduleAno2, moduleAno3, moduleAno4, moduleAno5, moduleAno6, moduleAno7, moduleAno8, moduleAno9, moduleEM1,
                                moduleEM2, moduleEM3
                            };
-            this.Classes = new List<Class>
+            this.Classes = new List<ClassTable>
                            {
-                               new Class
+                               new ClassTable
                                {
                                    Level = levelEM,
                                    Module = moduleEM3,
@@ -144,30 +144,30 @@
         }
 
         public List<Enrollment> Enrollments { get; }
-        public ICollection<Level> Levels { get; }
-        public ICollection<Module> Modules { get; }
-        public ICollection<Class> Classes { get; }
+        public ICollection<LevelTable> Levels { get; }
+        public ICollection<ModuleTable> Modules { get; }
+        public ICollection<ClassTable> Classes { get; }
     }
 
-    public class Level
+    public class LevelTable
     {
         public string Code { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
     }
 
-    public class Module
+    public class ModuleTable
     {
-        public Level Level { get; set; } = new Level();
+        public LevelTable Level { get; set; } = new LevelTable();
         public string Code { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int MinimumAge { get; set; }
         public decimal Price { get; set; }
     }
 
-    public class Class
+    public class ClassTable
     {
-        public Level Level { get; set; } = new Level();
-        public Module Module { get; set; } = new Module();
+        public LevelTable Level { get; set; } = new LevelTable();
+        public ModuleTable Module { get; set; } = new ModuleTable();
         public string Code { get; set; } = string.Empty;
         public int Capacity { get; set; }
     }

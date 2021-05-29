@@ -85,10 +85,10 @@ namespace CleanArch.School.UnitTests
 
         private static EnrollStudent CreateEnrollStudent(Storage storage) => new EnrollStudent(storage);
 
-        private static Class FindClass(Storage storage, string @class, string module, string level) =>
+        private static ClassTable FindClass(Storage storage, string @class, string module, string level) =>
             storage.Data.Classes.SingleOrDefault(c => c.Level.Code == level && c.Module.Code == module && c.Code == @class) ?? throw new Exception("Not found");
 
-        private static EnrollmentRequest CreateEnrollmentRequest(string cpf, Class @class) =>
+        private static EnrollmentRequest CreateEnrollmentRequest(string cpf, ClassTable @class) =>
             new EnrollmentRequest
             {
                 StudentName = $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
