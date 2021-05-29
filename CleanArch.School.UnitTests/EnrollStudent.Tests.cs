@@ -34,7 +34,7 @@ namespace CleanArch.School.UnitTests
         public void Should_not_enroll_duplicated_student()
         {
             var storage = new Storage();
-            var @class = FindClass(storage, "A", "3", "EM");
+            var @class = FindClass(storage, "EM", "3", "A");
             var enrollmentRequest = CreateEnrollmentRequest("755.525.774-26", @class);
             var enrollStudent = CreateEnrollStudent(storage);
             enrollStudent.Execute(enrollmentRequest);
@@ -46,7 +46,7 @@ namespace CleanArch.School.UnitTests
         public void Should_generate_enrollment_code()
         {
             var storage = new Storage();
-            var @class = FindClass(storage, "A", "3", "EM");
+            var @class = FindClass(storage, "EM", "3", "A");
             var enrollmentRequest = CreateEnrollmentRequest("755.525.774-26", @class);
             var enrollStudent = CreateEnrollStudent(storage);
             var enrollResult = enrollStudent.Execute(enrollmentRequest);
@@ -59,7 +59,7 @@ namespace CleanArch.School.UnitTests
         public void Should_not_enroll_student_below_minimum_age()
         {
             var storage = new Storage();
-            var @class = FindClass(storage, "A", "3", "EM");
+            var @class = FindClass(storage, "EM", "3", "A");
             var enrollmentRequest = CreateEnrollmentRequest("755.525.774-26", @class);
             enrollmentRequest.Birthday = enrollmentRequest.Birthday.AddYears(2);
             var enrollStudent = CreateEnrollStudent(storage);
@@ -71,7 +71,7 @@ namespace CleanArch.School.UnitTests
         public void Should_not_enroll_student_over_class_capacity()
         {
             var storage = new Storage();
-            var @class = FindClass(storage, "A", "3", "EM");
+            var @class = FindClass(storage, "EM", "3", "A");
             @class.Capacity = 2;
             var enrollmentRequest1 = CreateEnrollmentRequest("755.525.774-26", @class);
             var enrollmentRequest2 = CreateEnrollmentRequest("832.081.519-34", @class);
@@ -85,7 +85,7 @@ namespace CleanArch.School.UnitTests
 
         private static EnrollStudent CreateEnrollStudent(Storage storage) => new EnrollStudent(storage);
 
-        private static ClassTable FindClass(Storage storage, string @class, string module, string level) =>
+        private static ClassTable FindClass(Storage storage, string level, string module, string @class) =>
             storage.Data.Classes.SingleOrDefault(c => c.Level.Code == level && c.Module.Code == module && c.Code == @class) ?? throw new Exception("Not found");
 
         private static EnrollmentRequest CreateEnrollmentRequest(string cpf, ClassTable @class) =>

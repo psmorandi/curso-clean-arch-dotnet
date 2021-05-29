@@ -13,21 +13,32 @@
         {
             var student = new Student(enrollmentRequest.StudentName, enrollmentRequest.Cpf, enrollmentRequest.Birthday);
             if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
-            var sequence = $"{(this.storage.Data.Enrollments.Count + 1):0000}";
-            var fullYear = DateTime.Now.Year;
-            var level = enrollmentRequest.Level.ToUpperInvariant();
-            var module = enrollmentRequest.Module.ToUpperInvariant();
-            var @class = enrollmentRequest.Class;
-            var enrollCode = $"{fullYear:0000}{level}{module}{@class}{sequence}";
-            var requestedClass = this.storage.Data.Classes.SingleOrDefault(c => c.Code == @class && c.Level.Code == level && c.Module.Code == module)??throw new Exception("Invalid class.");
-            if (student.Age < requestedClass.Module.MinimumAge) throw new Exception("Student below minimum age.");
-            if(requestedClass.Capacity - 1 < 0) throw new Exception("Class is over capacity.");
-            requestedClass.Capacity--;
-            var enrollment = new Enrollment(student, enrollCode);
-            this.storage.Data.Enrollments.Add(enrollment);
-            return enrollment;
+            var @class = this.FindClass(
+                enrollmentRequest.Level.ToUpperInvariant(),
+                enrollmentRequest.Module.ToUpperInvariant(),
+                enrollmentRequest.Class);
+            if (IsBellowMinimumAgeForClass(student, @class)) throw new Exception("Student below minimum age.");
+            if (!HasCapacityForStudent(@class)) throw new Exception("Class is over capacity.");
+            return this.CreateEnrollment(student, @class);
         }
 
         private bool IsAlreadyEnrolled(Student student) => this.storage.Data.Enrollments.Any(_ => _.Student.Cpf.Value == student.Cpf.Value);
+
+        private ClassTable FindClass(string level, string module, string @class) =>
+            this.storage.Data.Classes.SingleOrDefault(c => c.Code == @class && c.Level.Code == level && c.Module.Code == module)
+            ?? throw new Exception("Invalid class.");
+
+        private static bool IsBellowMinimumAgeForClass(Student student, ClassTable @class) => student.Age < @class.Module.MinimumAge;
+
+        private static bool HasCapacityForStudent(ClassTable @class) => @class.Capacity - 1 >= 0;
+
+        private Enrollment CreateEnrollment(Student student, ClassTable @class)
+        {
+            @class.Capacity--;
+            var enrollment = new Enrollment(student, @class.Level.Code, @class.Module.Code, @class.Code);
+            this.storage.Data.Enrollments.Add(enrollment);
+            enrollment.Sequence = this.storage.Data.Enrollments.Count;
+            return enrollment;
+        }
     }
 }
