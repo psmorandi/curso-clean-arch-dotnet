@@ -7,6 +7,8 @@
     {
         public static string OnlyNumbers(this string str) => new string(str.Where(char.IsDigit).ToArray());
 
+        public static string ToUp(this string str) => str.ToUpperInvariant();
+
         public static string GenerateRandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

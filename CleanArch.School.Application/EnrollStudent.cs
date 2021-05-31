@@ -2,6 +2,7 @@
 {
     using System;
     using System.Linq;
+    using Extensions;
 
     public class EnrollStudent
     {
@@ -13,10 +14,7 @@
         {
             var student = new Student(enrollmentRequest.StudentName, enrollmentRequest.Cpf, enrollmentRequest.Birthday);
             if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
-            var @class = this.FindClass(
-                enrollmentRequest.Level.ToUpperInvariant(),
-                enrollmentRequest.Module.ToUpperInvariant(),
-                enrollmentRequest.Class);
+            var @class = this.FindClass(enrollmentRequest.Level.ToUp(), enrollmentRequest.Module.ToUp(), enrollmentRequest.Class.ToUp());
             if (IsBellowMinimumAgeForClass(student, @class)) throw new Exception("Student below minimum age.");
             if (!HasCapacityForStudent(@class)) throw new Exception("Class is over capacity.");
             return this.CreateEnrollment(student, @class);
@@ -37,7 +35,7 @@
             @class.Capacity--;
             var enrollment = new Enrollment(student, @class.Level.Code, @class.Module.Code, @class.Code);
             this.storage.Data.Enrollments.Add(enrollment);
-            enrollment.Sequence = this.storage.Data.Enrollments.Count;
+            enrollment.Id = this.storage.Data.Enrollments.Count;
             return enrollment;
         }
     }

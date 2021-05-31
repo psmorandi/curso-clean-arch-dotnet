@@ -13,12 +13,12 @@
             this.EnrollDate = DateTime.UtcNow;
         }
 
-        public int Sequence { get; set; }
+        public int Id { get; set; }
         public Student Student { get; }
         public string Class { get; }
         public string Module { get; }
         public string Level { get; }
         public DateTime EnrollDate { get; }
-        public string EnrollmentCode => $"{this.EnrollDate.Year:0000}{this.Level}{this.Module}{this.Class}{this.Sequence:0000}";
+        public string EnrollmentCode => $"{this.EnrollDate.Year:0000}{this.Level}{this.Module}{this.Class}{this.Id:0000}";
     }
 }
