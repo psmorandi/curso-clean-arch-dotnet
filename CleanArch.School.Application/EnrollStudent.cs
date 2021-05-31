@@ -16,7 +16,7 @@
             if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
             var @class = this.FindClass(enrollmentRequest.Level.ToUp(), enrollmentRequest.Module.ToUp(), enrollmentRequest.Class.ToUp());
             if (IsBellowMinimumAgeForClass(student, @class)) throw new Exception("Student below minimum age.");
-            if (!HasCapacityForStudent(@class)) throw new Exception("Class is over capacity.");
+            if (!this.HasCapacityForStudent(enrollmentRequest, @class)) throw new Exception("Class is over capacity.");
             return this.CreateEnrollment(student, @class);
         }
 
@@ -28,11 +28,14 @@
 
         private static bool IsBellowMinimumAgeForClass(Student student, ClassTable @class) => student.Age < @class.Module.MinimumAge;
 
-        private static bool HasCapacityForStudent(ClassTable @class) => @class.Capacity - 1 >= 0;
+        private bool HasCapacityForStudent(EnrollmentRequest request, ClassTable @class) =>
+            @class.Capacity >= this.storage.Data.Enrollments.Count(
+                e => e.Class == request.Class &&
+                     e.Level == request.Level &&
+                     e.Module == request.Module) + 1;
 
         private Enrollment CreateEnrollment(Student student, ClassTable @class)
         {
-            @class.Capacity--;
             var enrollment = new Enrollment(student, @class.Level.Code, @class.Module.Code, @class.Code);
             this.storage.Data.Enrollments.Add(enrollment);
             enrollment.Id = this.storage.Data.Enrollments.Count;
