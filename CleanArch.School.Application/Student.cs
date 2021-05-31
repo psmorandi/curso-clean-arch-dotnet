@@ -21,7 +21,7 @@
             {
                 var today = DateTime.Now.Date;
                 var age = today.Year - this.Birthday.Year;
-                return today.Month < this.Birthday.Month ? age - 1 : age;
+                return today.Month < this.Birthday.Month || today.Month == this.Birthday.Month && today.Day < this.Birthday.Day ? age - 1 : age;
             }
         }
     }
