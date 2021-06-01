@@ -14,13 +14,18 @@
         {
             var student = new Student(enrollmentRequest.StudentName, enrollmentRequest.Cpf, enrollmentRequest.Birthday);
             if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
+            var module = this.FindModule(enrollmentRequest);
             var @class = this.FindClass(enrollmentRequest);
-            if (IsBellowMinimumAgeForClass(student, @class)) throw new Exception("Student below minimum age.");
+            if (IsBellowMinimumAgeForModule(student, module)) throw new Exception("Student below minimum age.");
             if (!this.HasCapacityForStudent(enrollmentRequest, @class)) throw new Exception("Class is over capacity.");
             return this.CreateEnrollment(student, @class);
         }
 
         private bool IsAlreadyEnrolled(Student student) => this.storage.Data.Enrollments.Any(_ => _.Student.Cpf.Value == student.Cpf.Value);
+
+        private ModuleTable FindModule(EnrollmentRequest request) =>
+            this.storage.Data.Modules.SingleOrDefault(m => m.Code == request.Module.ToUp() && m.Level.Code == request.Level.ToUp())
+            ?? throw new Exception("Invalid Module.");
 
         private ClassTable FindClass(EnrollmentRequest request) =>
             this.storage.Data.Classes.SingleOrDefault(
@@ -29,7 +34,7 @@
                      c.Code == request.Class.ToUp())
             ?? throw new Exception("Invalid class.");
 
-        private static bool IsBellowMinimumAgeForClass(Student student, ClassTable @class) => student.Age < @class.Module.MinimumAge;
+        private static bool IsBellowMinimumAgeForModule(Student student, ModuleTable module) => student.Age < module.MinimumAge;
 
         private bool HasCapacityForStudent(EnrollmentRequest request, ClassTable @class) =>
             this.storage.Data.Enrollments.Count(
