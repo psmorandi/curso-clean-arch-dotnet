@@ -1,37 +1,19 @@
 ﻿namespace CleanArch.School.Application
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq;
+    using Extensions;
 
-    public class Storage
+    public class ModuleRepositoryMemory : IModuleRepository
     {
-        public Data Data { get; } = new Data();
-    }
+        private readonly ICollection<ModuleTable> modules;
 
-    public class Data
-    {
-        public Data()
+        public ModuleRepositoryMemory()
         {
-            var levelEF1 = new LevelTable
-                           {
-                               Code = "EF1",
-                               Description = "Ensino Fundamental I"
-                           };
-
-            var levelEF2 = new LevelTable
-                           {
-                               Code = "EF2",
-                               Description = "Ensino Fundamental II"
-                           };
-            var levelEM = new LevelTable
-                          {
-                              Code = "EM",
-                              Description = "Ensino Médio"
-                          };
-            this.Levels = new List<LevelTable> { levelEF1, levelEF2, levelEM };
-
             var moduleAno1 = new ModuleTable
                              {
-                                 Level = levelEF1,
+                                 Level = "EF1",
                                  Code = "1",
                                  Description = "1o Ano",
                                  MinimumAge = 6,
@@ -39,7 +21,7 @@
                              };
             var moduleAno2 = new ModuleTable
                              {
-                                 Level = levelEF1,
+                                 Level = "EF1",
                                  Code = "2",
                                  Description = "2o Ano",
                                  MinimumAge = 7,
@@ -47,7 +29,7 @@
                              };
             var moduleAno3 = new ModuleTable
                              {
-                                 Level = levelEF1,
+                                 Level = "EF1",
                                  Code = "3",
                                  Description = "3o Ano",
                                  MinimumAge = 8,
@@ -55,7 +37,7 @@
                              };
             var moduleAno4 = new ModuleTable
                              {
-                                 Level = levelEF1,
+                                 Level = "EF1",
                                  Code = "4",
                                  Description = "4o Ano",
                                  MinimumAge = 9,
@@ -63,7 +45,7 @@
                              };
             var moduleAno5 = new ModuleTable
                              {
-                                 Level = levelEF1,
+                                 Level = "EF1",
                                  Code = "5",
                                  Description = "5o Ano",
                                  MinimumAge = 10,
@@ -71,7 +53,7 @@
                              };
             var moduleAno6 = new ModuleTable
                              {
-                                 Level = levelEF2,
+                                 Level = "EF2",
                                  Code = "6",
                                  Description = "6o Ano",
                                  MinimumAge = 11,
@@ -79,7 +61,7 @@
                              };
             var moduleAno7 = new ModuleTable
                              {
-                                 Level = levelEF2,
+                                 Level = "EF2",
                                  Code = "7",
                                  Description = "7o Ano",
                                  MinimumAge = 12,
@@ -87,7 +69,7 @@
                              };
             var moduleAno8 = new ModuleTable
                              {
-                                 Level = levelEF2,
+                                 Level = "EF2",
                                  Code = "8",
                                  Description = "8o Ano",
                                  MinimumAge = 13,
@@ -95,80 +77,45 @@
                              };
             var moduleAno9 = new ModuleTable
                              {
-                                 Level = levelEF2,
+                                 Level = "EF2",
                                  Code = "9",
                                  Description = "9o Ano",
                                  MinimumAge = 14,
                                  Price = 14000
                              };
-            var moduleEM1 = new ModuleTable
+            var moduleEm1 = new ModuleTable
                             {
-                                Level = levelEM,
+                                Level = "EM",
                                 Code = "1",
                                 Description = "1o Ano",
                                 MinimumAge = 15,
                                 Price = 17000
                             };
-            var moduleEM2 = new ModuleTable
+            var moduleEm2 = new ModuleTable
                             {
-                                Level = levelEM,
+                                Level = "EM",
                                 Code = "2",
                                 Description = "2o Ano",
                                 MinimumAge = 16,
                                 Price = 17000
                             };
-            var moduleEM3 = new ModuleTable
+            var moduleEm3 = new ModuleTable
                             {
-                                Level = levelEM,
+                                Level = "EM",
                                 Code = "3",
                                 Description = "3o Ano",
                                 MinimumAge = 17,
                                 Price = 17000
                             };
-            this.Modules = new List<ModuleTable>
+
+            this.modules = new List<ModuleTable>
                            {
-                               moduleAno1, moduleAno2, moduleAno3, moduleAno4, moduleAno5, moduleAno6, moduleAno7, moduleAno8, moduleAno9, moduleEM1,
-                               moduleEM2, moduleEM3
+                               moduleAno1, moduleAno2, moduleAno3, moduleAno4, moduleAno5, moduleAno6, moduleAno7, moduleAno8, moduleAno9, moduleEm1,
+                               moduleEm2, moduleEm3
                            };
-            this.Classes = new List<ClassTable>
-                           {
-                               new ClassTable
-                               {
-                                   Level = levelEM,
-                                   Module = moduleEM3,
-                                   Code = "A",
-                                   Capacity = 10
-                               }
-                           };
-            this.Enrollments = new List<Enrollment>();
         }
 
-        public List<Enrollment> Enrollments { get; }
-        public ICollection<LevelTable> Levels { get; }
-        public ICollection<ModuleTable> Modules { get; }
-        public ICollection<ClassTable> Classes { get; }
-    }
-
-    public class LevelTable
-    {
-        public string Code { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-    }
-
-    public class ModuleTable
-    {
-        public LevelTable Level { get; set; } = new LevelTable();
-        public string Code { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public int MinimumAge { get; set; }
-        public decimal Price { get; set; }
-    }
-
-    public class ClassTable
-    {
-        public LevelTable Level { get; set; } = new LevelTable();
-        public ModuleTable Module { get; set; } = new ModuleTable();
-        public string Code { get; set; } = string.Empty;
-        public int Capacity { get; set; }
+        public ModuleTable FindByCode(string level, string module) =>
+            this.modules.SingleOrDefault(m => m.Code == module.ToUp() && m.Level == level.ToUp()) ?? throw new Exception("Invalid Module.");
     }
 }

@@ -2,13 +2,29 @@ namespace CleanArch.School.UnitTests
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using Application;
     using Application.Extensions;
     using Xunit;
 
-    public class EnrollStudentTests
+    public class EnrollStudentTests : IDisposable
     {
+        private readonly ILevelRepository levelRepository;
+        private readonly IModuleRepository moduleRepository;
+        private readonly IClassRepository classRepository;
+        private readonly IEnrollmentRepository enrollmentRepository;
+        private readonly EnrollStudent enrollStudent;
+
+        public EnrollStudentTests()
+        {
+            this.levelRepository = new LevelRepositoryMemory();
+            this.moduleRepository = new ModuleRepositoryMemory();
+            this.classRepository = new ClassRepositoryMemory();
+            this.enrollmentRepository = new EnrollmentRepositoryMemory();
+            this.enrollStudent = new EnrollStudent(this.enrollmentRepository, this.levelRepository, this.moduleRepository, this.classRepository);
+        }
+
+        public void Dispose() { }
+
         [Fact]
         public void Should_not_enroll_without_valid_student_name()
         {
@@ -16,8 +32,7 @@ namespace CleanArch.School.UnitTests
                                     {
                                         StudentName = "Ana"
                                     };
-            var enrollStudent = CreateEnrollStudent(new Storage());
-            var exception = Assert.Throws<Exception>(() => enrollStudent.Execute(enrollmentRequest));
+            var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
             Assert.Equal("Invalid name.", exception.Message);
         }
 
@@ -25,31 +40,24 @@ namespace CleanArch.School.UnitTests
         [MemberData(nameof(GenerateInvalidCpfData))]
         public void Should_not_enroll_without_valid_student_cpf(EnrollmentRequest enrollmentRequest)
         {
-            var enrollStudent = CreateEnrollStudent(new Storage());
-            var exception = Assert.Throws<Exception>(() => enrollStudent.Execute(enrollmentRequest));
+            var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
             Assert.Equal("Invalid cpf.", exception.Message);
         }
 
         [Fact]
         public void Should_not_enroll_duplicated_student()
         {
-            var storage = new Storage();
-            var @class = FindClass(storage, "EM", "3", "A");
-            var enrollmentRequest = CreateEnrollmentRequest("755.525.774-26", @class);
-            var enrollStudent = CreateEnrollStudent(storage);
-            enrollStudent.Execute(enrollmentRequest);
-            var exception = Assert.Throws<Exception>(() => enrollStudent.Execute(enrollmentRequest));
+            var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "A");
+            this.enrollStudent.Execute(enrollmentRequest);
+            var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
             Assert.Equal("Enrollment with duplicated student is not allowed.", exception.Message);
         }
 
         [Fact]
         public void Should_generate_enrollment_code()
         {
-            var storage = new Storage();
-            var @class = FindClass(storage, "EM", "3", "A");
-            var enrollmentRequest = CreateEnrollmentRequest("755.525.774-26", @class);
-            var enrollStudent = CreateEnrollStudent(storage);
-            var enrollResult = enrollStudent.Execute(enrollmentRequest);
+            var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "A");
+            var enrollResult = this.enrollStudent.Execute(enrollmentRequest);
             var expectedEnrollCode =
                 $"{DateTime.Now.Year}{enrollmentRequest.Level}{enrollmentRequest.Module}{enrollmentRequest.Class}0001";
             Assert.Equal(expectedEnrollCode, enrollResult.EnrollmentCode);
@@ -58,46 +66,40 @@ namespace CleanArch.School.UnitTests
         [Fact]
         public void Should_not_enroll_student_below_minimum_age()
         {
-            var storage = new Storage();
-            var @class = FindClass(storage, "EM", "3", "A");
-            var enrollmentRequest = CreateEnrollmentRequest("755.525.774-26", @class);
+            var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "A");
             enrollmentRequest.Birthday = enrollmentRequest.Birthday.AddYears(2);
-            var enrollStudent = CreateEnrollStudent(storage);
-            var exception = Assert.Throws<Exception>(() => enrollStudent.Execute(enrollmentRequest));
+            var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
             Assert.Equal("Student below minimum age.", exception.Message);
         }
 
         [Fact]
         public void Should_not_enroll_student_over_class_capacity()
         {
-            var storage = new Storage();
-            var @class = FindClass(storage, "EM", "3", "A");
+            var @class = this.classRepository.FindByCode("EM", "3", "A");
             @class.Capacity = 2;
-            var enrollmentRequest1 = CreateEnrollmentRequest("755.525.774-26", @class);
-            var enrollmentRequest2 = CreateEnrollmentRequest("832.081.519-34", @class);
-            var enrollmentRequest3 = CreateEnrollmentRequest("046.934.190-44", @class);
-            var enrollStudent = CreateEnrollStudent(storage);
-            enrollStudent.Execute(enrollmentRequest1);
-            enrollStudent.Execute(enrollmentRequest2);
-            var exception = Assert.Throws<Exception>(() => enrollStudent.Execute(enrollmentRequest3));
+            var enrollmentRequest1 = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "A");
+            var enrollmentRequest2 = this.CreateEnrollmentRequest("832.081.519-34", "EM", "3", "A");
+            var enrollmentRequest3 = this.CreateEnrollmentRequest("046.934.190-44", "EM", "3", "A");
+            this.enrollStudent.Execute(enrollmentRequest1);
+            this.enrollStudent.Execute(enrollmentRequest2);
+            var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest3));
             Assert.Equal("Class is over capacity.", exception.Message);
         }
 
-        private static EnrollStudent CreateEnrollStudent(Storage storage) => new EnrollStudent(storage);
-
-        private static ClassTable FindClass(Storage storage, string level, string module, string @class) =>
-            storage.Data.Classes.SingleOrDefault(c => c.Level.Code == level && c.Module.Code == module && c.Code == @class) ?? throw new Exception("Not found");
-
-        private static EnrollmentRequest CreateEnrollmentRequest(string cpf, ClassTable @class) =>
-            new EnrollmentRequest
-            {
-                StudentName = $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
-                Cpf = cpf,
-                Birthday = DateTime.Now.Date.AddYears(-@class.Module.MinimumAge),
-                Level = @class.Level.Code,
-                Module = @class.Module.Code,
-                Class = @class.Code
-            };
+        private EnrollmentRequest CreateEnrollmentRequest(string cpf, string level, string module, string @class)
+        {
+            var minimumAge = this.moduleRepository.FindByCode(level, module).MinimumAge;
+            var classCode = this.classRepository.FindByCode(level, module, @class).Code;
+            return new EnrollmentRequest
+                   {
+                       StudentName = $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
+                       Cpf = cpf,
+                       Birthday = DateTime.Now.Date.AddYears(-minimumAge),
+                       Level = level,
+                       Module = module,
+                       Class = classCode
+                   };
+        }
 
         private static IEnumerable<object[]> GenerateInvalidCpfData()
         {

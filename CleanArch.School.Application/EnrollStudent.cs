@@ -1,52 +1,49 @@
 ﻿namespace CleanArch.School.Application
 {
     using System;
-    using System.Linq;
-    using Extensions;
 
     public class EnrollStudent
     {
-        private readonly Storage storage;
+        private readonly IEnrollmentRepository enrollmentRepository;
+        private readonly ILevelRepository levelRepository;
+        private readonly IModuleRepository moduleRepository;
+        private readonly IClassRepository classRepository;
 
-        public EnrollStudent(Storage storage) => this.storage = storage;
+        public EnrollStudent(
+            IEnrollmentRepository enrollmentRepository,
+            ILevelRepository levelRepository,
+            IModuleRepository moduleRepository,
+            IClassRepository classRepository)
+        {
+            this.enrollmentRepository = enrollmentRepository;
+            this.levelRepository = levelRepository;
+            this.moduleRepository = moduleRepository;
+            this.classRepository = classRepository;
+        }
 
         public Enrollment Execute(EnrollmentRequest enrollmentRequest)
         {
             var student = new Student(enrollmentRequest.StudentName, enrollmentRequest.Cpf, enrollmentRequest.Birthday);
             if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
-            var module = this.FindModule(enrollmentRequest);
-            var @class = this.FindClass(enrollmentRequest);
+            var level = this.levelRepository.FindByCode(enrollmentRequest.Level);
+            var module = this.moduleRepository.FindByCode(level.Code, enrollmentRequest.Module);
+            var @class = this.classRepository.FindByCode(level.Code, module.Code, enrollmentRequest.Class);
             if (IsBellowMinimumAgeForModule(student, module)) throw new Exception("Student below minimum age.");
             if (!this.HasCapacityForStudent(enrollmentRequest, @class)) throw new Exception("Class is over capacity.");
-            return this.CreateEnrollment(student, @class);
+            return this.CreateEnrollment(student, level, module, @class);
         }
 
-        private bool IsAlreadyEnrolled(Student student) => this.storage.Data.Enrollments.Any(_ => _.Student.Cpf.Value == student.Cpf.Value);
-
-        private ModuleTable FindModule(EnrollmentRequest request) =>
-            this.storage.Data.Modules.SingleOrDefault(m => m.Code == request.Module.ToUp() && m.Level.Code == request.Level.ToUp())
-            ?? throw new Exception("Invalid Module.");
-
-        private ClassTable FindClass(EnrollmentRequest request) =>
-            this.storage.Data.Classes.SingleOrDefault(
-                c => c.Level.Code == request.Level.ToUp() &&
-                     c.Module.Code == request.Module.ToUp() &&
-                     c.Code == request.Class.ToUp())
-            ?? throw new Exception("Invalid class.");
+        private bool IsAlreadyEnrolled(Student student) => this.enrollmentRepository.FindByCpf(student.Cpf.Value) != null;
 
         private static bool IsBellowMinimumAgeForModule(Student student, ModuleTable module) => student.Age < module.MinimumAge;
 
         private bool HasCapacityForStudent(EnrollmentRequest request, ClassTable @class) =>
-            this.storage.Data.Enrollments.Count(
-                e => e.Class == request.Class &&
-                     e.Level == request.Level &&
-                     e.Module == request.Module) + 1 <= @class.Capacity;
+            this.enrollmentRepository.FindAllByClass(request.Level, request.Module, request.Class).Count + 1 <= @class.Capacity;
 
-        private Enrollment CreateEnrollment(Student student, ClassTable @class)
+        private Enrollment CreateEnrollment(Student student, LevelTable level, ModuleTable module, ClassTable @class)
         {
-            var enrollment = new Enrollment(student, @class.Level.Code, @class.Module.Code, @class.Code);
-            this.storage.Data.Enrollments.Add(enrollment);
-            enrollment.Id = this.storage.Data.Enrollments.Count;
+            var enrollment = new Enrollment(student, level.Code, module.Code, @class.Code);
+            this.enrollmentRepository.Save(enrollment);
             return enrollment;
         }
     }
