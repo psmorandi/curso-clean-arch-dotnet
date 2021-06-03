@@ -4,15 +4,16 @@
     using System.Collections.Generic;
     using System.Linq;
     using Extensions;
+    using InMemoryDatabase;
 
-    public class ClassRepositoryMemory : IClassRepository
+    public class ClassroomRepositoryMemory : IClassRepository
     {
-        private readonly ICollection<ClassTable> classes;
+        private readonly ICollection<ClassroomTable> classes;
 
-        public ClassRepositoryMemory() =>
-            this.classes = new List<ClassTable>
+        public ClassroomRepositoryMemory() =>
+            this.classes = new List<ClassroomTable>
                            {
-                               new ClassTable
+                               new ClassroomTable
                                {
                                    Level = "EM",
                                    Module = "3",
@@ -21,7 +22,7 @@
                                    StartDate = DateTime.Now.Date,
                                    EndDate = DateTime.Now.Date.AddMonths(6)
                                },
-                               new ClassTable
+                               new ClassroomTable
                                {
                                    Level = "EM",
                                    Module = "3",
@@ -30,7 +31,7 @@
                                    StartDate = DateTime.Now.Date,
                                    EndDate = DateTime.Now.Date.AddDays(30)
                                },
-                               new ClassTable
+                               new ClassroomTable
                                {
                                    Level = "EM",
                                    Module = "3",
@@ -41,7 +42,7 @@
                                }
                            };
 
-        public ClassTable FindByCode(string level, string module, string @class) =>
+        public ClassroomTable FindByCode(string level, string module, string @class) =>
             this.classes.SingleOrDefault(c => c.Level == level.ToUp() && c.Module == module.ToUp() && c.Code == @class.ToUp())
             ?? throw new Exception("Invalid class.");
     }

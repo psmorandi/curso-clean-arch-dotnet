@@ -1,7 +1,9 @@
 ﻿namespace CleanArch.School.Application
 {
+    using InMemoryDatabase;
+
     public interface IClassRepository
     {
-        ClassTable FindByCode(string level, string module, string @class);
+        ClassroomTable FindByCode(string level, string module, string @class);
     }
 }

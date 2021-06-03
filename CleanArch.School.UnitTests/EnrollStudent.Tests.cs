@@ -18,7 +18,7 @@ namespace CleanArch.School.UnitTests
         {
             this.levelRepository = new LevelRepositoryMemory();
             this.moduleRepository = new ModuleRepositoryMemory();
-            this.classRepository = new ClassRepositoryMemory();
+            this.classRepository = new ClassroomRepositoryMemory();
             this.enrollmentRepository = new EnrollmentRepositoryMemory();
             this.enrollStudent = new EnrollStudent(this.enrollmentRepository, this.levelRepository, this.moduleRepository, this.classRepository);
         }

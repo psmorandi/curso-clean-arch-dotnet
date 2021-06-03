@@ -2,6 +2,7 @@
 {
     using System;
     using Extensions;
+    using InMemoryDatabase;
 
     public class EnrollStudent
     {
@@ -40,9 +41,9 @@
 
         private static bool IsBellowMinimumAgeForModule(Student student, ModuleTable module) => student.Age < module.MinimumAge;
 
-        private static bool IsClassFinished(ClassTable @class) => DateTime.Now.Date.After(@class.EndDate);
+        private static bool IsClassFinished(ClassroomTable @class) => DateTime.Now.Date.After(@class.EndDate);
 
-        private static bool IsClassAlreadyStarted(ClassTable @class)
+        private static bool IsClassAlreadyStarted(ClassroomTable @class)
         {
             var numberOfDaysOfClass = (@class.EndDate - @class.StartDate).Days;
             var daysForEnrollAllowance = numberOfDaysOfClass / 4;
@@ -50,10 +51,10 @@
             return DateTime.Now.Date.After(limitDateToEnrollAfterClassStart);
         }
 
-        private bool HasCapacityForStudent(EnrollmentRequest request, ClassTable @class) =>
+        private bool HasCapacityForStudent(EnrollmentRequest request, ClassroomTable @class) =>
             this.enrollmentRepository.FindAllByClass(request.Level, request.Module, request.Class).Count + 1 <= @class.Capacity;
 
-        private Enrollment CreateEnrollment(Student student, LevelTable level, ModuleTable module, ClassTable @class)
+        private Enrollment CreateEnrollment(Student student, LevelTable level, ModuleTable module, ClassroomTable @class)
         {
             var enrollment = new Enrollment(student, level.Code, module.Code, @class.Code);
             this.enrollmentRepository.Save(enrollment);
