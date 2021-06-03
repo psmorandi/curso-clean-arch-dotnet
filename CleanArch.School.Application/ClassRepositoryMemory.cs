@@ -17,7 +17,27 @@
                                    Level = "EM",
                                    Module = "3",
                                    Code = "A",
-                                   Capacity = 10
+                                   Capacity = 5,
+                                   StartDate = DateTime.Now.Date,
+                                   EndDate = DateTime.Now.Date.AddMonths(6)
+                               },
+                               new ClassTable
+                               {
+                                   Level = "EM",
+                                   Module = "3",
+                                   Code = "B",
+                                   Capacity = 5,
+                                   StartDate = DateTime.Now.Date,
+                                   EndDate = DateTime.Now.Date.AddDays(30)
+                               },
+                               new ClassTable
+                               {
+                                   Level = "EM",
+                                   Module = "3",
+                                   Code = "C",
+                                   Capacity = 5,
+                                   StartDate = DateTime.Now.Date,
+                                   EndDate = DateTime.Now.Date.AddMonths(1)
                                }
                            };
 

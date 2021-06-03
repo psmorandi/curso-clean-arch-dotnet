@@ -29,6 +29,8 @@
             var module = this.moduleRepository.FindByCode(level.Code, enrollmentRequest.Module);
             var @class = this.classRepository.FindByCode(level.Code, module.Code, enrollmentRequest.Class);
             if (IsBellowMinimumAgeForModule(student, module)) throw new Exception("Student below minimum age.");
+            if (IsClassFinished(@class)) throw new Exception("Class is already finished.");
+            if (IsClassAlreadyStarted(@class)) throw new Exception("Class is already started.");
             if (!this.HasCapacityForStudent(enrollmentRequest, @class)) throw new Exception("Class is over capacity.");
             return this.CreateEnrollment(student, level, module, @class);
         }
@@ -36,6 +38,17 @@
         private bool IsAlreadyEnrolled(Student student) => this.enrollmentRepository.FindByCpf(student.Cpf.Value) != null;
 
         private static bool IsBellowMinimumAgeForModule(Student student, ModuleTable module) => student.Age < module.MinimumAge;
+
+        private static bool IsClassFinished(ClassTable @class) => DateTime.Now.Date.CompareTo(@class.EndDate) > 0;
+
+        private static bool IsClassAlreadyStarted(ClassTable @class)
+        {
+            var numberOfDaysOfClass = @class.EndDate - @class.StartDate;
+            var daysForEnrollAllowance = numberOfDaysOfClass.Days / 4;
+            var limitDateToEnrollAfterClassStart = @class.StartDate.AddDays(daysForEnrollAllowance);
+
+            return DateTime.Now.Date.CompareTo(limitDateToEnrollAfterClassStart) > 0;
+        }
 
         private bool HasCapacityForStudent(EnrollmentRequest request, ClassTable @class) =>
             this.enrollmentRepository.FindAllByClass(request.Level, request.Module, request.Class).Count + 1 <= @class.Capacity;

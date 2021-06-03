@@ -1,4 +1,6 @@
-﻿namespace CleanArch.School.Application
+﻿using System;
+
+namespace CleanArch.School.Application
 {
     public class LevelTable
     {
@@ -21,5 +23,7 @@
         public string Module { get; set; } = string.Empty;
         public string Code { get; set; } = string.Empty;
         public int Capacity { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
     }
 }

@@ -86,6 +86,28 @@ namespace CleanArch.School.UnitTests
             Assert.Equal("Class is over capacity.", exception.Message);
         }
 
+        [Fact]
+        public void Should_not_enroll_after_the_end_of_the_class()
+        {
+            var @class = this.classRepository.FindByCode("EM", "3", "B");
+            @class.StartDate = DateTime.Now.Date.AddDays(-30);
+            @class.EndDate = DateTime.Now.Date.AddDays(-2);
+            var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "B");
+            var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
+            Assert.Equal("Class is already finished.", exception.Message);
+        }
+
+        [Fact]
+        public void Should_not_enroll_after_25_percent_of_the_start_of_the_class()
+        {
+            var @class = this.classRepository.FindByCode("EM", "3", "C");
+            @class.StartDate = DateTime.Now.Date.AddDays(-50);
+            @class.EndDate = DateTime.Now.Date.AddDays(50);
+            var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "C");
+            var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
+            Assert.Equal("Class is already started.", exception.Message);
+        }
+
         private EnrollmentRequest CreateEnrollmentRequest(string cpf, string level, string module, string @class)
         {
             var minimumAge = this.moduleRepository.FindByCode(level, module).MinimumAge;
