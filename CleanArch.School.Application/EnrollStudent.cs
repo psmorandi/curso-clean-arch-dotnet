@@ -1,6 +1,7 @@
 ﻿namespace CleanArch.School.Application
 {
     using System;
+    using Extensions;
 
     public class EnrollStudent
     {
@@ -39,15 +40,14 @@
 
         private static bool IsBellowMinimumAgeForModule(Student student, ModuleTable module) => student.Age < module.MinimumAge;
 
-        private static bool IsClassFinished(ClassTable @class) => DateTime.Now.Date.CompareTo(@class.EndDate) > 0;
+        private static bool IsClassFinished(ClassTable @class) => DateTime.Now.Date.After(@class.EndDate);
 
         private static bool IsClassAlreadyStarted(ClassTable @class)
         {
-            var numberOfDaysOfClass = @class.EndDate - @class.StartDate;
-            var daysForEnrollAllowance = numberOfDaysOfClass.Days / 4;
+            var numberOfDaysOfClass = (@class.EndDate - @class.StartDate).Days;
+            var daysForEnrollAllowance = numberOfDaysOfClass / 4;
             var limitDateToEnrollAfterClassStart = @class.StartDate.AddDays(daysForEnrollAllowance);
-
-            return DateTime.Now.Date.CompareTo(limitDateToEnrollAfterClassStart) > 0;
+            return DateTime.Now.Date.After(limitDateToEnrollAfterClassStart);
         }
 
         private bool HasCapacityForStudent(EnrollmentRequest request, ClassTable @class) =>
