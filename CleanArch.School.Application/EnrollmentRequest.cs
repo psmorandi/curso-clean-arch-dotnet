@@ -10,5 +10,6 @@
         public string Level { get; set; } = string.Empty;
         public string Module { get; set; } = string.Empty;
         public string Class { get; set; } = string.Empty;
+        public int Installments { get; set; } = 1;
     }
 }

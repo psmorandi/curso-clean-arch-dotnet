@@ -8,19 +8,15 @@ namespace CleanArch.School.UnitTests
 
     public class EnrollStudentTests : IDisposable
     {
-        private readonly ILevelRepository levelRepository;
         private readonly IModuleRepository moduleRepository;
-        private readonly IClassRepository classRepository;
-        private readonly IEnrollmentRepository enrollmentRepository;
+        private readonly IClassroomRepository classRepository;
         private readonly EnrollStudent enrollStudent;
 
         public EnrollStudentTests()
         {
-            this.levelRepository = new LevelRepositoryMemory();
             this.moduleRepository = new ModuleRepositoryMemory();
             this.classRepository = new ClassroomRepositoryMemory();
-            this.enrollmentRepository = new EnrollmentRepositoryMemory();
-            this.enrollStudent = new EnrollStudent(this.enrollmentRepository, this.levelRepository, this.moduleRepository, this.classRepository);
+            this.enrollStudent = new EnrollStudent(new EnrollmentRepositoryMemory(), new LevelRepositoryMemory(), this.moduleRepository, this.classRepository);
         }
 
         public void Dispose() { }
@@ -75,8 +71,8 @@ namespace CleanArch.School.UnitTests
         [Fact]
         public void Should_not_enroll_student_over_class_capacity()
         {
-            var @class = this.classRepository.FindByCode("EM", "3", "A");
-            @class.Capacity = 2;
+            var classroom = this.classRepository.FindByCode("EM", "3", "A");
+            classroom.Capacity = 2;
             var enrollmentRequest1 = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "A");
             var enrollmentRequest2 = this.CreateEnrollmentRequest("832.081.519-34", "EM", "3", "A");
             var enrollmentRequest3 = this.CreateEnrollmentRequest("046.934.190-44", "EM", "3", "A");
@@ -89,9 +85,9 @@ namespace CleanArch.School.UnitTests
         [Fact]
         public void Should_not_enroll_after_the_end_of_the_class()
         {
-            var @class = this.classRepository.FindByCode("EM", "3", "B");
-            @class.StartDate = DateTime.Now.Date.AddDays(-30);
-            @class.EndDate = DateTime.Now.Date.AddDays(-2);
+            var classroom = this.classRepository.FindByCode("EM", "3", "B");
+            classroom.StartDate = DateTime.Now.Date.AddDays(-30);
+            classroom.EndDate = DateTime.Now.Date.AddDays(-2);
             var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "B");
             var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
             Assert.Equal("Class is already finished.", exception.Message);
@@ -100,18 +96,29 @@ namespace CleanArch.School.UnitTests
         [Fact]
         public void Should_not_enroll_after_25_percent_of_the_start_of_the_class()
         {
-            var @class = this.classRepository.FindByCode("EM", "3", "C");
-            @class.StartDate = DateTime.Now.Date.AddDays(-50);
-            @class.EndDate = DateTime.Now.Date.AddDays(50);
+            var classroom = this.classRepository.FindByCode("EM", "3", "C");
+            classroom.StartDate = DateTime.Now.Date.AddDays(-50);
+            classroom.EndDate = DateTime.Now.Date.AddDays(50);
             var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "C");
             var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
             Assert.Equal("Class is already started.", exception.Message);
         }
 
-        private EnrollmentRequest CreateEnrollmentRequest(string cpf, string level, string module, string @class)
+        [Fact]
+        public void Should_generate_the_invoices_based_on_the_number_of_installments()
+        {
+            var module = this.moduleRepository.FindByCode("EM", "3");
+            var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "C");
+            enrollmentRequest.Installments = 12;
+            var enrollment = this.enrollStudent.Execute(enrollmentRequest);
+            Assert.True(enrollment.Invoice.Installments.Count == 12);
+            Assert.True(enrollment.Invoice.Total == module.Price);
+        }
+
+        private EnrollmentRequest CreateEnrollmentRequest(string cpf, string level, string module, string classroom)
         {
             var minimumAge = this.moduleRepository.FindByCode(level, module).MinimumAge;
-            var classCode = this.classRepository.FindByCode(level, module, @class).Code;
+            var classCode = this.classRepository.FindByCode(level, module, classroom).Code;
             return new EnrollmentRequest
                    {
                        StudentName = $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",

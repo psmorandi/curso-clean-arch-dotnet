@@ -6,7 +6,7 @@
     using Extensions;
     using InMemoryDatabase;
 
-    public class ClassroomRepositoryMemory : IClassRepository
+    public class ClassroomRepositoryMemory : IClassroomRepository
     {
         private readonly ICollection<ClassroomTable> classes;
 
