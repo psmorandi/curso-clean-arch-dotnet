@@ -56,7 +56,7 @@ namespace CleanArch.School.UnitTests
             var enrollResult = this.enrollStudent.Execute(enrollmentRequest);
             var expectedEnrollCode =
                 $"{DateTime.Now.Year}{enrollmentRequest.Level}{enrollmentRequest.Module}{enrollmentRequest.Class}0001";
-            Assert.Equal(expectedEnrollCode, enrollResult.EnrollmentCode);
+            Assert.Equal(expectedEnrollCode, enrollResult.Code.Value);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace CleanArch.School.UnitTests
         public void Should_not_enroll_student_over_class_capacity()
         {
             var classroom = this.classRepository.FindByCode("EM", "3", "A");
-            classroom.Capacity = 2;
+            classroom.SetCapacity(2);
             var enrollmentRequest1 = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "A");
             var enrollmentRequest2 = this.CreateEnrollmentRequest("832.081.519-34", "EM", "3", "A");
             var enrollmentRequest3 = this.CreateEnrollmentRequest("046.934.190-44", "EM", "3", "A");
@@ -86,8 +86,7 @@ namespace CleanArch.School.UnitTests
         public void Should_not_enroll_after_the_end_of_the_class()
         {
             var classroom = this.classRepository.FindByCode("EM", "3", "B");
-            classroom.StartDate = DateTime.Now.Date.AddDays(-30);
-            classroom.EndDate = DateTime.Now.Date.AddDays(-2);
+            classroom.SetClassPeriod(DateTime.Now.Date.AddDays(-30), DateTime.Now.Date.AddDays(-2));
             var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "B");
             var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
             Assert.Equal("Class is already finished.", exception.Message);
@@ -97,8 +96,7 @@ namespace CleanArch.School.UnitTests
         public void Should_not_enroll_after_25_percent_of_the_start_of_the_class()
         {
             var classroom = this.classRepository.FindByCode("EM", "3", "C");
-            classroom.StartDate = DateTime.Now.Date.AddDays(-50);
-            classroom.EndDate = DateTime.Now.Date.AddDays(50);
+            classroom.SetClassPeriod(DateTime.Now.Date.AddDays(-50), DateTime.Now.Date.AddDays(50));
             var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "C");
             var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
             Assert.Equal("Class is already started.", exception.Message);

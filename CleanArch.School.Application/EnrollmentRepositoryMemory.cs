@@ -12,11 +12,10 @@
         public void Save(Enrollment enrollment)
         {
             this.enrollments.Add(enrollment);
-            enrollment.Id = this.enrollments.Count;
         }
 
-        public ICollection<Enrollment> FindAllByClass(string level, string module, string @class) =>
-            this.enrollments.Where(e => e.Level == level && e.Module == module && e.Class == @class).ToList();
+        public ICollection<Enrollment> FindAllByClass(string level, string module, string classroom) =>
+            this.enrollments.Where(e => e.Level.Code == level && e.Module.Code == module && e.Class.Code == classroom).ToList();
 
         public Enrollment? FindByCpf(string cpf) => this.enrollments.SingleOrDefault(_ => _.Student.Cpf.Value == cpf);
 

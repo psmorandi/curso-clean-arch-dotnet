@@ -2,7 +2,6 @@
 {
     using System;
     using Extensions;
-    using InMemoryDatabase;
 
     public class EnrollStudent
     {
@@ -26,24 +25,22 @@
         public Enrollment Execute(EnrollmentRequest enrollmentRequest)
         {
             var student = new Student(enrollmentRequest.StudentName, enrollmentRequest.Cpf, enrollmentRequest.Birthday);
-            if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
             var level = this.levelRepository.FindByCode(enrollmentRequest.Level);
             var module = this.moduleRepository.FindByCode(level.Code, enrollmentRequest.Module);
             var classroom = this.classRepository.FindByCode(level.Code, module.Code, enrollmentRequest.Class);
-            if (IsBellowMinimumAgeForModule(student, module)) throw new Exception("Student below minimum age.");
+            if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
             if (IsClassFinished(classroom)) throw new Exception("Class is already finished.");
             if (IsClassAlreadyStarted(classroom)) throw new Exception("Class is already started.");
-            if (!this.HasCapacityForStudent(enrollmentRequest, classroom)) throw new Exception("Class is over capacity.");
-            return this.CreateEnrollment(student, level, module, classroom, enrollmentRequest.Installments);
+            var numberOfEnrollments = this.enrollmentRepository.FindAllByClass(level.Code, module.Code, classroom.Code).Count;
+            if (!HasCapacityForStudent(numberOfEnrollments, classroom)) throw new Exception("Class is over capacity.");
+            return this.CreateEnrollment(student, level, module, classroom, numberOfEnrollments+1, enrollmentRequest.Installments);
         }
 
         private bool IsAlreadyEnrolled(Student student) => this.enrollmentRepository.FindByCpf(student.Cpf.Value) != null;
 
-        private static bool IsBellowMinimumAgeForModule(Student student, ModuleTable module) => student.Age < module.MinimumAge;
+        private static bool IsClassFinished(Classroom classroom) => DateTime.Now.Date.After(classroom.EndDate);
 
-        private static bool IsClassFinished(ClassroomTable classroom) => DateTime.Now.Date.After(classroom.EndDate);
-
-        private static bool IsClassAlreadyStarted(ClassroomTable classroom)
+        private static bool IsClassAlreadyStarted(Classroom classroom)
         {
             var numberOfDaysOfClass = (classroom.EndDate - classroom.StartDate).Days;
             var daysForEnrollAllowance = numberOfDaysOfClass / 4;
@@ -51,12 +48,11 @@
             return DateTime.Now.Date.After(limitDateToEnrollAfterClassStart);
         }
 
-        private bool HasCapacityForStudent(EnrollmentRequest request, ClassroomTable classroom) =>
-            this.enrollmentRepository.FindAllByClass(request.Level, request.Module, request.Class).Count + 1 <= classroom.Capacity;
+        private static bool HasCapacityForStudent(int numberOfEnrollments, Classroom classroom) => numberOfEnrollments + 1 <= classroom.Capacity;
 
-        private Enrollment CreateEnrollment(Student student, LevelTable level, ModuleTable module, ClassroomTable classroom, int installments)
+        private Enrollment CreateEnrollment(Student student, Level level, Module module, Classroom classroom, int sequence, int installments)
         {
-            var enrollment = new Enrollment(student, level.Code, module.Code, classroom.Code, installments, module.Price);
+            var enrollment = new Enrollment(student, level, module, classroom, sequence, DateTime.UtcNow.Date, installments, module.Price);
             this.enrollmentRepository.Save(enrollment);
             return enrollment;
         }

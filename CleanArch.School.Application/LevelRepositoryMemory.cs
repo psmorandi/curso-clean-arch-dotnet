@@ -3,34 +3,20 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using InMemoryDatabase;
 
     public class LevelRepositoryMemory : ILevelRepository
     {
-        private readonly ICollection<LevelTable> levels;
+        private readonly ICollection<Level> levels;
 
         public LevelRepositoryMemory()
         {
-            var levelEf1 = new LevelTable
-                           {
-                               Code = "EF1",
-                               Description = "Ensino Fundamental I"
-                           };
-
-            var levelEf2 = new LevelTable
-                           {
-                               Code = "EF2",
-                               Description = "Ensino Fundamental II"
-                           };
-            var levelEm = new LevelTable
-                          {
-                              Code = "EM",
-                              Description = "Ensino Médio"
-                          };
-            this.levels = new List<LevelTable> { levelEf1, levelEf2, levelEm };
+            var levelEf1 = new Level("EF1", "Ensino Fundamental I");
+            var levelEf2 = new Level("EF2", "Ensino Fundamental II");
+            var levelEm = new Level("EM", "Ensino Médio");
+            this.levels = new List<Level> { levelEf1, levelEf2, levelEm };
         }
 
-        public LevelTable FindByCode(string code) => 
+        public Level FindByCode(string code) =>
             this.levels.SingleOrDefault(l => l.Code == code) ?? throw new Exception("Invalid level");
     }
 }

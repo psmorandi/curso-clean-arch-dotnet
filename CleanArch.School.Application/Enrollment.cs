@@ -4,23 +4,28 @@
 
     public class Enrollment
     {
-        public Enrollment(Student student, string level, string module, string classroom, int installments, decimal moduleValue)
+        public Enrollment(Student student, Level level, Module module, Classroom classroom, int sequence, DateTime issueDate, int installments, decimal moduleValue)
         {
+            if (IsBellowMinimumAgeForModule(student, module)) throw new Exception("Student below minimum age.");
             this.Student = student;
             this.Level = level;
             this.Module = module;
             this.Class = classroom;
-            this.EnrollDate = DateTime.UtcNow;
+            this.IssueDate = issueDate;
             this.Invoice = new Invoice(installments, moduleValue);
+            this.Sequence = sequence;
+            this.Code = new EnrollmentCode(level, module, classroom, sequence, issueDate);
         }
 
-        public int Id { get; set; }
+        public int Sequence { get; }
         public Student Student { get; }
-        public string Class { get; }
-        public string Module { get; }
-        public string Level { get; }
-        public DateTime EnrollDate { get; }
-        public string EnrollmentCode => $"{this.EnrollDate.Year:0000}{this.Level}{this.Module}{this.Class}{this.Id:0000}";
+        public Classroom Class { get; }
+        public Module Module { get; }
+        public Level Level { get; }
+        public DateTime IssueDate { get; }
+        public EnrollmentCode Code { get; }
         public Invoice Invoice { get; }
+
+        private static bool IsBellowMinimumAgeForModule(Student student, Module module) => student.Age < module.MinimumAge;
     }
 }
