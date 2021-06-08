@@ -20,7 +20,10 @@ namespace CleanArch.School.UnitTests
             this.enrollStudent = new EnrollStudent(new EnrollmentRepositoryMemory(), new LevelRepositoryMemory(), this.moduleRepository, this.classRepository);
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
 
         [Fact]
         public void Should_not_enroll_without_valid_student_name()
