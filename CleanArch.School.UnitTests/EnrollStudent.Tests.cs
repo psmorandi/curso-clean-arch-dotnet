@@ -2,6 +2,7 @@ namespace CleanArch.School.UnitTests
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Application;
     using Application.Extensions;
     using Xunit;
@@ -109,8 +110,8 @@ namespace CleanArch.School.UnitTests
             var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "C");
             enrollmentRequest.Installments = 12;
             var enrollment = this.enrollStudent.Execute(enrollmentRequest);
-            Assert.True(enrollment.Invoice.Installments.Count == 12);
-            Assert.True(enrollment.Invoice.Total == module.Price);
+            Assert.True(enrollment.Invoices.Count == 12);
+            Assert.True(enrollment.Invoices.Sum(_ => _.Amount) == module.Price);
         }
 
         private EnrollmentRequest CreateEnrollmentRequest(string cpf, string level, string module, string classroom)

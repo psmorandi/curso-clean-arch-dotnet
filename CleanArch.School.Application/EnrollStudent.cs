@@ -1,7 +1,6 @@
 ﻿namespace CleanArch.School.Application
 {
     using System;
-    using Extensions;
 
     public class EnrollStudent
     {
@@ -29,30 +28,18 @@
             var module = this.moduleRepository.FindByCode(level.Code, enrollmentRequest.Module);
             var classroom = this.classRepository.FindByCode(level.Code, module.Code, enrollmentRequest.Class);
             if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
-            if (IsClassFinished(classroom)) throw new Exception("Class is already finished.");
-            if (IsClassAlreadyStarted(classroom)) throw new Exception("Class is already started.");
             var numberOfEnrollments = this.enrollmentRepository.FindAllByClass(level.Code, module.Code, classroom.Code).Count;
             if (!HasCapacityForStudent(numberOfEnrollments, classroom)) throw new Exception("Class is over capacity.");
-            return this.CreateEnrollment(student, level, module, classroom, numberOfEnrollments+1, enrollmentRequest.Installments);
+            return this.CreateEnrollment(student, level, module, classroom, numberOfEnrollments + 1, enrollmentRequest.Installments);
         }
 
         private bool IsAlreadyEnrolled(Student student) => this.enrollmentRepository.FindByCpf(student.Cpf.Value) != null;
-
-        private static bool IsClassFinished(Classroom classroom) => DateTime.Now.Date.After(classroom.EndDate);
-
-        private static bool IsClassAlreadyStarted(Classroom classroom)
-        {
-            var numberOfDaysOfClass = (classroom.EndDate - classroom.StartDate).Days;
-            var daysForEnrollAllowance = numberOfDaysOfClass / 4;
-            var limitDateToEnrollAfterClassStart = classroom.StartDate.AddDays(daysForEnrollAllowance);
-            return DateTime.Now.Date.After(limitDateToEnrollAfterClassStart);
-        }
 
         private static bool HasCapacityForStudent(int numberOfEnrollments, Classroom classroom) => numberOfEnrollments + 1 <= classroom.Capacity;
 
         private Enrollment CreateEnrollment(Student student, Level level, Module module, Classroom classroom, int sequence, int installments)
         {
-            var enrollment = new Enrollment(student, level, module, classroom, sequence, DateTime.UtcNow.Date, installments, module.Price);
+            var enrollment = new Enrollment(student, level, module, classroom, sequence, DateTime.UtcNow.Date, installments);
             this.enrollmentRepository.Save(enrollment);
             return enrollment;
         }

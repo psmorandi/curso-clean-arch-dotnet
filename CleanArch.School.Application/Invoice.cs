@@ -1,20 +1,18 @@
 ﻿namespace CleanArch.School.Application
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using Extensions;
-
     public class Invoice
     {
-        public Invoice(int installments, decimal moduleValue)
+        public Invoice(string code, int month, int year, decimal amount)
         {
-            var installmentValue = (moduleValue / installments).Truncate(2);
-            this.Installments = installmentValue.Repeat(installments - 1);
-            var lastInstallment = installmentValue + (moduleValue - installmentValue * installments);
-            this.Installments.Add(lastInstallment);
+            this.Code = code;
+            this.Month = month;
+            this.Year = year;
+            this.Amount = amount;
         }
 
-        public ICollection<decimal> Installments { get; }
-        public decimal Total => this.Installments.Sum();
+        public string Code { get; }
+        public int Month { get; }
+        public int Year { get; }
+        public decimal Amount { get; }
     }
 }
