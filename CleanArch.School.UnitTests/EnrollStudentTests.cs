@@ -7,24 +7,13 @@ namespace CleanArch.School.UnitTests
     using Application.Extensions;
     using Xunit;
 
-    public class EnrollStudentTests : IDisposable
+    public class EnrollStudentTests : BaseEnrollmentTests
     {
-        private readonly ILevelRepository levelRepository;
-        private readonly IModuleRepository moduleRepository;
-        private readonly IClassroomRepository classroomRepository;
         private readonly EnrollStudent enrollStudent;
 
         public EnrollStudentTests()
         {
-            this.levelRepository = new LevelRepositoryMemory();
-            this.moduleRepository = new ModuleRepositoryMemory();
-            this.classroomRepository = new ClassroomRepositoryMemory();
             this.enrollStudent = new EnrollStudent(new EnrollmentRepositoryMemory(), this.levelRepository, this.moduleRepository, this.classroomRepository);
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
         }
 
         [Fact]

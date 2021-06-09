@@ -28,14 +28,12 @@
             var module = this.moduleRepository.FindByCode(level.Code, enrollmentRequest.Module);
             var classroom = this.classRepository.FindByCode(level.Code, module.Code, enrollmentRequest.Class);
             if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
-            var numberOfEnrollments = this.enrollmentRepository.FindAllByClass(level.Code, module.Code, classroom.Code).Count;
-            if (!HasCapacityForStudent(numberOfEnrollments, classroom)) throw new Exception("Class is over capacity.");
-            return this.CreateEnrollment(student, level, module, classroom, numberOfEnrollments + 1, enrollmentRequest.Installments);
+            var numberOfStudentsInClass = this.enrollmentRepository.FindAllByClass(level.Code, module.Code, classroom.Code).Count;
+            if (numberOfStudentsInClass + 1 > classroom.Capacity) throw new Exception("Class is over capacity.");
+            return this.CreateEnrollment(student, level, module, classroom, this.enrollmentRepository.Count() + 1, enrollmentRequest.Installments);
         }
 
         private bool IsAlreadyEnrolled(Student student) => this.enrollmentRepository.FindByCpf(student.Cpf.Value) != null;
-
-        private static bool HasCapacityForStudent(int numberOfEnrollments, Classroom classroom) => numberOfEnrollments + 1 <= classroom.Capacity;
 
         private Enrollment CreateEnrollment(Student student, Level level, Module module, Classroom classroom, int sequence, int installments)
         {

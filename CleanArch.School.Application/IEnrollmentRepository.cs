@@ -6,8 +6,10 @@
     {
         void Save(Enrollment enrollment);
 
-        ICollection<Enrollment> FindAllByClass(string level, string module, string @class);
+        ICollection<Enrollment> FindAllByClass(string level, string module, string classroom);
 
         Enrollment? FindByCpf(string cpf);
+
+        int Count();
     }
 }
