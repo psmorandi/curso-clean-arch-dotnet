@@ -8,7 +8,7 @@
     {
         public Enrollment(Student student, Level level, Module module, Classroom classroom, int sequence, DateTime issueDate, int installments)
         {
-            if (IsBellowMinimumAgeForModule(student, module)) throw new Exception("Student below minimum age.");
+            if (student.Age < module.MinimumAge) throw new Exception("Student below minimum age.");
             if (classroom.IsFinished(issueDate)) throw new Exception("Class is already finished.");
             if (classroom.GetProgress(issueDate) > 25) throw new Exception("Class is already started.");
             this.Student = student;
@@ -30,9 +30,7 @@
         public DateTime IssueDate { get; }
         public EnrollmentCode Code { get; }
         public ICollection<Invoice> Invoices { get; }
-
-        private static bool IsBellowMinimumAgeForModule(Student student, Module module) => student.Age < module.MinimumAge;
-
+        
         private void GenerateInvoices(int installments)
         {
             var moduleValue = this.Module.Price;
