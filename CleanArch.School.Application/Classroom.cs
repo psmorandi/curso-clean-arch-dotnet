@@ -17,8 +17,8 @@
         public string Level { get; }
         public string Module { get; }
         public string Code { get; }
-        public int Capacity { get; private set; }
-        public Period Period { get; private set; }
+        public int Capacity { get; }
+        public Period Period { get; }
 
         public bool IsFinished(DateTime currentDate) => currentDate.Date.After(this.Period.EndDate);
 
@@ -28,13 +28,5 @@
             var remainingDays = (currentDate - this.Period.StartDate).Days;
             return remainingDays * 100 / numberOfDaysOfClass;
         }
-
-        public void SetCapacity(int capacity)
-        {
-            if (capacity < 0) throw new Exception("Invalid capacity.");
-            this.Capacity = capacity;
-        }
-
-        public void SetClassPeriod(DateTime start, DateTime end) => this.Period = new Period(start, end);
     }
 }
