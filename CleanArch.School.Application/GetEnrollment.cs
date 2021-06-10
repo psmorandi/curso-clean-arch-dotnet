@@ -9,6 +9,6 @@
         public GetEnrollment(IEnrollmentRepository enrollmentRepository) => this.enrollmentRepository = enrollmentRepository;
 
         public Enrollment Execute(GetEnrollmentRequest request) =>
-            this.enrollmentRepository.FindByCode(request.EnrollmentCode) ?? throw new Exception("Enrollment not found.");
+            this.enrollmentRepository.FindByCode(request.EnrollmentCode);
     }
 }

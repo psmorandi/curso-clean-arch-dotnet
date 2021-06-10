@@ -1,5 +1,6 @@
 ﻿namespace CleanArch.School.Application
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -19,7 +20,8 @@
 
         public Enrollment? FindByCpf(string cpf) => this.enrollments.SingleOrDefault(_ => _.Student.Cpf.Value == cpf);
 
-        public Enrollment? FindByCode(string code) => this.enrollments.SingleOrDefault(_ => _.Code.Value == code);
+        public Enrollment FindByCode(string code) => 
+            this.enrollments.SingleOrDefault(_ => _.Code.Value == code) ?? throw new Exception("Enrollment not found.");
 
         public int Count() => this.enrollments.Count;
     }

@@ -10,7 +10,7 @@
 
         Enrollment? FindByCpf(string cpf);
 
-        Enrollment? FindByCode(string code);
+        Enrollment FindByCode(string code);
 
         int Count();
     }

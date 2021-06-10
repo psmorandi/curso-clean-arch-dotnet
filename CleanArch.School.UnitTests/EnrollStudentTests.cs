@@ -4,24 +4,10 @@ namespace CleanArch.School.UnitTests
     using System.Collections.Generic;
     using System.Linq;
     using Application;
-    using Application.Extensions;
     using Xunit;
 
-    public class EnrollStudentTests : BaseTests
+    public class EnrollStudentTests : BaseEnrollmentTests
     {
-        private readonly EnrollStudent enrollStudent;
-        private readonly ILevelRepository levelRepository;
-        private readonly IModuleRepository moduleRepository;
-        private readonly IClassroomRepository classroomRepository;
-
-        public EnrollStudentTests()
-        {
-            this.levelRepository = new LevelRepositoryMemory();
-            this.moduleRepository = new ModuleRepositoryMemory();
-            this.classroomRepository = new ClassroomRepositoryMemory();
-            this.enrollStudent = new EnrollStudent(new EnrollmentRepositoryMemory(), this.levelRepository, this.moduleRepository, this.classroomRepository);
-        }
-
         [Fact]
         public void Should_not_enroll_without_valid_student_name()
         {
@@ -128,21 +114,6 @@ namespace CleanArch.School.UnitTests
             Assert.True(enrollment.Invoices.Single(i => i.Month == 1).Amount == new decimal(1416.66));
             Assert.True(enrollment.Invoices.Single(i => i.Month == 12).Amount == new decimal(1416.74));
             Assert.True(enrollment.Invoices.Sum(_ => _.Amount) == 17000);
-        }
-
-        private EnrollmentRequest CreateEnrollmentRequest(string cpf, string level, string module, string classroom)
-        {
-            var minimumAge = this.moduleRepository.FindByCode(level, module).MinimumAge;
-            var classCode = this.classroomRepository.FindByCode(level, module, classroom).Code;
-            return new EnrollmentRequest
-                   {
-                       StudentName = $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
-                       Cpf = cpf,
-                       Birthday = DateTime.Now.Date.AddYears(-minimumAge),
-                       Level = level,
-                       Module = module,
-                       Class = classCode
-                   };
         }
 
         private static IEnumerable<object[]> GenerateInvalidCpfData()

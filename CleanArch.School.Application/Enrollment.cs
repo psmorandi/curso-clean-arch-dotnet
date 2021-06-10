@@ -31,7 +31,7 @@
         public DateTime IssueDate { get; }
         public EnrollmentCode Code { get; }
         public ICollection<Invoice> Invoices { get; }
-        
+
         private void GenerateInvoices(int installments)
         {
             var moduleValue = this.Module.Price;
@@ -46,9 +46,10 @@
             this.Invoices.Add(new Invoice(this.Code.Value, installments, this.IssueDate.Year, lastInstallment));
         }
 
-        public decimal InvoiceBalance()
-        {
-            return this.Invoices.Sum(i => i.Amount);
-        }
+        public decimal InvoiceBalance() 
+            => this.Invoices.Where(i => i.Status == InvoiceStatus.Pending).Sum(i => i.Amount);
+
+        public Invoice GetInvoice(int month, int year)
+            => this.Invoices.SingleOrDefault(i => i.Month == month && i.Year == year) ?? throw new Exception("Invoice not found.");
     }
 }
