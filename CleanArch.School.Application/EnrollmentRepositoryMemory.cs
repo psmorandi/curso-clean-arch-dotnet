@@ -19,6 +19,8 @@
 
         public Enrollment? FindByCpf(string cpf) => this.enrollments.SingleOrDefault(_ => _.Student.Cpf.Value == cpf);
 
+        public Enrollment? FindByCode(string code) => this.enrollments.SingleOrDefault(_ => _.Code.Value == code);
+
         public int Count() => this.enrollments.Count;
     }
 }

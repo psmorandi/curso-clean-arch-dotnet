@@ -2,11 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Extensions;
 
     public class Enrollment
     {
-        public Enrollment(Student student, Level level, Module module, Classroom classroom, int sequence, DateTime issueDate, int installments)
+        public Enrollment(Student student, Level level, Module module, Classroom classroom, int sequence, DateTime issueDate, int installments = 12)
         {
             if (student.Age < module.MinimumAge) throw new Exception("Student below minimum age.");
             if (classroom.IsFinished(issueDate)) throw new Exception("Class is already finished.");
@@ -43,6 +44,11 @@
 
             var lastInstallment = installmentAmount + (moduleValue - installmentAmount * installments);
             this.Invoices.Add(new Invoice(this.Code.Value, installments, this.IssueDate.Year, lastInstallment));
+        }
+
+        public decimal InvoiceBalance()
+        {
+            return this.Invoices.Sum(i => i.Amount);
         }
     }
 }

@@ -7,12 +7,18 @@ namespace CleanArch.School.UnitTests
     using Application.Extensions;
     using Xunit;
 
-    public class EnrollStudentTests : BaseEnrollmentTests
+    public class EnrollStudentTests : BaseTests
     {
         private readonly EnrollStudent enrollStudent;
+        private readonly ILevelRepository levelRepository;
+        private readonly IModuleRepository moduleRepository;
+        private readonly IClassroomRepository classroomRepository;
 
         public EnrollStudentTests()
         {
+            this.levelRepository = new LevelRepositoryMemory();
+            this.moduleRepository = new ModuleRepositoryMemory();
+            this.classroomRepository = new ClassroomRepositoryMemory();
             this.enrollStudent = new EnrollStudent(new EnrollmentRepositoryMemory(), this.levelRepository, this.moduleRepository, this.classroomRepository);
         }
 
