@@ -21,6 +21,7 @@
             this.Sequence = sequence;
             this.Code = new EnrollmentCode(level, module, classroom, sequence, issueDate);
             this.GenerateInvoices(installments);
+            this.Status = EnrollStatus.Active;
         }
 
         public int Sequence { get; }
@@ -31,6 +32,7 @@
         public DateTime IssueDate { get; }
         public EnrollmentCode Code { get; }
         public ICollection<Invoice> Invoices { get; }
+        public EnrollStatus Status { get; private set; }
 
         private void GenerateInvoices(int installments)
         {
@@ -46,10 +48,12 @@
             this.Invoices.Add(new Invoice(this.Code.Value, installments, this.IssueDate.Year, lastInstallment));
         }
 
-        public decimal InvoiceBalance() 
+        public decimal InvoiceBalance()
             => this.Invoices.Where(i => i.Status == InvoiceStatus.Pending).Sum(i => i.Amount);
 
         public Invoice GetInvoice(int month, int year)
             => this.Invoices.SingleOrDefault(i => i.Month == month && i.Year == year) ?? throw new Exception("Invoice not found.");
+
+        public void SetEnrollmentStatus(EnrollStatus status) => this.Status = status;
     }
 }

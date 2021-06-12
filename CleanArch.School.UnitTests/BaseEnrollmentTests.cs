@@ -8,6 +8,7 @@
     public abstract class BaseEnrollmentTests : BaseTests
     {
         protected readonly EnrollStudent enrollStudent;
+        protected readonly GetEnrollment getEnrollment;
         protected readonly ILevelRepository levelRepository;
         protected readonly IModuleRepository moduleRepository;
         protected readonly IClassroomRepository classroomRepository;
@@ -20,6 +21,7 @@
             this.classroomRepository = new ClassroomRepositoryMemory();
             this.enrollmentRepository = new EnrollmentRepositoryMemory();
             this.enrollStudent = new EnrollStudent(this.enrollmentRepository, this.levelRepository, this.moduleRepository, this.classroomRepository);
+            this.getEnrollment = new GetEnrollment(this.enrollmentRepository);
         }
 
         protected EnrollmentRequest CreateEnrollmentRequest(string cpf, string level, string module, string classroom, int installments = 1)
@@ -37,5 +39,17 @@
                        Installments = installments
                    };
         }
+
+        protected Enrollment CreateRandomEnrollment()
+        {
+            var today = DateTime.Now.Date;
+            this.levelRepository.Save(new Level("EM", "Ensino Médio"));
+            this.moduleRepository.Save(new Module("EM", "1", "1o Ano", 15, 17000));
+            this.classroomRepository.Save(new Classroom("EM", "1", "A", 2, today, today.AddMonths(6)));
+            var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "1", "A", 12);
+            return this.enrollStudent.Execute(enrollmentRequest);
+        }
+
+        protected Enrollment GetEnrollment(string code) => this.getEnrollment.Execute(new GetEnrollmentRequest { EnrollmentCode = code });
     }
 }

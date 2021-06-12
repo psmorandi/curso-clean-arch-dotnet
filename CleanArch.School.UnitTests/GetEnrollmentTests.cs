@@ -5,7 +5,7 @@
     using Application.Extensions;
     using Xunit;
 
-    public class GetEnrollmentTests
+    public class GetEnrollmentTests : BaseTests
     {
         private readonly IEnrollmentRepository enrollmentRepository;
         private readonly GetEnrollment getEnrollment;
