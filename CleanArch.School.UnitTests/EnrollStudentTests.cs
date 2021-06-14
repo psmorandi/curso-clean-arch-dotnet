@@ -11,7 +11,7 @@ namespace CleanArch.School.UnitTests
         [Fact]
         public void Should_not_enroll_without_valid_student_name()
         {
-            var enrollmentRequest = new EnrollmentRequest
+            var enrollmentRequest = new EnrollStudentInputData
                                     {
                                         StudentName = "Ana"
                                     };
@@ -21,7 +21,7 @@ namespace CleanArch.School.UnitTests
 
         [Theory]
         [MemberData(nameof(GenerateInvalidCpfData))]
-        public void Should_not_enroll_without_valid_student_cpf(EnrollmentRequest enrollmentRequest)
+        public void Should_not_enroll_without_valid_student_cpf(EnrollStudentInputData enrollmentRequest)
         {
             var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
             Assert.Equal("Invalid cpf.", exception.Message);
@@ -59,7 +59,7 @@ namespace CleanArch.School.UnitTests
             this.moduleRepository.Save(new Module("EM", "3", "3o Ano", 17, 17000));
             this.classroomRepository.Save(new Classroom("EM", "3", "A", 5, DateTime.Now.Date, DateTime.Now.Date.AddMonths(6)));
             var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "A");
-            enrollmentRequest.Birthday = enrollmentRequest.Birthday.AddYears(2);
+            enrollmentRequest.StudentBirthday = enrollmentRequest.StudentBirthday.AddYears(2);
             var exception = Assert.Throws<Exception>(() => this.enrollStudent.Execute(enrollmentRequest));
             Assert.Equal("Student below minimum age.", exception.Message);
         }
@@ -120,47 +120,47 @@ namespace CleanArch.School.UnitTests
         {
             yield return new object[]
                          {
-                             new EnrollmentRequest
+                             new EnrollStudentInputData
                              {
                                  StudentName = "Ana Silva",
-                                 Cpf = "123.456.789-99"
+                                 StudentCpf = "123.456.789-99"
                              }
                          };
             yield return new object[]
                          {
-                             new EnrollmentRequest
+                             new EnrollStudentInputData
                              {
                                  StudentName = "Ana Silva",
-                                 Cpf = "111.111.111-11"
+                                 StudentCpf = "111.111.111-11"
                              }
                          };
             yield return new object[]
                          {
-                             new EnrollmentRequest
+                             new EnrollStudentInputData
                              {
                                  StudentName = "Ana Silva",
-                                 Cpf = "000.000.000-00"
+                                 StudentCpf = "000.000.000-00"
                              }
                          };
             yield return new object[]
                          {
-                             new EnrollmentRequest
+                             new EnrollStudentInputData
                              {
                                  StudentName = "Ana Silva",
-                                 Cpf = "00000000"
+                                 StudentCpf = "00000000"
                              }
                          };
             yield return new object[]
                          {
-                             new EnrollmentRequest
+                             new EnrollStudentInputData
                              {
                                  StudentName = "Ana Silva",
-                                 Cpf = ""
+                                 StudentCpf = ""
                              }
                          };
             yield return new object[]
                          {
-                             new EnrollmentRequest
+                             new EnrollStudentInputData
                              {
                                  StudentName = "Ana Silva"
                              }

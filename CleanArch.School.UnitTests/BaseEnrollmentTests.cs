@@ -26,15 +26,15 @@
             this.getEnrollment = new GetEnrollment(this.repositoryFactory);
         }
 
-        protected EnrollmentRequest CreateEnrollmentRequest(string cpf, string level, string module, string classroom, int installments = 1)
+        protected EnrollStudentInputData CreateEnrollmentRequest(string cpf, string level, string module, string classroom, int installments = 1)
         {
             var minimumAge = this.moduleRepository.FindByCode(level, module).MinimumAge;
             var classCode = this.classroomRepository.FindByCode(level, module, classroom).Code;
-            return new EnrollmentRequest
+            return new EnrollStudentInputData
                    {
                        StudentName = $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
-                       Cpf = cpf,
-                       Birthday = DateTime.Now.Date.AddYears(-minimumAge),
+                       StudentCpf = cpf,
+                       StudentBirthday = DateTime.Now.Date.AddYears(-minimumAge),
                        Level = level,
                        Module = module,
                        Class = classCode,

@@ -17,9 +17,9 @@
             this.classRepository = repositoryFactory.CreateClassroomRepository();
         }
 
-        public Enrollment Execute(EnrollmentRequest enrollmentRequest)
+        public Enrollment Execute(EnrollStudentInputData enrollmentRequest)
         {
-            var student = new Student(enrollmentRequest.StudentName, enrollmentRequest.Cpf, enrollmentRequest.Birthday);
+            var student = new Student(enrollmentRequest.StudentName, enrollmentRequest.StudentCpf, enrollmentRequest.StudentBirthday);
             var level = this.levelRepository.FindByCode(enrollmentRequest.Level);
             var module = this.moduleRepository.FindByCode(level.Code, enrollmentRequest.Module);
             var classroom = this.classRepository.FindByCode(level.Code, module.Code, enrollmentRequest.Class);
