@@ -1,8 +1,8 @@
-﻿using CleanArch.School.Application;
-using Xunit;
-
-namespace CleanArch.School.UnitTests
+﻿namespace CleanArch.School.UnitTests
 {
+    using Application;
+    using Xunit;
+
     public class CancelEnrollmentTests : BaseEnrollmentTests
     {
         [Fact]
@@ -11,7 +11,7 @@ namespace CleanArch.School.UnitTests
             var enrollment = this.CreateRandomEnrollment();
             var enrollCode = enrollment.Code.Value;
             var cancelRequest = new CancelEnrollmentRequest { EnrollmentCode = enrollCode };
-            var cancelEnrollment = new CancelEnrollment(this.enrollmentRepository);
+            var cancelEnrollment = new CancelEnrollment(this.repositoryFactory);
             cancelEnrollment.Execute(cancelRequest);
             var cancelledEnrollment = this.GetEnrollment(enrollCode);
             Assert.True(cancelledEnrollment.Status == EnrollStatus.Cancelled);

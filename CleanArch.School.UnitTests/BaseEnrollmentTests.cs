@@ -9,6 +9,7 @@
     {
         protected readonly EnrollStudent enrollStudent;
         protected readonly GetEnrollment getEnrollment;
+        protected readonly IRepositoryAbstractFactory repositoryFactory;
         protected readonly ILevelRepository levelRepository;
         protected readonly IModuleRepository moduleRepository;
         protected readonly IClassroomRepository classroomRepository;
@@ -16,12 +17,13 @@
 
         protected BaseEnrollmentTests()
         {
-            this.levelRepository = new LevelRepositoryMemory();
-            this.moduleRepository = new ModuleRepositoryMemory();
-            this.classroomRepository = new ClassroomRepositoryMemory();
-            this.enrollmentRepository = new EnrollmentRepositoryMemory();
-            this.enrollStudent = new EnrollStudent(this.enrollmentRepository, this.levelRepository, this.moduleRepository, this.classroomRepository);
-            this.getEnrollment = new GetEnrollment(this.enrollmentRepository);
+            this.repositoryFactory = new RepositoryMemoryAbstractFactory();
+            this.levelRepository = this.repositoryFactory.CreateLevelRepository();
+            this.moduleRepository = this.repositoryFactory.CreateModuleRepository();
+            this.classroomRepository = this.repositoryFactory.CreateClassroomRepository();
+            this.enrollmentRepository = this.repositoryFactory.CreateEnrollmentRepository();
+            this.enrollStudent = new EnrollStudent(this.repositoryFactory);
+            this.getEnrollment = new GetEnrollment(this.repositoryFactory);
         }
 
         protected EnrollmentRequest CreateEnrollmentRequest(string cpf, string level, string module, string classroom, int installments = 1)

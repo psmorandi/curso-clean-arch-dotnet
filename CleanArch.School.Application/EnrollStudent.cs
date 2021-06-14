@@ -9,16 +9,12 @@
         private readonly IModuleRepository moduleRepository;
         private readonly IClassroomRepository classRepository;
 
-        public EnrollStudent(
-            IEnrollmentRepository enrollmentRepository,
-            ILevelRepository levelRepository,
-            IModuleRepository moduleRepository,
-            IClassroomRepository classRepository)
+        public EnrollStudent(IRepositoryAbstractFactory repositoryFactory)
         {
-            this.enrollmentRepository = enrollmentRepository;
-            this.levelRepository = levelRepository;
-            this.moduleRepository = moduleRepository;
-            this.classRepository = classRepository;
+            this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
+            this.levelRepository = repositoryFactory.CreateLevelRepository();
+            this.moduleRepository = repositoryFactory.CreateModuleRepository();
+            this.classRepository = repositoryFactory.CreateClassroomRepository();
         }
 
         public Enrollment Execute(EnrollmentRequest enrollmentRequest)

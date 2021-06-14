@@ -4,7 +4,8 @@
     {
         private readonly IEnrollmentRepository enrollmentRepository;
 
-        public PayInvoice(IEnrollmentRepository enrollmentRepository) => this.enrollmentRepository = enrollmentRepository;
+        public PayInvoice(IRepositoryAbstractFactory repositoryFactory) 
+            => this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
 
         public void Execute(PayInvoiceRequest request)
         {

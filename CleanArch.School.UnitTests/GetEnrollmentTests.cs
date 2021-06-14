@@ -12,8 +12,9 @@
 
         public GetEnrollmentTests()
         {
-            this.enrollmentRepository = new EnrollmentRepositoryMemory();
-            this.getEnrollment = new GetEnrollment(this.enrollmentRepository);
+            var repositoryFactory = new RepositoryMemoryAbstractFactory();
+            this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
+            this.getEnrollment = new GetEnrollment(repositoryFactory);
         }
 
         // ReSharper disable once InconsistentNaming

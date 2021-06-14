@@ -19,7 +19,7 @@
                                         Year = invoiceToPay.Year,
                                         Amount = invoiceToPay.Amount
                                     };
-            var payInvoice = new PayInvoice(this.enrollmentRepository);
+            var payInvoice = new PayInvoice(this.repositoryFactory);
             payInvoice.Execute(payInvoiceRequest);
             var updatedEnrollment = this.GetEnrollment(enrollment.Code.Value);
             Assert.Equal(expectedBalanceAfterPayment, updatedEnrollment.InvoiceBalance());

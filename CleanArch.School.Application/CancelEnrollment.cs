@@ -4,7 +4,8 @@
     {
         private readonly IEnrollmentRepository enrollmentRepository;
 
-        public CancelEnrollment(IEnrollmentRepository enrollmentRepository) => this.enrollmentRepository = enrollmentRepository;
+        public CancelEnrollment(IRepositoryAbstractFactory repositoryFactory)
+            => this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
 
         public void Execute(CancelEnrollmentRequest request)
         {
