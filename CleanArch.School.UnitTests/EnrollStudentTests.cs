@@ -49,7 +49,7 @@ namespace CleanArch.School.UnitTests
             var enrollResult = this.enrollStudent.Execute(enrollmentRequest);
             var expectedEnrollCode =
                 $"{DateTime.Now.Year}{enrollmentRequest.Level}{enrollmentRequest.Module}{enrollmentRequest.Class}0001";
-            Assert.Equal(expectedEnrollCode, enrollResult.Code.Value);
+            Assert.Equal(expectedEnrollCode, enrollResult.Code);
         }
 
         [Fact]
