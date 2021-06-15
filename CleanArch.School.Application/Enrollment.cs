@@ -49,10 +49,16 @@
         }
 
         public decimal GetInvoiceBalance()
-            => this.Invoices.Where(i => i.Status == InvoiceStatus.Pending).Sum(i => i.Amount);
+            => this.Invoices.Sum(i => i.GetBalance());
 
-        public Invoice GetInvoice(int month, int year)
+        private Invoice GetInvoice(int month, int year)
             => this.Invoices.SingleOrDefault(i => i.Month == month && i.Year == year) ?? throw new Exception("Invoice not found.");
+
+        public void PayInvoice(int month, int year, decimal amount)
+        {
+            var invoice = this.GetInvoice(month, year);
+            invoice.AddEvent(new InvoicePaidEvent(amount));
+        }
 
         public void SetEnrollmentStatus(EnrollStatus status) => this.Status = status;
     }

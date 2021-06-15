@@ -14,7 +14,7 @@
             var enrollment = this.CreateRandomEnrollment(date);
             var invoiceToPay = enrollment.Invoices.Single(i => i.Month == 1 && i.Year == date.Year);
             var expectedBalanceAfterPayment = enrollment.Invoices.Sum(i => i.Amount) - invoiceToPay.Amount;
-            var payInvoiceRequest = new PayInvoiceRequest
+            var payInvoiceRequest = new PayInvoiceInputData
                                     {
                                         Code = enrollment.Code,
                                         Month = invoiceToPay.Month,

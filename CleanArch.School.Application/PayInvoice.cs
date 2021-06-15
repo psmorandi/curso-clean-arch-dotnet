@@ -7,11 +7,10 @@
         public PayInvoice(IRepositoryAbstractFactory repositoryFactory) 
             => this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
 
-        public void Execute(PayInvoiceRequest request)
+        public void Execute(PayInvoiceInputData request)
         {
             var enrollment = this.enrollmentRepository.FindByCode(request.Code);
-            var invoice = enrollment.GetInvoice(request.Month, request.Year);
-            invoice.Pay(request.Amount);
+            enrollment.PayInvoice(request.Month, request.Year, request.Amount);
         }
     }
 }

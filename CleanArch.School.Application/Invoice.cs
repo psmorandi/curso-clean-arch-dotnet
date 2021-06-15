@@ -1,5 +1,8 @@
 ﻿namespace CleanArch.School.Application
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class Invoice
     {
         public Invoice(string code, int month, int year, decimal amount)
@@ -8,20 +11,26 @@
             this.Month = month;
             this.Year = year;
             this.Amount = amount;
-            this.Status = InvoiceStatus.Pending;
+            this.InvoiceEvents = new List<InvoiceEvent>();
         }
 
         public string Code { get; }
         public int Month { get; }
         public int Year { get; }
         public decimal Amount { get; }
-        public decimal AmountPaid { get; private set; }
-        public InvoiceStatus Status { get; private set; }
+        public ICollection<InvoiceEvent> InvoiceEvents { get; }
 
-        public void Pay(decimal amount)
+        public void AddEvent(InvoiceEvent invoiceEvent)
         {
-            this.AmountPaid = amount;
-            this.Status = InvoiceStatus.Paid;
+            this.InvoiceEvents.Add(invoiceEvent);
+        }
+
+        public decimal GetBalance()
+        {
+            var totalPaid = this.InvoiceEvents
+                .Where(e => e.Type == InvoiceEventType.Payment)
+                .Sum(e => e.Amount);
+            return this.Amount - totalPaid;
         }
     }
 }

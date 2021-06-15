@@ -2,7 +2,7 @@
 
 namespace CleanArch.School.Application
 {
-    public class PayInvoiceRequest
+    public class PayInvoiceInputData
     {
         public string Code { get; set; } = string.Empty;
         public int Month { get; set; } = 1;
