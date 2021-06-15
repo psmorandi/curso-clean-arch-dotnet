@@ -24,7 +24,7 @@
             var payInvoice = new PayInvoice(this.repositoryFactory);
             payInvoice.Execute(payInvoiceRequest);
             var updatedEnrollment = this.GetEnrollment(enrollment.Code);
-            Assert.Equal(expectedBalanceAfterPayment, updatedEnrollment.GetInvoiceBalance());
+            Assert.Equal(expectedBalanceAfterPayment, updatedEnrollment.InvoiceBalance);
         }
     }
 }

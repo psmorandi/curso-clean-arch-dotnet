@@ -51,6 +51,6 @@
             return this.enrollStudent.Execute(enrollmentRequest);
         }
 
-        protected Enrollment GetEnrollment(string code) => this.enrollmentRepository.FindByCode(code);
+        protected EnrollmentOutputData GetEnrollment(string code) => this.getEnrollment.Execute(code);
     }
 }

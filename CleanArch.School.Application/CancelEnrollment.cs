@@ -10,7 +10,7 @@
         public void Execute(string code)
         {
             var enrollment = this.enrollmentRepository.FindByCode(code);
-            enrollment.SetEnrollmentStatus(EnrollStatus.Cancelled);
+            enrollment.Cancel();
         }
     }
 }

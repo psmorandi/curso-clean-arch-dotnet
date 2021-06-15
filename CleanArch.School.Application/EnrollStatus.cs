@@ -2,6 +2,7 @@
 {
     public enum EnrollStatus
     {
+        Unknown,
         Active,
         Cancelled
     }

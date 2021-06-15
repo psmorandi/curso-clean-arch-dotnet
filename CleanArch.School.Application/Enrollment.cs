@@ -60,6 +60,6 @@
             invoice.AddEvent(new InvoicePaidEvent(amount));
         }
 
-        public void SetEnrollmentStatus(EnrollStatus status) => this.Status = status;
+        public void Cancel() => this.Status = EnrollStatus.Cancelled;
     }
 }

@@ -15,7 +15,8 @@
                        StudentName = enrollment.Student.Name.Value,
                        StudentCpf = enrollment.Student.Cpf.Value,
                        Code = enrollment.Code.Value,
-                       InvoiceBalance = enrollment.GetInvoiceBalance()
+                       InvoiceBalance = enrollment.GetInvoiceBalance(),
+                       Status = enrollment.Status
                    };
         }
     }
