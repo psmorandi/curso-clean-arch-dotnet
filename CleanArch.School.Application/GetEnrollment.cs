@@ -7,9 +7,9 @@
         public GetEnrollment(IRepositoryAbstractFactory repositoryFactory)
             => this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
 
-        public EnrollmentOutputData Execute(EnrollmentInputData inputData)
+        public EnrollmentOutputData Execute(string code)
         {
-            var enrollment = this.enrollmentRepository.FindByCode(inputData.Code);
+            var enrollment = this.enrollmentRepository.FindByCode(code);
             return new EnrollmentOutputData
                    {
                        StudentName = enrollment.Student.Name.Value,

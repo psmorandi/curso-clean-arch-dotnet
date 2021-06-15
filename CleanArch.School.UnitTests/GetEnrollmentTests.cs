@@ -26,7 +26,7 @@
             var student = CreateStudent(cpf, 15);
             var enrollment = CreateEnrollment(student, issueDate);
             this.enrollmentRepository.Save(enrollment);
-            var response = this.getEnrollment.Execute(new EnrollmentInputData { Code = $"{issueDate.Year}EM1A0001" });
+            var response = this.getEnrollment.Execute($"{issueDate.Year}EM1A0001");
             Assert.Equal(student.Name.Value, response.StudentName);
             Assert.Equal(student.Cpf.Value, response.StudentCpf);
             Assert.Equal(new decimal(17000), response.InvoiceBalance);

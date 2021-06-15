@@ -7,9 +7,9 @@
         public CancelEnrollment(IRepositoryAbstractFactory repositoryFactory)
             => this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
 
-        public void Execute(CancelEnrollmentRequest request)
+        public void Execute(string code)
         {
-            var enrollment = this.enrollmentRepository.FindByCode(request.EnrollmentCode);
+            var enrollment = this.enrollmentRepository.FindByCode(code);
             enrollment.SetEnrollmentStatus(EnrollStatus.Cancelled);
         }
     }

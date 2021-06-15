@@ -11,9 +11,8 @@
         {
             var enrollment = this.CreateRandomEnrollment(DateTime.UtcNow.Date);
             var enrollCode = enrollment.Code;
-            var cancelRequest = new CancelEnrollmentRequest { EnrollmentCode = enrollCode };
             var cancelEnrollment = new CancelEnrollment(this.repositoryFactory);
-            cancelEnrollment.Execute(cancelRequest);
+            cancelEnrollment.Execute(enrollCode);
             var cancelledEnrollment = this.GetEnrollment(enrollCode);
             Assert.True(cancelledEnrollment.Status == EnrollStatus.Cancelled);
         }
