@@ -7,7 +7,16 @@
         public GetEnrollment(IRepositoryAbstractFactory repositoryFactory)
             => this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
 
-        public Enrollment Execute(GetEnrollmentRequest request) =>
-            this.enrollmentRepository.FindByCode(request.EnrollmentCode);
+        public EnrollmentOutputData Execute(EnrollmentInputData inputData)
+        {
+            var enrollment = this.enrollmentRepository.FindByCode(inputData.Code);
+            return new EnrollmentOutputData
+                   {
+                       StudentName = enrollment.Student.Name.Value,
+                       StudentCpf = enrollment.Student.Cpf.Value,
+                       Code = enrollment.Code.Value,
+                       InvoiceBalance = enrollment.GetInvoiceBalance()
+                   };
+        }
     }
 }

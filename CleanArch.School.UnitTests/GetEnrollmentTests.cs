@@ -26,10 +26,10 @@
             var student = CreateStudent(cpf, 15);
             var enrollment = CreateEnrollment(student, issueDate);
             this.enrollmentRepository.Save(enrollment);
-            var response = this.getEnrollment.Execute(new GetEnrollmentRequest { EnrollmentCode = $"{issueDate.Year}EM1A0001" });
-            Assert.Equal(response.Student.Name, enrollment.Student.Name);
-            Assert.Equal(student.Cpf.Value, enrollment.Student.Cpf.Value);
-            Assert.Equal(response.InvoiceBalance(), new decimal(17000));
+            var response = this.getEnrollment.Execute(new EnrollmentInputData { Code = $"{issueDate.Year}EM1A0001" });
+            Assert.Equal(student.Name.Value, response.StudentName);
+            Assert.Equal(student.Cpf.Value, response.StudentCpf);
+            Assert.Equal(new decimal(17000), response.InvoiceBalance);
         }
 
         private static Student CreateStudent(string cpf, int age) =>

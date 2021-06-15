@@ -48,7 +48,7 @@
             this.Invoices.Add(new Invoice(this.Code.Value, installments, this.IssueDate.Year, lastInstallment));
         }
 
-        public decimal InvoiceBalance()
+        public decimal GetInvoiceBalance()
             => this.Invoices.Where(i => i.Status == InvoiceStatus.Pending).Sum(i => i.Amount);
 
         public Invoice GetInvoice(int month, int year)
