@@ -1,23 +1,22 @@
-﻿namespace CleanArch.School.Application
+﻿using AutoMapper;
+
+namespace CleanArch.School.Application
 {
     public class GetEnrollment
     {
+        private readonly IMapper outputDataMapper;
         private readonly IEnrollmentRepository enrollmentRepository;
 
-        public GetEnrollment(IRepositoryAbstractFactory repositoryFactory)
-            => this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
+        public GetEnrollment(IRepositoryAbstractFactory repositoryFactory, IMapper outputDataMapper)
+        {
+            this.outputDataMapper = outputDataMapper;
+            this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
+        }
 
         public EnrollmentOutputData Execute(string code)
         {
             var enrollment = this.enrollmentRepository.FindByCode(code);
-            return new EnrollmentOutputData
-                   {
-                       StudentName = enrollment.Student.Name.Value,
-                       StudentCpf = enrollment.Student.Cpf.Value,
-                       Code = enrollment.Code.Value,
-                       InvoiceBalance = enrollment.GetInvoiceBalance(),
-                       Status = enrollment.Status
-                   };
+            return this.outputDataMapper.Map<EnrollmentOutputData>(enrollment);
         }
     }
 }

@@ -1,17 +1,19 @@
 ﻿namespace CleanArch.School.Application
 {
     using System;
-    using System.Linq;
+    using global::AutoMapper;
 
     public class EnrollStudent
     {
+        private readonly IMapper outputDataMapper;
         private readonly IEnrollmentRepository enrollmentRepository;
         private readonly ILevelRepository levelRepository;
         private readonly IModuleRepository moduleRepository;
         private readonly IClassroomRepository classRepository;
 
-        public EnrollStudent(IRepositoryAbstractFactory repositoryFactory)
+        public EnrollStudent(IRepositoryAbstractFactory repositoryFactory, IMapper outputDataMapper)
         {
+            this.outputDataMapper = outputDataMapper;
             this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
             this.levelRepository = repositoryFactory.CreateLevelRepository();
             this.moduleRepository = repositoryFactory.CreateModuleRepository();
@@ -36,11 +38,7 @@
         {
             var enrollment = new Enrollment(student, level, module, classroom, sequence, DateTime.UtcNow.Date, installments);
             this.enrollmentRepository.Save(enrollment);
-            return new EnrollStudentOutputData
-                   {
-                       Code = enrollment.Code.Value,
-                       Invoices = enrollment.Invoices.ToArray()
-                   };
+            return this.outputDataMapper.Map<EnrollStudentOutputData>(enrollment);
         }
     }
 }

@@ -3,6 +3,7 @@
     using System;
     using Application;
     using Application.Extensions;
+    using AutoMapper;
 
     // ReSharper disable InconsistentNaming
     public abstract class BaseEnrollmentTests : BaseTests
@@ -17,13 +18,16 @@
 
         protected BaseEnrollmentTests()
         {
+            var configuration =
+                new MapperConfiguration(cfg => cfg.AddMaps(typeof(Enrollment).Assembly));
+            var outputDataMapper = configuration.CreateMapper();
             this.repositoryFactory = new RepositoryMemoryAbstractFactory();
             this.levelRepository = this.repositoryFactory.CreateLevelRepository();
             this.moduleRepository = this.repositoryFactory.CreateModuleRepository();
             this.classroomRepository = this.repositoryFactory.CreateClassroomRepository();
             this.enrollmentRepository = this.repositoryFactory.CreateEnrollmentRepository();
-            this.enrollStudent = new EnrollStudent(this.repositoryFactory);
-            this.getEnrollment = new GetEnrollment(this.repositoryFactory);
+            this.enrollStudent = new EnrollStudent(this.repositoryFactory, outputDataMapper);
+            this.getEnrollment = new GetEnrollment(this.repositoryFactory, outputDataMapper);
         }
 
         protected EnrollStudentInputData CreateEnrollmentRequest(string cpf, string level, string module, string classroom, int installments = 1)

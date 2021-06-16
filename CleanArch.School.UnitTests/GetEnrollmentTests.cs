@@ -3,6 +3,7 @@
     using System;
     using Application;
     using Application.Extensions;
+    using AutoMapper;
     using Xunit;
 
     public class GetEnrollmentTests : BaseTests
@@ -12,9 +13,12 @@
 
         public GetEnrollmentTests()
         {
+            var configuration =
+                new MapperConfiguration(cfg => cfg.AddMaps(typeof(Enrollment).Assembly));
+            var outputDataMapper = configuration.CreateMapper();
             var repositoryFactory = new RepositoryMemoryAbstractFactory();
             this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
-            this.getEnrollment = new GetEnrollment(repositoryFactory);
+            this.getEnrollment = new GetEnrollment(repositoryFactory, outputDataMapper);
         }
 
         // ReSharper disable once InconsistentNaming
