@@ -2,6 +2,8 @@
 {
     public enum InvoiceEventType
     {
-        Payment
+        Payment,
+        Penalty,
+        Interests
     }
 }

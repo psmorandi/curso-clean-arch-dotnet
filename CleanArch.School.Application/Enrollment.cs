@@ -59,6 +59,11 @@
         public void PayInvoice(int month, int year, decimal amount)
         {
             var invoice = this.GetInvoice(month, year);
+            if(invoice.GetStatus() == InvoiceStatus.Overdue)
+            {
+                invoice.AddEvent(new InvoiceInterestsEvent(invoice.GetInterests()));
+                invoice.AddEvent(new InvoicePenaltyEvent(invoice.GetPenalty()));
+            }
             invoice.AddEvent(new InvoicePaidEvent(amount));
         }
 

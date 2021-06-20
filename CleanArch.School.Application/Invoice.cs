@@ -31,8 +31,7 @@
         public decimal GetBalance()
         {
             var totalPaid = this.InvoiceEvents
-                .Where(e => e.Type == InvoiceEventType.Payment)
-                .Sum(e => e.Amount);
+                .Sum(e => e.Type == InvoiceEventType.Payment? e.Amount : -e.Amount);
             return this.Amount - totalPaid;
         }
 
@@ -44,13 +43,13 @@
         }
 
         public decimal GetPenalty() => this.GetStatus() == InvoiceStatus.Overdue? 
-            (this.Amount * (1 + INVOICE_PENALTY.ToPercentage())).Truncate(2) : 0;
+            (this.Amount * INVOICE_PENALTY.ToPercentage()).Truncate(2) : 0;
 
         public decimal GetInterests() 
         {
             if(this.GetStatus() != InvoiceStatus.Overdue) return 0;
             var numberOfOverdueDays = (DateTime.UtcNow.Date - this.DueDate.ToDateTime()).Days;
-            return (this.Amount * (1 + (numberOfOverdueDays * DAILY_INTERESTS.ToPercentage()))).Truncate(2);
+            return (this.Amount * numberOfOverdueDays * DAILY_INTERESTS.ToPercentage()).Truncate(2);
         }
     }
 }

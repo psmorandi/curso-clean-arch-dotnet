@@ -63,7 +63,7 @@
             return new Enrollment(student, level, module, classroom, 1, date);
         }
 
-        private static decimal InvoicePenalty(decimal amount) => amount * new decimal(1.1);
-        private static decimal InvoiceInterests(decimal amount, int days) => amount * new decimal (1 + days*0.01);
+        private static decimal InvoicePenalty(decimal amount) => amount * new decimal(0.1);
+        private static decimal InvoiceInterests(decimal amount, int days) => amount * new decimal (days * 0.01);
     }
 }

@@ -26,5 +26,26 @@
             var updatedEnrollment = this.GetEnrollment(enrollment.Code);
             Assert.Equal(expectedBalanceAfterPayment, updatedEnrollment.InvoiceBalance);
         }
+
+        [Fact]
+        public void Should_pay_overdue_invoice()
+        {
+            var refDate = DateTime.UtcNow.Date.AddDays(-5);
+            var code = this.CreateEnrollmentWith(refDate);
+            var payInvoice = new PayInvoice(this.repositoryFactory);
+            var enrollment = this.GetEnrollment(code);
+            var balanceBeforePayment = enrollment.InvoiceBalance;
+            var invoiceToPay = enrollment.Invoices.ElementAt(0);
+            var payInvoiceRequest = new PayInvoiceInputData
+                                    {
+                                        Code = code,
+                                        Month = refDate.Month,
+                                        Year = refDate.Year,
+                                        Amount = invoiceToPay.Amount + invoiceToPay.Interests + invoiceToPay.Penalty
+                                    };
+            payInvoice.Execute(payInvoiceRequest);
+            var updatedEnrollment = this.GetEnrollment(enrollment.Code);
+            Assert.Equal(balanceBeforePayment - invoiceToPay.Amount, updatedEnrollment.InvoiceBalance);
+        }
     }
 }
