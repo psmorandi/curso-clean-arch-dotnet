@@ -111,8 +111,8 @@ namespace CleanArch.School.UnitTests
             enrollmentRequest.Installments = 12;
             var enrollment = this.enrollStudent.Execute(enrollmentRequest);
             Assert.True(enrollment.Invoices.Count == 12);
-            Assert.True(enrollment.Invoices.Single(i => i.Month == 1).Amount == new decimal(1416.66));
-            Assert.True(enrollment.Invoices.Single(i => i.Month == 12).Amount == new decimal(1416.74));
+            Assert.True(enrollment.Invoices.ElementAt(0).Amount == new decimal(1416.66));
+            Assert.True(enrollment.Invoices.ElementAt(11).Amount == new decimal(1416.74));
             Assert.True(enrollment.Invoices.Sum(_ => _.Amount) == 17000);
         }
 

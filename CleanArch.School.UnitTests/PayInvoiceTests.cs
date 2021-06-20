@@ -12,13 +12,13 @@
         {
             var date = DateTime.UtcNow.Date;
             var enrollment = this.CreateRandomEnrollment(date);
-            var invoiceToPay = enrollment.Invoices.Single(i => i.Month == 1 && i.Year == date.Year);
+            var invoiceToPay = enrollment.Invoices.Single(i => i.DueDate.Month == date.Month && i.DueDate.Year == date.Year);
             var expectedBalanceAfterPayment = enrollment.Invoices.Sum(i => i.Amount) - invoiceToPay.Amount;
             var payInvoiceRequest = new PayInvoiceInputData
                                     {
                                         Code = enrollment.Code,
-                                        Month = invoiceToPay.Month,
-                                        Year = invoiceToPay.Year,
+                                        Month = invoiceToPay.DueDate.Month,
+                                        Year = invoiceToPay.DueDate.Year,
                                         Amount = invoiceToPay.Amount
                                     };
             var payInvoice = new PayInvoice(this.repositoryFactory);

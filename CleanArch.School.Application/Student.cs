@@ -1,6 +1,7 @@
 ﻿namespace CleanArch.School.Application
 {
     using System;
+    using Extensions;
 
     public class Student
     {
@@ -8,18 +9,18 @@
         {
             this.Name = new Name(name);
             this.Cpf = new Cpf(cpf);
-            this.Birthday = birthday;
+            this.Birthday = birthday.ToDateOnly();
         }
 
         public Name Name { get; }
         public Cpf Cpf { get; }
-        public DateTime Birthday { get; }
+        public DateOnly Birthday { get; }
 
         public int Age
         {
             get
             {
-                var today = DateTime.Now.Date;
+                var today = DateTime.Now.ToDateOnly();
                 var age = today.Year - this.Birthday.Year;
                 return today.Month < this.Birthday.Month || today.Month == this.Birthday.Month && today.Day < this.Birthday.Day ? age - 1 : age;
             }

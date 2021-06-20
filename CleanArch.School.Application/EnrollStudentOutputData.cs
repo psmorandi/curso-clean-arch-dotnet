@@ -5,6 +5,6 @@
     public class EnrollStudentOutputData
     {
         public string Code { get; set; } = string.Empty;
-        public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
+        public ICollection<InvoiceOutputData> Invoices { get; set; } = new List<InvoiceOutputData>();
     }
 }

@@ -16,7 +16,7 @@
             this.Level = level;
             this.Module = module;
             this.Class = classroom;
-            this.IssueDate = issueDate;
+            this.IssueDate = issueDate.ToDateOnly();
             this.Invoices = new List<Invoice>(installments);
             this.Sequence = sequence;
             this.Code = new EnrollmentCode(level, module, classroom, sequence, issueDate);
@@ -29,7 +29,7 @@
         public Classroom Class { get; }
         public Module Module { get; }
         public Level Level { get; }
-        public DateTime IssueDate { get; }
+        public DateOnly IssueDate { get; }
         public EnrollmentCode Code { get; }
         public ICollection<Invoice> Invoices { get; }
         public EnrollStatus Status { get; private set; }
@@ -38,21 +38,23 @@
         {
             var moduleValue = this.Module.Price;
             var installmentAmount = (moduleValue / installments).Truncate(2);
-            for (var i = 1; i < installments; i++)
+            for (var i = 0; i < installments - 1; i++)
             {
-                var invoice = new Invoice(this.Code.Value, i, this.IssueDate.Year, installmentAmount);
+                var dueDate = this.IssueDate.AddMonths(i);
+                var invoice = new Invoice(this.Code.Value, dueDate.Day, dueDate.Month, dueDate.Year, installmentAmount);
                 this.Invoices.Add(invoice);
             }
 
+            var lastDueDate = this.IssueDate.AddMonths(installments);
             var lastInstallment = installmentAmount + (moduleValue - installmentAmount * installments);
-            this.Invoices.Add(new Invoice(this.Code.Value, installments, this.IssueDate.Year, lastInstallment));
+            this.Invoices.Add(new Invoice(this.Code.Value, lastDueDate.Day, lastDueDate.Month, lastDueDate.Year, lastInstallment));
         }
 
         public decimal GetInvoiceBalance()
             => this.Invoices.Sum(i => i.GetBalance());
 
         private Invoice GetInvoice(int month, int year)
-            => this.Invoices.SingleOrDefault(i => i.Month == month && i.Year == year) ?? throw new Exception("Invoice not found.");
+            => this.Invoices.SingleOrDefault(i => i.DueDate.Month == month && i.DueDate.Year == year) ?? throw new Exception("Invoice not found.");
 
         public void PayInvoice(int month, int year, decimal amount)
         {
