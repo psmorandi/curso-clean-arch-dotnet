@@ -8,5 +8,6 @@ namespace CleanArch.School.Application.Extensions
         public static bool After(this DateTime date, DateTime otherDate) => date.CompareTo(otherDate) > 0;
 
         public static DateOnly ToDateOnly(this DateTime date) => DateOnly.FromDateTime(date);
+        public static DateTime ToDateTime(this DateOnly date) => date.ToDateTime(new TimeOnly(0));
     }
 }

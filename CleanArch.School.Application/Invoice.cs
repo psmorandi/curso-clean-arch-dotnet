@@ -7,6 +7,9 @@
 
     public class Invoice
     {
+        private static readonly int INVOICE_PENALTY = 10;
+        private static readonly int DAILY_INTERESTS = 1;
+
         public Invoice(string code, int day, int month, int year, decimal amount)
         {
             this.Code = code;
@@ -38,6 +41,16 @@
             if(this.GetBalance() == 0) return InvoiceStatus.Paid;
             if(DateTime.UtcNow.ToDateOnly() <= this.DueDate) return InvoiceStatus.Open;
             return InvoiceStatus.Overdue;
+        }
+
+        public decimal GetPenalty() => this.GetStatus() == InvoiceStatus.Overdue? 
+            (this.Amount * (1 + INVOICE_PENALTY.ToPercentage())).Truncate(2) : 0;
+
+        public decimal GetInterests() 
+        {
+            if(this.GetStatus() != InvoiceStatus.Overdue) return 0;
+            var numberOfOverdueDays = (DateTime.UtcNow.Date - this.DueDate.ToDateTime()).Days;
+            return (this.Amount * (1 + (numberOfOverdueDays * DAILY_INTERESTS.ToPercentage()))).Truncate(2);
         }
     }
 }

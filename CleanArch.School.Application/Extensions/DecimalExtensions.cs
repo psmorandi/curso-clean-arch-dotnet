@@ -9,5 +9,7 @@
             var step = new decimal(Math.Pow(10, precision));
             return Math.Truncate(step * value) / step;
         }
+
+        public static decimal ToPercentage(this int value) => value / new decimal(100);
     }
 }

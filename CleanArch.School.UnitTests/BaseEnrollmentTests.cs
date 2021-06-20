@@ -55,6 +55,23 @@
             return this.enrollStudent.Execute(enrollmentRequest);
         }
 
+        protected string CreateEnrollmentWith(DateTime issueDate)
+        {
+            var level = new Level("EM", "Ensino Médio");
+            this.levelRepository.Save(level);
+            var module = new Module("EM", "1", "1o Ano", 15, 17000);
+            this.moduleRepository.Save(module);
+            var classroom = new Classroom("EM", "1", "A", 10, issueDate, issueDate.AddMonths(12));
+            this.classroomRepository.Save(classroom);
+            var student = new Student(
+                $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
+                "755.525.774-26",
+                DateTime.Now.Date.AddYears(-15));
+            var enrollment = new Enrollment(student,level, module,classroom,1,issueDate,12);
+            this.enrollmentRepository.Save(enrollment);
+            return enrollment.Code.Value;
+        }
+
         protected EnrollmentOutputData GetEnrollment(string code) => this.getEnrollment.Execute(code);
     }
 }
