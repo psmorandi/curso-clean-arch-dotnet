@@ -3,23 +3,10 @@
     using System;
     using Application;
     using Application.Extensions;
-    using AutoMapper;
     using Xunit;
 
-    public class GetEnrollmentTests : BaseTests
+    public class GetEnrollmentTests : BaseEnrollmentTests
     {
-        private readonly IEnrollmentRepository enrollmentRepository;
-        private readonly GetEnrollment getEnrollment;
-
-        public GetEnrollmentTests()
-        {
-            var configuration =
-                new MapperConfiguration(cfg => cfg.AddMaps(typeof(Enrollment).Assembly));
-            var outputDataMapper = configuration.CreateMapper();
-            var repositoryFactory = new RepositoryMemoryAbstractFactory();
-            this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
-            this.getEnrollment = new GetEnrollment(repositoryFactory, outputDataMapper);
-        }
 
         // ReSharper disable once InconsistentNaming
         [Fact]
@@ -36,8 +23,20 @@
             Assert.Equal(new decimal(17000), response.InvoiceBalance);
         }
 
+        [Fact]
+        public void Should_calculate_due_date_and_return_status_open_or_overdue_for_each_invoice()
+        {
+            var refDate = DateTime.UtcNow.Date;
+            var enrollStudentData = this.CreateRandomEnrollment(refDate);
+            var enrollmentData = this.getEnrollment.Execute(enrollStudentData.Code);
+            foreach (var invoice in enrollmentData.Invoices)
+            {
+                Assert.True(invoice.Status == InvoiceStatus.Open);
+            }
+        }
+
         private static Student CreateStudent(string cpf, int age) =>
-            new Student(
+            new(
                 $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(4)}",
                 cpf,
                 DateTime.UtcNow.Date.AddYears(-age));
