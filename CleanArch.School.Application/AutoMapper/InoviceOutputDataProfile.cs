@@ -10,9 +10,12 @@
         {
             this.CreateMap<Invoice, InvoiceOutputData>()
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => src.GetBalance()))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom((src, dest, destMember, context) => src.GetStatus(Convert.ToDateTime(context.Items["RefDate"].ToString()).ToDateOnly())))
-                .ForMember(dest => dest.Penalty, opt => opt.MapFrom((src, dest, destMember, context) => src.GetPenalty(Convert.ToDateTime(context.Items["RefDate"].ToString()).ToDateOnly())))
-                .ForMember(dest => dest.Interests, opt => opt.MapFrom((src, dest, destMember, context) => src.GetInterests(Convert.ToDateTime(context.Items["RefDate"].ToString()).ToDateOnly())));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom((src, dest, destMember, context) => src.GetStatus(GetReferenceDateFrom(context))))
+                .ForMember(dest => dest.Penalty, opt => opt.MapFrom((src, dest, destMember, context) => src.GetPenalty(GetReferenceDateFrom(context))))
+                .ForMember(dest => dest.Interests, opt => opt.MapFrom((src, dest, destMember, context) => src.GetInterests(GetReferenceDateFrom(context))));
         }
+
+        private static DateOnly GetReferenceDateFrom(ResolutionContext context) 
+            => Convert.ToDateTime(context.Items["RefDate"].ToString()).ToDateOnly();
     }
 }
