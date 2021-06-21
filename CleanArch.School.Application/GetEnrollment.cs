@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using System;
+using CleanArch.School.Application.Extensions;
 
 namespace CleanArch.School.Application
 {
@@ -13,10 +15,10 @@ namespace CleanArch.School.Application
             this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
         }
 
-        public GetEnrollmentOutputData Execute(string code)
+        public GetEnrollmentOutputData Execute(string code, DateOnly currentDate)
         {
             var enrollment = this.enrollmentRepository.FindByCode(code);
-            return this.outputDataMapper.Map<GetEnrollmentOutputData>(enrollment);
+            return this.outputDataMapper.Map<GetEnrollmentOutputData>(enrollment, currentDate);
         }
     }
 }

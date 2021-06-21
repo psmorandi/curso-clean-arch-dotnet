@@ -5,16 +5,16 @@
 
     public class Period
     {
-        public Period(DateTime startDate, DateTime endDate)
+        public Period(DateOnly startDate, DateOnly endDate)
         {
-            if (startDate.After(endDate)) throw new Exception("Start date can't be after the end.");
+            if (startDate > endDate) throw new Exception("Start date can't be after the end.");
             this.StartDate = startDate;
             this.EndDate = endDate;
         }
 
-        public DateTime StartDate { get; }
-        public DateTime EndDate { get; }
+        public DateOnly StartDate { get; }
+        public DateOnly EndDate { get; }
 
-        public int Days => (this.EndDate - this.StartDate).Days;
+        public int Days => (this.EndDate.ToDateTime() - this.StartDate.ToDateTime()).Days;
     }
 }

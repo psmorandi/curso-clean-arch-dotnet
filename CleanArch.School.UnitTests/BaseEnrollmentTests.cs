@@ -46,16 +46,16 @@
                    };
         }
 
-        protected EnrollStudentOutputData CreateRandomEnrollment(DateTime issueDate)
+        protected EnrollStudentOutputData CreateRandomEnrollment(DateOnly issueDate)
         {
             this.levelRepository.Save(new Level("EM", "Ensino Médio"));
             this.moduleRepository.Save(new Module("EM", "1", "1o Ano", 15, 17000));
             this.classroomRepository.Save(new Classroom("EM", "1", "A", 10, issueDate, issueDate.AddMonths(12)));
             var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "1", "A", 12);
-            return this.enrollStudent.Execute(enrollmentRequest);
+            return this.enrollStudent.Execute(enrollmentRequest, issueDate);
         }
 
-        protected string CreateEnrollmentWith(DateTime issueDate)
+        protected string CreateEnrollmentWith(DateOnly issueDate)
         {
             var level = new Level("EM", "Ensino Médio");
             this.levelRepository.Save(level);
@@ -72,6 +72,6 @@
             return enrollment.Code.Value;
         }
 
-        protected GetEnrollmentOutputData GetEnrollment(string code) => this.getEnrollment.Execute(code);
+        protected GetEnrollmentOutputData GetEnrollment(string code, DateOnly refDate) => this.getEnrollment.Execute(code, refDate);
     }
 }

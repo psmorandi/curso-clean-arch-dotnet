@@ -5,7 +5,7 @@
 
     public class Classroom
     {
-        public Classroom(string level, string module, string code, int capacity, DateTime startDate, DateTime endDate)
+        public Classroom(string level, string module, string code, int capacity, DateOnly startDate, DateOnly endDate)
         {
             this.Level = level;
             this.Module = module;
@@ -20,12 +20,12 @@
         public int Capacity { get; }
         public Period Period { get; }
 
-        public bool IsFinished(DateTime currentDate) => currentDate.Date.After(this.Period.EndDate);
+        public bool IsFinished(DateOnly currentDate) => currentDate > this.Period.EndDate;
 
-        public int GetProgress(DateTime currentDate)
+        public int GetProgress(DateOnly currentDate)
         {
             var numberOfDaysOfClass = this.Period.Days;
-            var remainingDays = (currentDate - this.Period.StartDate).Days;
+            var remainingDays = (currentDate.ToDateTime() - this.Period.StartDate.ToDateTime()).Days;
             return remainingDays * 100 / numberOfDaysOfClass;
         }
     }

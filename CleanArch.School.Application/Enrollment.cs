@@ -7,7 +7,7 @@
 
     public class Enrollment
     {
-        public Enrollment(Student student, Level level, Module module, Classroom classroom, int sequence, DateTime issueDate, int installments = 12)
+        public Enrollment(Student student, Level level, Module module, Classroom classroom, int sequence, DateOnly issueDate, int installments = 12)
         {
             if (student.Age < module.MinimumAge) throw new Exception("Student below minimum age.");
             if (classroom.IsFinished(issueDate)) throw new Exception("Class is already finished.");
@@ -16,7 +16,7 @@
             this.Level = level;
             this.Module = module;
             this.Class = classroom;
-            this.IssueDate = issueDate.ToDateOnly();
+            this.IssueDate = issueDate;
             this.Invoices = new List<Invoice>(installments);
             this.Sequence = sequence;
             this.Code = new EnrollmentCode(level, module, classroom, sequence, issueDate);
@@ -56,15 +56,15 @@
         private Invoice GetInvoice(int month, int year)
             => this.Invoices.SingleOrDefault(i => i.DueDate.Month == month && i.DueDate.Year == year) ?? throw new Exception("Invoice not found.");
 
-        public void PayInvoice(int month, int year, decimal amount)
+        public void PayInvoice(int month, int year, decimal amount, DateOnly paymentDate)
         {
             var invoice = this.GetInvoice(month, year);
-            if(invoice.GetStatus() == InvoiceStatus.Overdue)
-            {
-                invoice.AddEvent(new InvoiceInterestsEvent(invoice.GetInterests()));
-                invoice.AddEvent(new InvoicePenaltyEvent(invoice.GetPenalty()));
-            }
             invoice.AddEvent(new InvoicePaidEvent(amount));
+            if(invoice.GetStatus(paymentDate) == InvoiceStatus.Overdue)
+            {
+                invoice.AddEvent(new InvoicePenaltyEvent(invoice.GetPenalty(paymentDate)));
+                invoice.AddEvent(new InvoiceInterestsEvent(invoice.GetInterests(paymentDate)));
+            }
         }
 
         public void Cancel() => this.Status = EnrollStatus.Cancelled;

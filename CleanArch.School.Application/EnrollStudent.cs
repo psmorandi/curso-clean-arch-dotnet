@@ -2,6 +2,7 @@
 {
     using System;
     using global::AutoMapper;
+    using CleanArch.School.Application.Extensions;
 
     public class EnrollStudent
     {
@@ -20,7 +21,7 @@
             this.classRepository = repositoryFactory.CreateClassroomRepository();
         }
 
-        public EnrollStudentOutputData Execute(EnrollStudentInputData inputData)
+        public EnrollStudentOutputData Execute(EnrollStudentInputData inputData, DateOnly currentDate)
         {
             var student = new Student(inputData.StudentName, inputData.StudentCpf, inputData.StudentBirthday);
             var level = this.levelRepository.FindByCode(inputData.Level);
@@ -29,16 +30,16 @@
             if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
             var numberOfStudentsInClass = this.enrollmentRepository.FindAllByClass(level.Code, module.Code, classroom.Code).Count;
             if (numberOfStudentsInClass + 1 > classroom.Capacity) throw new Exception("Class is over capacity.");
-            return this.CreateEnrollment(student, level, module, classroom, this.enrollmentRepository.Count() + 1, inputData.Installments);
+            return this.CreateEnrollment(student, level, module, classroom, currentDate, this.enrollmentRepository.Count() + 1, inputData.Installments);
         }
 
         private bool IsAlreadyEnrolled(Student student) => this.enrollmentRepository.FindByCpf(student.Cpf.Value) != null;
 
-        private EnrollStudentOutputData CreateEnrollment(Student student, Level level, Module module, Classroom classroom, int sequence, int installments)
+        private EnrollStudentOutputData CreateEnrollment(Student student, Level level, Module module, Classroom classroom, DateOnly currentDate, int sequence, int installments)
         {
-            var enrollment = new Enrollment(student, level, module, classroom, sequence, DateTime.UtcNow.Date, installments);
+            var enrollment = new Enrollment(student, level, module, classroom, sequence, currentDate, installments);
             this.enrollmentRepository.Save(enrollment);
-            return this.outputDataMapper.Map<EnrollStudentOutputData>(enrollment);
+            return this.outputDataMapper.Map<EnrollStudentOutputData>(enrollment, currentDate);
         }
     }
 }

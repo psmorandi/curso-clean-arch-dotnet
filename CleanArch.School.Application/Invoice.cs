@@ -35,21 +35,26 @@
             return this.Amount - totalPaid;
         }
 
-        public InvoiceStatus GetStatus()
+        public InvoiceStatus GetStatus(DateOnly currentDate)
         {
             if(this.GetBalance() == 0) return InvoiceStatus.Paid;
-            if(DateTime.UtcNow.ToDateOnly() <= this.DueDate) return InvoiceStatus.Open;
-            return InvoiceStatus.Overdue;
+            if(currentDate > this.DueDate) return InvoiceStatus.Overdue;
+            return InvoiceStatus.Open;
         }
 
-        public decimal GetPenalty() => this.GetStatus() == InvoiceStatus.Overdue? 
-            (this.Amount * INVOICE_PENALTY.ToPercentage()).Truncate(2) : 0;
-
-        public decimal GetInterests() 
+        public decimal GetPenalty(DateOnly currentDate)
         {
-            if(this.GetStatus() != InvoiceStatus.Overdue) return 0;
-            var numberOfOverdueDays = (DateTime.UtcNow.Date - this.DueDate.ToDateTime()).Days;
-            return (this.Amount * numberOfOverdueDays * DAILY_INTERESTS.ToPercentage()).Truncate(2);
+            if(this.GetStatus(currentDate) != InvoiceStatus.Overdue) return 0;
+            var balance = this.GetBalance();
+            return Math.Round(balance * INVOICE_PENALTY.ToPercentage(), 2).Truncate(2);
+        }
+
+        public decimal GetInterests(DateOnly currentDate) 
+        {
+            if(this.GetStatus(currentDate) != InvoiceStatus.Overdue) return 0;
+            var balance = this.GetBalance();
+            var numberOfOverdueDays = (currentDate.ToDateTime() - this.DueDate.ToDateTime()).Days;
+            return Math.Round(balance * numberOfOverdueDays * DAILY_INTERESTS.ToPercentage(), 2).Truncate(2);
         }
     }
 }

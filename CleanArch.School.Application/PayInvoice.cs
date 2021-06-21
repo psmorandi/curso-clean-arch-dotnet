@@ -10,7 +10,7 @@
         public void Execute(PayInvoiceInputData request)
         {
             var enrollment = this.enrollmentRepository.FindByCode(request.Code);
-            enrollment.PayInvoice(request.Month, request.Year, request.Amount);
+            enrollment.PayInvoice(request.Month, request.Year, request.Amount, request.PaymentDate);
         }
     }
 }
