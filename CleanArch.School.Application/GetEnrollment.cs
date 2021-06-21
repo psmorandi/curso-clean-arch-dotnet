@@ -13,10 +13,10 @@ namespace CleanArch.School.Application
             this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
         }
 
-        public EnrollmentOutputData Execute(string code)
+        public GetEnrollmentOutputData Execute(string code)
         {
             var enrollment = this.enrollmentRepository.FindByCode(code);
-            return this.outputDataMapper.Map<EnrollmentOutputData>(enrollment);
+            return this.outputDataMapper.Map<GetEnrollmentOutputData>(enrollment);
         }
     }
 }

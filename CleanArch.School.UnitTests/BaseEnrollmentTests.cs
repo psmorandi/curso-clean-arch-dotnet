@@ -72,6 +72,6 @@
             return enrollment.Code.Value;
         }
 
-        protected EnrollmentOutputData GetEnrollment(string code) => this.getEnrollment.Execute(code);
+        protected GetEnrollmentOutputData GetEnrollment(string code) => this.getEnrollment.Execute(code);
     }
 }

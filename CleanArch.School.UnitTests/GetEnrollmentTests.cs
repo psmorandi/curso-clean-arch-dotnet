@@ -21,7 +21,7 @@
             var response = this.getEnrollment.Execute($"{issueDate.Year}EM1A0001");
             Assert.Equal(student.Name.Value, response.StudentName);
             Assert.Equal(student.Cpf.Value, response.StudentCpf);
-            Assert.Equal(new decimal(17000), response.InvoiceBalance);
+            Assert.Equal(new decimal(17000), response.Balance);
         }
 
         [Fact]

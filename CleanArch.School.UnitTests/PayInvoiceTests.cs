@@ -24,7 +24,7 @@
             var payInvoice = new PayInvoice(this.repositoryFactory);
             payInvoice.Execute(payInvoiceRequest);
             var updatedEnrollment = this.GetEnrollment(enrollment.Code);
-            Assert.Equal(expectedBalanceAfterPayment, updatedEnrollment.InvoiceBalance);
+            Assert.Equal(expectedBalanceAfterPayment, updatedEnrollment.Balance);
         }
 
         [Fact]
@@ -34,7 +34,7 @@
             var code = this.CreateEnrollmentWith(refDate);
             var payInvoice = new PayInvoice(this.repositoryFactory);
             var enrollment = this.GetEnrollment(code);
-            var balanceBeforePayment = enrollment.InvoiceBalance;
+            var balanceBeforePayment = enrollment.Balance;
             var invoiceToPay = enrollment.Invoices.ElementAt(0);
             var payInvoiceRequest = new PayInvoiceInputData
                                     {
@@ -45,7 +45,7 @@
                                     };
             payInvoice.Execute(payInvoiceRequest);
             var updatedEnrollment = this.GetEnrollment(enrollment.Code);
-            Assert.Equal(balanceBeforePayment - invoiceToPay.Amount, updatedEnrollment.InvoiceBalance);
+            Assert.Equal(balanceBeforePayment - invoiceToPay.Amount, updatedEnrollment.Balance);
         }
     }
 }
