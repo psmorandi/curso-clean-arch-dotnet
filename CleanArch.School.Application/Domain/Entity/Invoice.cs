@@ -31,27 +31,27 @@
         public decimal GetBalance()
         {
             var totalPaid = this.InvoiceEvents
-                .Sum(e => e.Type == InvoiceEventType.Payment? e.Amount : -e.Amount);
+                .Sum(e => e.Type == InvoiceEventType.Payment ? e.Amount : -e.Amount);
             return this.Amount - totalPaid;
         }
 
         public InvoiceStatus GetStatus(DateOnly currentDate)
         {
-            if(this.GetBalance() == 0) return InvoiceStatus.Paid;
-            if(currentDate > this.DueDate) return InvoiceStatus.Overdue;
+            if (this.GetBalance() == 0) return InvoiceStatus.Paid;
+            if (currentDate > this.DueDate) return InvoiceStatus.Overdue;
             return InvoiceStatus.Open;
         }
 
         public decimal GetPenalty(DateOnly currentDate)
         {
-            if(this.GetStatus(currentDate) != InvoiceStatus.Overdue) return 0;
+            if (this.GetStatus(currentDate) != InvoiceStatus.Overdue) return 0;
             var balance = this.GetBalance();
             return Math.Round(balance * INVOICE_PENALTY.ToPercentage(), 2).Truncate(2);
         }
 
-        public decimal GetInterests(DateOnly currentDate) 
+        public decimal GetInterests(DateOnly currentDate)
         {
-            if(this.GetStatus(currentDate) != InvoiceStatus.Overdue) return 0;
+            if (this.GetStatus(currentDate) != InvoiceStatus.Overdue) return 0;
             var balance = this.GetBalance();
             var numberOfOverdueDays = (currentDate.ToDateTime() - this.DueDate.ToDateTime()).Days;
             return Math.Round(balance * numberOfOverdueDays * DAILY_INTERESTS.ToPercentage(), 2).Truncate(2);

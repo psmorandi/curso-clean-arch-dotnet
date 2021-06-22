@@ -1,5 +1,9 @@
-﻿namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Adapter.Factory
 {
+    using Domain.Factory;
+    using Domain.Repository;
+    using Repository.Memory;
+
     public class RepositoryMemoryAbstractFactory : IRepositoryAbstractFactory
     {
         private readonly LevelRepositoryMemory levelRepositoryMemory;

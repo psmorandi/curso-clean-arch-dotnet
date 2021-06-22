@@ -2,9 +2,8 @@
 {
     public class InvoiceInterestsEvent : InvoiceEvent
     {
-        public InvoiceInterestsEvent(decimal amount) : base(amount)
-        {
-        }
+        public InvoiceInterestsEvent(decimal amount)
+            : base(amount) { }
 
         public override InvoiceEventType Type => InvoiceEventType.Interests;
     }

@@ -1,9 +1,9 @@
 ﻿namespace CleanArch.School.UnitTests
 {
-    using Application;
-    using CleanArch.School.Application.Extensions;
     using System;
     using Application.Domain.Entity;
+    using Application.Domain.UseCase;
+    using Application.Extensions;
     using Xunit;
 
     public class CancelEnrollmentTests : BaseEnrollmentTests

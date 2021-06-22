@@ -1,6 +1,7 @@
 namespace CleanArch.School.API
 {
     using Application;
+    using Application.Domain.UseCase;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;

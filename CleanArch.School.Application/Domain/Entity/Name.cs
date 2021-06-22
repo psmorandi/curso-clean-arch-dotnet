@@ -5,7 +5,7 @@
 
     public class Name
     {
-        private readonly Regex nameValidationRegex = new Regex("^([A-Za-z]+ )+([A-Za-z])+$", RegexOptions.Compiled);
+        private readonly Regex nameValidationRegex = new("^([A-Za-z]+ )+([A-Za-z])+$", RegexOptions.Compiled);
 
         public Name(string value)
         {

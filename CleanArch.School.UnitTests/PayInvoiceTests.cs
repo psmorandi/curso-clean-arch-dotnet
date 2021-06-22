@@ -3,7 +3,8 @@
     using System;
     using System.Linq;
     using Application;
-    using CleanArch.School.Application.Extensions;
+    using Application.Domain.UseCase;
+    using Application.Extensions;
     using Xunit;
 
     public class PayInvoiceTests : BaseEnrollmentTests

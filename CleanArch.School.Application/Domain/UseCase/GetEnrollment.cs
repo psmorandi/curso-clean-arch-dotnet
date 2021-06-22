@@ -1,9 +1,11 @@
-﻿using AutoMapper;
-using System;
-using CleanArch.School.Application.Extensions;
-
-namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Domain.UseCase
 {
+    using System;
+    using Extensions;
+    using Factory;
+    using global::AutoMapper;
+    using Repository;
+
     public class GetEnrollment
     {
         private readonly IMapper outputDataMapper;

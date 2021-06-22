@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application
 {
+    using System;
+
     public class PayInvoiceInputData
     {
         public string Code { get; set; } = string.Empty;

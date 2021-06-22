@@ -1,9 +1,10 @@
-﻿namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Adapter.Repository.Memory
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using Domain.Entity;
+    using Domain.Repository;
     using Extensions;
 
     public class ClassroomRepositoryMemory : IClassroomRepository

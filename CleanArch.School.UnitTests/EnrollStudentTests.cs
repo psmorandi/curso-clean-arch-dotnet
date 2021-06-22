@@ -5,7 +5,7 @@ namespace CleanArch.School.UnitTests
     using System.Linq;
     using Application;
     using Application.Domain.Entity;
-    using CleanArch.School.Application.Extensions;
+    using Application.Extensions;
     using Xunit;
 
     public class EnrollStudentTests : BaseEnrollmentTests

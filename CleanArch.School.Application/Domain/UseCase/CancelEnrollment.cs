@@ -1,5 +1,8 @@
-﻿namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Domain.UseCase
 {
+    using Factory;
+    using Repository;
+
     public class CancelEnrollment
     {
         private readonly IEnrollmentRepository enrollmentRepository;

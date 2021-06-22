@@ -58,14 +58,15 @@
 
         public void PayInvoice(int month, int year, decimal amount, DateOnly paymentDate)
         {
-            var invoice = this.GetInvoice(month, year);            
-            if(invoice.GetStatus(paymentDate) == InvoiceStatus.Overdue)
+            var invoice = this.GetInvoice(month, year);
+            if (invoice.GetStatus(paymentDate) == InvoiceStatus.Overdue)
             {
                 var penalty = invoice.GetPenalty(paymentDate);
                 var interests = invoice.GetInterests(paymentDate);
                 invoice.AddEvent(new InvoicePenaltyEvent(penalty));
                 invoice.AddEvent(new InvoiceInterestsEvent(interests));
             }
+
             invoice.AddEvent(new InvoicePaidEvent(amount));
         }
 

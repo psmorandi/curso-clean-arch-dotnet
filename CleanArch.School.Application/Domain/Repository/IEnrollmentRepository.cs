@@ -1,7 +1,7 @@
-﻿namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Domain.Repository
 {
     using System.Collections.Generic;
-    using Domain.Entity;
+    using Entity;
 
     public interface IEnrollmentRepository
     {

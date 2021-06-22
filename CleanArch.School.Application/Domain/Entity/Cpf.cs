@@ -14,7 +14,7 @@
 
         public Cpf(string value)
         {
-            if(!IsValid(value)) throw new Exception("Invalid cpf.");
+            if (!IsValid(value)) throw new Exception("Invalid cpf.");
             this.Value = value.OnlyNumbers();
         }
 
@@ -38,9 +38,9 @@
             var multiplierFactor = factor;
             var total = cpf.ToArray().Take(max).Sum(digit => int.Parse(digit.ToString()) * multiplierFactor--);
             var resultModule11 = total % 11;
-            return (resultModule11 < 2) ? 0 : (11 - resultModule11);
+            return resultModule11 < 2 ? 0 : 11 - resultModule11;
         }
 
-        private static string GetVerificationDigit(string cpf) => new string(cpf.Skip(9).ToArray());
+        private static string GetVerificationDigit(string cpf) => new(cpf.Skip(9).ToArray());
     }
 }

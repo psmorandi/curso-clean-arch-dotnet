@@ -1,9 +1,11 @@
-﻿namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Domain.UseCase
 {
     using System;
+    using Entity;
+    using Extensions;
+    using Factory;
     using global::AutoMapper;
-    using CleanArch.School.Application.Extensions;
-    using Domain.Entity;
+    using Repository;
 
     public class EnrollStudent
     {
@@ -36,7 +38,14 @@
 
         private bool IsAlreadyEnrolled(Student student) => this.enrollmentRepository.FindByCpf(student.Cpf.Value) != null;
 
-        private EnrollStudentOutputData CreateEnrollment(Student student, Level level, Module module, Classroom classroom, DateOnly currentDate, int sequence, int installments)
+        private EnrollStudentOutputData CreateEnrollment(
+            Student student,
+            Level level,
+            Module module,
+            Classroom classroom,
+            DateOnly currentDate,
+            int sequence,
+            int installments)
         {
             var enrollment = new Enrollment(student, level, module, classroom, sequence, currentDate, installments);
             this.enrollmentRepository.Save(enrollment);

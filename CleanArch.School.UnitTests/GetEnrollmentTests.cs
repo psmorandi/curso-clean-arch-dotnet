@@ -2,14 +2,12 @@
 {
     using System;
     using System.Linq;
-    using Application;
     using Application.Domain.Entity;
     using Application.Extensions;
     using Xunit;
 
     public class GetEnrollmentTests : BaseEnrollmentTests
     {
-
         // ReSharper disable once InconsistentNaming
         [Fact]
         public void Should_get_enrollment_by_code_with_invoice_balance()
@@ -31,10 +29,7 @@
             var refDate = DateTime.UtcNow.Date.ToDateOnly();
             var enrollStudentData = this.CreateRandomEnrollment(refDate);
             var enrollmentData = this.getEnrollment.Execute(enrollStudentData.Code, refDate);
-            foreach (var invoice in enrollmentData.Invoices)
-            {
-                Assert.True(invoice.Status == InvoiceStatus.Open);
-            }
+            foreach (var invoice in enrollmentData.Invoices) Assert.True(invoice.Status == InvoiceStatus.Open);
         }
 
         [Fact]
@@ -44,7 +39,7 @@
             var refDate = today.AddDays(-5);
             var code = this.CreateEnrollmentWith(refDate);
             var enrollmentData = this.getEnrollment.Execute(code, today);
-            var overdueInvoice = enrollmentData.Invoices.ElementAt(0);            
+            var overdueInvoice = enrollmentData.Invoices.ElementAt(0);
             Assert.Equal(InvoiceStatus.Overdue, overdueInvoice.Status);
             Assert.Equal(InvoicePenalty(overdueInvoice.Balance).Truncate(2), overdueInvoice.Penalty);
             Assert.Equal(InvoiceInterests(overdueInvoice.Balance, 5).Truncate(2), overdueInvoice.Interests);
@@ -66,6 +61,7 @@
         }
 
         private static decimal InvoicePenalty(decimal amount) => Math.Round(amount * new decimal(0.1), 2).Truncate(2);
-        private static decimal InvoiceInterests(decimal amount, int days) => Math.Round(amount * new decimal (days * 0.01), 2).Truncate(2);
+
+        private static decimal InvoiceInterests(decimal amount, int days) => Math.Round(amount * new decimal(days * 0.01), 2).Truncate(2);
     }
 }

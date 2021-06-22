@@ -2,7 +2,11 @@
 {
     using System;
     using Application;
+    using Application.Adapter.Factory;
     using Application.Domain.Entity;
+    using Application.Domain.Factory;
+    using Application.Domain.Repository;
+    using Application.Domain.UseCase;
     using Application.Extensions;
     using AutoMapper;
 
@@ -68,7 +72,7 @@
                 $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
                 "755.525.774-26",
                 DateTime.Now.Date.AddYears(-15));
-            var enrollment = new Enrollment(student,level, module,classroom,1,issueDate,12);
+            var enrollment = new Enrollment(student, level, module, classroom, 1, issueDate);
             this.enrollmentRepository.Save(enrollment);
             return enrollment.Code.Value;
         }

@@ -1,6 +1,6 @@
-﻿namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Domain.Repository
 {
-    using Domain.Entity;
+    using Entity;
 
     public interface ILevelRepository
     {

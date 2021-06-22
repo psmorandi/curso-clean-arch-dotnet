@@ -12,12 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Adapter\Factory\" />
-    <Folder Include="Adapter\Repository\Memory\" />
     <Folder Include="Adapter\Repository\Database\" />
-    <Folder Include="Domain\Factory\" />
-    <Folder Include="Domain\Repository\" />
-    <Folder Include="Domain\UseCase\" />
     <Folder Include="Infra\Database\" />
   </ItemGroup>
 

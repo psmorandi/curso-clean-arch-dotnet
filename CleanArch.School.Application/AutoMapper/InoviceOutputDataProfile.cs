@@ -1,9 +1,9 @@
 ﻿namespace CleanArch.School.Application.AutoMapper
 {
-    using CleanArch.School.Application.Extensions;
-    using global::AutoMapper;
     using System;
     using Domain.Entity;
+    using Extensions;
+    using global::AutoMapper;
 
     public class InoviceOutputDataProfile : Profile
     {
@@ -16,7 +16,7 @@
                 .ForMember(dest => dest.Interests, opt => opt.MapFrom((src, dest, destMember, context) => src.GetInterests(GetReferenceDateFrom(context))));
         }
 
-        private static DateOnly GetReferenceDateFrom(ResolutionContext context) 
+        private static DateOnly GetReferenceDateFrom(ResolutionContext context)
             => Convert.ToDateTime(context.Items["RefDate"].ToString()).ToDateOnly();
     }
 }

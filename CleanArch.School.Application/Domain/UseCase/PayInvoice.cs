@@ -1,10 +1,13 @@
-﻿namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Domain.UseCase
 {
+    using Factory;
+    using Repository;
+
     public class PayInvoice
     {
         private readonly IEnrollmentRepository enrollmentRepository;
 
-        public PayInvoice(IRepositoryAbstractFactory repositoryFactory) 
+        public PayInvoice(IRepositoryAbstractFactory repositoryFactory)
             => this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
 
         public void Execute(PayInvoiceInputData request)
