@@ -1,6 +1,7 @@
 ﻿namespace CleanArch.School.Application
 {
     using System;
+    using Domain.Entity;
 
     public class InvoiceOutputData
     {

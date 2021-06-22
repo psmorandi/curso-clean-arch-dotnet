@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using Application;
+    using Application.Domain.Entity;
     using Application.Extensions;
     using Xunit;
 

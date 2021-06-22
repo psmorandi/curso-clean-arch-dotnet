@@ -1,5 +1,6 @@
 ﻿namespace CleanArch.School.UnitTests
 {
+    using Application.Domain.Entity;
     using AutoMapper;
     using CleanArch.School.Application;
     using Xunit;

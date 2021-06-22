@@ -1,5 +1,6 @@
 ﻿namespace CleanArch.School.Application.AutoMapper
 {
+    using Domain.Entity;
     using global::AutoMapper;
 
     public class GetEnrollmentOutputDataProfile : Profile

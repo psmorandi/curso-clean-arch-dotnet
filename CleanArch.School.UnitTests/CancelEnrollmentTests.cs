@@ -3,6 +3,7 @@
     using Application;
     using CleanArch.School.Application.Extensions;
     using System;
+    using Application.Domain.Entity;
     using Xunit;
 
     public class CancelEnrollmentTests : BaseEnrollmentTests

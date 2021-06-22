@@ -3,6 +3,7 @@
     using System;
     using global::AutoMapper;
     using CleanArch.School.Application.Extensions;
+    using Domain.Entity;
 
     public class EnrollStudent
     {

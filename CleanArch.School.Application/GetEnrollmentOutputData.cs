@@ -1,6 +1,7 @@
 ﻿namespace CleanArch.School.Application
 {
     using System.Collections.Generic;
+    using Domain.Entity;
 
     public class GetEnrollmentOutputData
     {

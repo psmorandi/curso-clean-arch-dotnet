@@ -2,6 +2,7 @@
 {
     using System;
     using Application;
+    using Application.Domain.Entity;
     using Application.Extensions;
     using AutoMapper;
 

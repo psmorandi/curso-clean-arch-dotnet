@@ -1,5 +1,7 @@
 ﻿namespace CleanArch.School.Application
 {
+    using Domain.Entity;
+
     public interface IModuleRepository
     {
         void Save(Module module);

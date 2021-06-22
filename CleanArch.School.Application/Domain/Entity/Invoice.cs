@@ -1,9 +1,9 @@
-﻿namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Domain.Entity
 {
-    using CleanArch.School.Application.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Extensions;
 
     public class Invoice
     {

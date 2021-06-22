@@ -3,6 +3,7 @@
     using CleanArch.School.Application.Extensions;
     using global::AutoMapper;
     using System;
+    using Domain.Entity;
 
     public class InoviceOutputDataProfile : Profile
     {

@@ -4,6 +4,7 @@ namespace CleanArch.School.UnitTests
     using System.Collections.Generic;
     using System.Linq;
     using Application;
+    using Application.Domain.Entity;
     using CleanArch.School.Application.Extensions;
     using Xunit;
 
