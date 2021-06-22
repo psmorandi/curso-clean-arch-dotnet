@@ -1,4 +1,4 @@
-﻿namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Domain.UseCase
 {
     using System.Collections.Generic;
 

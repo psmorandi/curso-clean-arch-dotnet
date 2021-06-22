@@ -2,7 +2,6 @@
 {
     using System;
     using System.Linq;
-    using Application;
     using Application.Domain.UseCase;
     using Application.Extensions;
     using Xunit;

@@ -1,7 +1,6 @@
 ﻿namespace CleanArch.School.UnitTests
 {
     using System;
-    using Application;
     using Application.Adapter.Factory;
     using Application.Domain.Entity;
     using Application.Domain.Factory;

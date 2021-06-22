@@ -1,13 +1,14 @@
-﻿namespace CleanArch.School.Application.AutoMapper
+﻿namespace CleanArch.School.Application.Domain.UseCase.Mappers
 {
     using System;
-    using Domain.Entity;
+    using AutoMapper;
+    using Entity;
     using Extensions;
-    using global::AutoMapper;
+    using UseCase;
 
-    public class InoviceOutputDataProfile : Profile
+    public class InvoiceOutputDataProfile : Profile
     {
-        public InoviceOutputDataProfile()
+        public InvoiceOutputDataProfile()
         {
             this.CreateMap<Invoice, InvoiceOutputData>()
                 .ForMember(dest => dest.Balance, opt => opt.MapFrom(src => src.GetBalance()))

@@ -1,7 +1,7 @@
-﻿namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Domain.UseCase
 {
     using System.Collections.Generic;
-    using Domain.Entity;
+    using Entity;
 
     public class GetEnrollmentOutputData
     {

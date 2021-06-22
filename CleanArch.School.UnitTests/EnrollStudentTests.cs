@@ -3,8 +3,8 @@ namespace CleanArch.School.UnitTests
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Application;
     using Application.Domain.Entity;
+    using Application.Domain.UseCase;
     using Application.Extensions;
     using Xunit;
 

@@ -1,7 +1,7 @@
-﻿namespace CleanArch.School.Application
+﻿namespace CleanArch.School.Application.Domain.UseCase
 {
     using System;
-    using Domain.Entity;
+    using Entity;
 
     public class InvoiceOutputData
     {
