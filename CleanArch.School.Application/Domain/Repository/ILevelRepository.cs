@@ -1,11 +1,12 @@
 ﻿namespace CleanArch.School.Application.Domain.Repository
 {
+    using System.Threading.Tasks;
     using Entity;
 
     public interface ILevelRepository
     {
-        void Save(Level level);
+        Task Save(Level level);
 
-        Level FindByCode(string code);
+        Task<Level> FindByCode(string code);
     }
 }

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using Domain.Entity;
     using Domain.Repository;
 
@@ -12,9 +13,13 @@
 
         public LevelRepositoryMemory() => this.levels = new List<Level>();
 
-        public void Save(Level level) => this.levels.Add(level);
+        public Task Save(Level level)
+        {
+            this.levels.Add(level);
+            return Task.CompletedTask;
+        }
 
-        public Level FindByCode(string code) =>
-            this.levels.SingleOrDefault(l => l.Code == code) ?? throw new Exception("Invalid level");
+        public Task<Level> FindByCode(string code) =>
+            Task.FromResult(this.levels.SingleOrDefault(l => l.Code == code) ?? throw new Exception("Invalid level"));
     }
 }

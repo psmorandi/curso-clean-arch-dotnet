@@ -12,8 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Adapter\Repository\Database\" />
-    <Folder Include="Infra\Database\" />
+
   </ItemGroup>
 
 </Project>

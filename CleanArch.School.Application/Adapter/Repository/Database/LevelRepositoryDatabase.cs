@@ -1,0 +1,27 @@
+﻿namespace CleanArch.School.Application.Adapter.Repository.Database
+{
+    using System.Threading.Tasks;
+    using Dapper;
+    using Domain.Entity;
+    using Domain.Repository;
+    using Infra.Database;
+
+    public class LevelRepositoryDatabase : ILevelRepository
+    {
+        private readonly PostgresConnectionPool connectionPool;
+
+        public LevelRepositoryDatabase(PostgresConnectionPool connectionPool) => this.connectionPool = connectionPool;
+
+        public async Task Save(Level level)
+        {
+            using var connection = this.connectionPool.Connection;
+            await connection.ExecuteAsync("insert into system.level (code, description) values (@Code, @Description)", new { level.Code, level.Description });
+        }
+
+        public async Task<Level> FindByCode(string code)
+        {
+            using var connection = this.connectionPool.Connection;
+            return await connection.QuerySingleAsync<Level>("select code as Code, description as Description from system.level where code = @Code", new { Code = code });
+        }
+    }
+}
