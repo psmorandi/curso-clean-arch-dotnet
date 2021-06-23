@@ -8,20 +8,15 @@
 
     public class RepositoryDatabaseAbstractFactory : IRepositoryAbstractFactory
     {
-        private readonly LevelRepositoryDatabase levelRepository;
-        private readonly ModuleRepositoryDatabase moduleRepository;
+        private readonly PostgresConnectionPool connectionPool;
 
-        public RepositoryDatabaseAbstractFactory(PostgresConnectionPool connectionPool)
-        {
-            this.levelRepository = new LevelRepositoryDatabase(connectionPool);
-            this.moduleRepository = new ModuleRepositoryDatabase(connectionPool);
-        }
+        public RepositoryDatabaseAbstractFactory(PostgresConnectionPool connectionPool) => this.connectionPool = connectionPool;
 
-        public ILevelRepository CreateLevelRepository() => this.levelRepository;
+        public ILevelRepository CreateLevelRepository() => new LevelRepositoryDatabase(this.connectionPool);
 
-        public IModuleRepository CreateModuleRepository() => this.moduleRepository;
+        public IModuleRepository CreateModuleRepository() => new ModuleRepositoryDatabase(this.connectionPool);
 
-        public IClassroomRepository CreateClassroomRepository() => throw new NotImplementedException();
+        public IClassroomRepository CreateClassroomRepository() => new ClassroomRepositoryDatabase(this.connectionPool);
 
         public IEnrollmentRepository CreateEnrollmentRepository() => throw new NotImplementedException();
     }

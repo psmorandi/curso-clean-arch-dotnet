@@ -4,8 +4,8 @@
 
     public abstract class BaseRepositoryDatabase
     {
-        protected readonly PostgresConnectionPool connectionPool;
+        protected readonly PostgresConnectionPool ConnectionPool;
 
-        protected BaseRepositoryDatabase(PostgresConnectionPool connectionPool) => this.connectionPool = connectionPool;
+        protected BaseRepositoryDatabase(PostgresConnectionPool connectionPool) => this.ConnectionPool = connectionPool;
     }
 }
