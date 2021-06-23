@@ -6,11 +6,10 @@
     using Domain.Repository;
     using Infra.Database;
 
-    public class LevelRepositoryDatabase : ILevelRepository
+    public class LevelRepositoryDatabase : BaseRepositoryDatabase, ILevelRepository
     {
-        private readonly PostgresConnectionPool connectionPool;
-
-        public LevelRepositoryDatabase(PostgresConnectionPool connectionPool) => this.connectionPool = connectionPool;
+        public LevelRepositoryDatabase(PostgresConnectionPool connectionPool)
+            : base(connectionPool) { }
 
         public async Task Save(Level level)
         {
@@ -21,7 +20,7 @@
         public async Task<Level> FindByCode(string code)
         {
             using var connection = this.connectionPool.Connection;
-            return await connection.QuerySingleAsync<Level>("select code as Code, description as Description from system.level where code = @Code", new { Code = code });
+            return await connection.QuerySingleAsync<Level>("select code as Code, description as Description from system.level where code = @code", new { code });
         }
     }
 }
