@@ -30,6 +30,25 @@
         }
 
         [Fact]
+        public async Task Should_pay_all_enrollment_with_cash_in_one_time()
+        {
+            var date = DateTime.UtcNow.ToDateOnly();
+            var enrollment = await this.CreateRandomEnrollment(date, 1);
+            var invoiceToPay = enrollment.Invoices.Single(i => i.DueDate.Month == date.Month && i.DueDate.Year == date.Year);
+            var payInvoiceRequest = new PayInvoiceInputData
+                                    {
+                                        Code = enrollment.Code,
+                                        Month = invoiceToPay.DueDate.Month,
+                                        Year = invoiceToPay.DueDate.Year,
+                                        Amount = invoiceToPay.Amount
+                                    };
+            var payInvoice = new PayInvoice(this.repositoryFactory);
+            await payInvoice.Execute(payInvoiceRequest);
+            var updatedEnrollment = await this.GetEnrollment(enrollment.Code, date);
+            Assert.Equal(0, updatedEnrollment.Balance);
+        }
+
+        [Fact]
         public async Task Should_pay_overdue_invoice()
         {
             var refDate = DateTime.UtcNow.Date.AddDays(-5).ToDateOnly();

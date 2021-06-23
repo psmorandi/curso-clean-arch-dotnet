@@ -38,16 +38,14 @@
         {
             var moduleValue = this.Module.Price;
             var installmentAmount = (moduleValue / installments).Truncate(2);
-            for (var i = 0; i < installments - 1; i++)
+            var lastInstallment = installmentAmount + (moduleValue - installmentAmount * installments);
+            for (var i = 0; i < installments; i++)
             {
                 var dueDate = this.IssueDate.AddMonths(i);
-                var invoice = new Invoice(this.Code.Value, dueDate.Day, dueDate.Month, dueDate.Year, installmentAmount);
+                var amount = i != installments - 1 ? installmentAmount : lastInstallment;
+                var invoice = new Invoice(this.Code.Value, dueDate.Day, dueDate.Month, dueDate.Year, amount);
                 this.Invoices.Add(invoice);
             }
-
-            var lastDueDate = this.IssueDate.AddMonths(installments);
-            var lastInstallment = installmentAmount + (moduleValue - installmentAmount * installments);
-            this.Invoices.Add(new Invoice(this.Code.Value, lastDueDate.Day, lastDueDate.Month, lastDueDate.Year, lastInstallment));
         }
 
         public decimal GetInvoiceBalance()
