@@ -21,7 +21,8 @@
         }
 
         public Task<Classroom> FindByCode(string level, string module, string classroom) =>
-            Task.FromResult(this.classes.SingleOrDefault(c => c.Level == level.ToUp() && c.Module == module.ToUp() && c.Code == classroom.ToUp())
-            ?? throw new Exception("Invalid class."));
+            Task.FromResult(
+                this.classes.SingleOrDefault(c => c.Level == level.ToUp() && c.Module == module.ToUp() && c.Code == classroom.ToUp())
+                ?? throw new Exception("Invalid class."));
     }
 }

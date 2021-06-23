@@ -2,9 +2,9 @@
 {
     using System;
     using System.Threading.Tasks;
+    using AutoMapper;
     using Extensions;
     using Factory;
-    using global::AutoMapper;
     using Repository;
 
     public class GetEnrollment

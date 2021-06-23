@@ -3,10 +3,10 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using AutoMapper;
     using Entity;
     using Extensions;
     using Factory;
-    using global::AutoMapper;
     using Repository;
 
     public class EnrollStudent
@@ -39,7 +39,7 @@
             return this.CreateEnrollment(student, level, module, classroom, currentDate, sequence, inputData.Installments);
         }
 
-        private async Task<bool> IsAlreadyEnrolled(Student student) => (await this.enrollmentRepository.FindByCpf(student.Cpf.Value)) != null;
+        private async Task<bool> IsAlreadyEnrolled(Student student) => await this.enrollmentRepository.FindByCpf(student.Cpf.Value) != null;
 
         private EnrollStudentOutputData CreateEnrollment(
             Student student,

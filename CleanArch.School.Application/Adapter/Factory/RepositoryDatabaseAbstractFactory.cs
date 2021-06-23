@@ -1,14 +1,16 @@
 ﻿namespace CleanArch.School.Application.Adapter.Factory
 {
-    using CleanArch.School.Application.Adapter.Repository.Database;
-    using CleanArch.School.Application.Infra.Database;
+    using System;
     using Domain.Factory;
     using Domain.Repository;
+    using Infra.Database;
+    using Repository.Database;
 
     public class RepositoryDatabaseAbstractFactory : IRepositoryAbstractFactory
     {
         private readonly LevelRepositoryDatabase levelRepository;
         private readonly ModuleRepositoryDatabase moduleRepository;
+
         public RepositoryDatabaseAbstractFactory(PostgresConnectionPool connectionPool)
         {
             this.levelRepository = new LevelRepositoryDatabase(connectionPool);
@@ -19,8 +21,8 @@
 
         public IModuleRepository CreateModuleRepository() => this.moduleRepository;
 
-        public IClassroomRepository CreateClassroomRepository() => throw new System.NotImplementedException();
+        public IClassroomRepository CreateClassroomRepository() => throw new NotImplementedException();
 
-        public IEnrollmentRepository CreateEnrollmentRepository() => throw new System.NotImplementedException();
+        public IEnrollmentRepository CreateEnrollmentRepository() => throw new NotImplementedException();
     }
 }

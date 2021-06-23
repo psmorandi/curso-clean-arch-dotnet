@@ -1,8 +1,8 @@
 ﻿namespace CleanArch.School.Application.Domain.UseCase
 {
+    using System.Threading.Tasks;
     using Factory;
     using Repository;
-    using System.Threading.Tasks;
 
     public class CancelEnrollment
     {
