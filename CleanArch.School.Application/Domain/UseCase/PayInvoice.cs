@@ -2,6 +2,7 @@
 {
     using Factory;
     using Repository;
+    using System.Threading.Tasks;
 
     public class PayInvoice
     {
@@ -10,9 +11,9 @@
         public PayInvoice(IRepositoryAbstractFactory repositoryFactory)
             => this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
 
-        public void Execute(PayInvoiceInputData request)
+        public async Task Execute(PayInvoiceInputData request)
         {
-            var enrollment = this.enrollmentRepository.FindByCode(request.Code);
+            var enrollment = await this.enrollmentRepository.FindByCode(request.Code);
             enrollment.PayInvoice(request.Month, request.Year, request.Amount, request.PaymentDate);
         }
     }

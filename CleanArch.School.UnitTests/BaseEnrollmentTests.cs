@@ -1,6 +1,7 @@
 ﻿namespace CleanArch.School.UnitTests
 {
     using System;
+    using System.Threading.Tasks;
     using Application.Adapter.Factory;
     using Application.Domain.Entity;
     using Application.Domain.Factory;
@@ -34,10 +35,10 @@
             this.getEnrollment = new GetEnrollment(this.repositoryFactory, outputDataMapper);
         }
 
-        protected EnrollStudentInputData CreateEnrollmentRequest(string cpf, string level, string module, string classroom, int installments = 1)
+        protected async Task<EnrollStudentInputData> CreateEnrollmentRequest(string cpf, string level, string module, string classroom, int installments = 1)
         {
-            var minimumAge = this.moduleRepository.FindByCode(level, module).MinimumAge;
-            var classCode = this.classroomRepository.FindByCode(level, module, classroom).Code;
+            var minimumAge = (await this.moduleRepository.FindByCode(level, module)).MinimumAge;
+            var classCode = (await this.classroomRepository.FindByCode(level, module, classroom)).Code;
             return new EnrollStudentInputData
                    {
                        StudentName = $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
@@ -50,13 +51,13 @@
                    };
         }
 
-        protected EnrollStudentOutputData CreateRandomEnrollment(DateOnly issueDate)
+        protected async Task<EnrollStudentOutputData> CreateRandomEnrollment(DateOnly issueDate)
         {
-            this.levelRepository.Save(new Level("EM", "Ensino Médio"));
-            this.moduleRepository.Save(new Module("EM", "1", "1o Ano", 15, 17000));
-            this.classroomRepository.Save(new Classroom("EM", "1", "A", 10, issueDate, issueDate.AddMonths(12)));
-            var enrollmentRequest = this.CreateEnrollmentRequest("755.525.774-26", "EM", "1", "A", 12);
-            return this.enrollStudent.Execute(enrollmentRequest, issueDate);
+            await this.levelRepository.Save(new Level("EM", "Ensino Médio"));
+            await this .moduleRepository.Save(new Module("EM", "1", "1o Ano", 15, 17000));
+            await this.classroomRepository.Save(new Classroom("EM", "1", "A", 10, issueDate, issueDate.AddMonths(12)));
+            var enrollmentRequest = await this.CreateEnrollmentRequest("755.525.774-26", "EM", "1", "A", 12);
+            return await this.enrollStudent.Execute(enrollmentRequest, issueDate);
         }
 
         protected string CreateEnrollmentWith(DateOnly issueDate)
@@ -76,6 +77,6 @@
             return enrollment.Code.Value;
         }
 
-        protected GetEnrollmentOutputData GetEnrollment(string code, DateOnly refDate) => this.getEnrollment.Execute(code, refDate);
+        protected async Task<GetEnrollmentOutputData> GetEnrollment(string code, DateOnly refDate) => await this.getEnrollment.Execute(code, refDate);
     }
 }

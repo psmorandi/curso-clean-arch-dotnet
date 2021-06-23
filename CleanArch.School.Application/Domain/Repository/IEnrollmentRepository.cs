@@ -1,18 +1,19 @@
 ﻿namespace CleanArch.School.Application.Domain.Repository
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Entity;
 
     public interface IEnrollmentRepository
     {
-        void Save(Enrollment enrollment);
+        Task Save(Enrollment enrollment);
 
-        ICollection<Enrollment> FindAllByClass(string level, string module, string classroom);
+        Task<IEnumerable<Enrollment>> FindAllByClass(string level, string module, string classroom);
 
-        Enrollment? FindByCpf(string cpf);
+        Task<Enrollment?> FindByCpf(string cpf);
 
-        Enrollment FindByCode(string code);
+        Task<Enrollment> FindByCode(string code);
 
-        int Count();
+        Task<int> Count();
     }
 }

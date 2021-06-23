@@ -2,6 +2,7 @@
 {
     using Factory;
     using Repository;
+    using System.Threading.Tasks;
 
     public class CancelEnrollment
     {
@@ -10,9 +11,9 @@
         public CancelEnrollment(IRepositoryAbstractFactory repositoryFactory)
             => this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
 
-        public void Execute(string code)
+        public async Task Execute(string code)
         {
-            var enrollment = this.enrollmentRepository.FindByCode(code);
+            var enrollment = await this.enrollmentRepository.FindByCode(code);
             enrollment.Cancel();
         }
     }

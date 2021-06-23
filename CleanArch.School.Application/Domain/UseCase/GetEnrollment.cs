@@ -1,6 +1,7 @@
 ﻿namespace CleanArch.School.Application.Domain.UseCase
 {
     using System;
+    using System.Threading.Tasks;
     using Extensions;
     using Factory;
     using global::AutoMapper;
@@ -17,9 +18,9 @@
             this.enrollmentRepository = repositoryFactory.CreateEnrollmentRepository();
         }
 
-        public GetEnrollmentOutputData Execute(string code, DateOnly currentDate)
+        public async Task<GetEnrollmentOutputData> Execute(string code, DateOnly currentDate)
         {
-            var enrollment = this.enrollmentRepository.FindByCode(code);
+            var enrollment = await this.enrollmentRepository.FindByCode(code);
             return this.outputDataMapper.Map<GetEnrollmentOutputData>(enrollment, currentDate);
         }
     }

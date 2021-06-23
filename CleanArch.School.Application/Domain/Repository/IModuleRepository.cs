@@ -1,11 +1,12 @@
 ﻿namespace CleanArch.School.Application.Domain.Repository
 {
     using Entity;
+    using System.Threading.Tasks;
 
     public interface IModuleRepository
     {
-        void Save(Module module);
+        Task Save(Module module);
 
-        Module FindByCode(string level, string module);
+        Task<Module> FindByCode(string level, string module);
     }
 }

@@ -1,6 +1,8 @@
 ﻿namespace CleanArch.School.Application.Domain.UseCase
 {
     using System;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Entity;
     using Extensions;
     using Factory;
@@ -24,19 +26,20 @@
             this.classRepository = repositoryFactory.CreateClassroomRepository();
         }
 
-        public EnrollStudentOutputData Execute(EnrollStudentInputData inputData, DateOnly currentDate)
+        public async Task<EnrollStudentOutputData> Execute(EnrollStudentInputData inputData, DateOnly currentDate)
         {
             var student = new Student(inputData.StudentName, inputData.StudentCpf, inputData.StudentBirthday);
-            var level = this.levelRepository.FindByCode(inputData.Level);
-            var module = this.moduleRepository.FindByCode(level.Code, inputData.Module);
-            var classroom = this.classRepository.FindByCode(level.Code, module.Code, inputData.Class);
-            if (this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
-            var numberOfStudentsInClass = this.enrollmentRepository.FindAllByClass(level.Code, module.Code, classroom.Code).Count;
+            var level = await this.levelRepository.FindByCode(inputData.Level);
+            var module = await this.moduleRepository.FindByCode(level.Code, inputData.Module);
+            var classroom = await this.classRepository.FindByCode(level.Code, module.Code, inputData.Class);
+            if (await this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
+            var numberOfStudentsInClass = (await this.enrollmentRepository.FindAllByClass(level.Code, module.Code, classroom.Code)).ToList().Count;
             if (numberOfStudentsInClass + 1 > classroom.Capacity) throw new Exception("Class is over capacity.");
-            return this.CreateEnrollment(student, level, module, classroom, currentDate, this.enrollmentRepository.Count() + 1, inputData.Installments);
+            var sequence = 1 + await this.enrollmentRepository.Count();
+            return this.CreateEnrollment(student, level, module, classroom, currentDate, sequence, inputData.Installments);
         }
 
-        private bool IsAlreadyEnrolled(Student student) => this.enrollmentRepository.FindByCpf(student.Cpf.Value) != null;
+        private async Task<bool> IsAlreadyEnrolled(Student student) => (await this.enrollmentRepository.FindByCpf(student.Cpf.Value)) != null;
 
         private EnrollStudentOutputData CreateEnrollment(
             Student student,
