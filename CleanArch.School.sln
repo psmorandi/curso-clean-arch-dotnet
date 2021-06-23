@@ -3,11 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31313.79
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArch.School.API", "CleanArch.School.API\CleanArch.School.API.csproj", "{4312121B-0920-4280-9BA5-87D0A252F661}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.API", "CleanArch.School.API\CleanArch.School.API.csproj", "{4312121B-0920-4280-9BA5-87D0A252F661}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArch.School.Application", "CleanArch.School.Application\CleanArch.School.Application.csproj", "{63A50B8B-2158-4196-A138-FBE274949471}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.Application", "CleanArch.School.Application\CleanArch.School.Application.csproj", "{63A50B8B-2158-4196-A138-FBE274949471}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArch.School.UnitTests", "CleanArch.School.UnitTests\CleanArch.School.UnitTests.csproj", "{2779E2AF-9318-4068-AC63-B67B7E241870}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.UnitTests", "CleanArch.School.UnitTests\CleanArch.School.UnitTests.csproj", "{2779E2AF-9318-4068-AC63-B67B7E241870}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{8373FE7E-88E1-4895-A88E-C7E13647A6FB}"
+	ProjectSection(SolutionItems) = preProject
+		initialize-database.sql = initialize-database.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
