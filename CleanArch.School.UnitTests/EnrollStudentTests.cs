@@ -6,6 +6,7 @@ namespace CleanArch.School.UnitTests
     using System.Threading.Tasks;
     using Application.Domain.Entity;
     using Application.Domain.UseCase;
+    using Application.Domain.UseCase.Data;
     using Application.Extensions;
     using Xunit;
 

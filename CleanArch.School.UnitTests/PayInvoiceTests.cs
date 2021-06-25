@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Application.Domain.UseCase;
+    using Application.Domain.UseCase.Data;
     using Application.Extensions;
     using Xunit;
 

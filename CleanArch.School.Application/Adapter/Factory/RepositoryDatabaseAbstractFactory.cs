@@ -1,6 +1,6 @@
 ﻿namespace CleanArch.School.Application.Adapter.Factory
 {
-    using System;
+    using AutoMapper;
     using Domain.Factory;
     using Domain.Repository;
     using Infra.Database;
@@ -8,16 +8,21 @@
 
     public class RepositoryDatabaseAbstractFactory : IRepositoryAbstractFactory
     {
-        private readonly PostgresConnectionPool connectionPool;
+        private readonly SchoolDbContext dbContext;
+        private readonly IMapper mapper;
 
-        public RepositoryDatabaseAbstractFactory(PostgresConnectionPool connectionPool) => this.connectionPool = connectionPool;
+        public RepositoryDatabaseAbstractFactory(SchoolDbContext dbContext, IMapper mapper)
+        {
+            this.dbContext = dbContext;
+            this.mapper = mapper;
+        }
 
-        public ILevelRepository CreateLevelRepository() => new LevelRepositoryDatabase(this.connectionPool);
+        public ILevelRepository CreateLevelRepository() => new LevelRepositoryDatabase(this.dbContext, this.mapper);
 
-        public IModuleRepository CreateModuleRepository() => new ModuleRepositoryDatabase(this.connectionPool);
+        public IModuleRepository CreateModuleRepository() => new ModuleRepositoryDatabase(this.dbContext, this.mapper);
 
-        public IClassroomRepository CreateClassroomRepository() => new ClassroomRepositoryDatabase(this.connectionPool);
+        public IClassroomRepository CreateClassroomRepository() => new ClassroomRepositoryDatabase(this.dbContext, this.mapper);
 
-        public IEnrollmentRepository CreateEnrollmentRepository() => throw new NotImplementedException();
+        public IEnrollmentRepository CreateEnrollmentRepository() => new EnrollmentRepositoryDatabase(this.dbContext, this.mapper);
     }
 }

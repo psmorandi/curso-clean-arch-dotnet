@@ -1,10 +1,9 @@
-﻿namespace CleanArch.School.Application.Domain.UseCase.Mappers
+﻿namespace CleanArch.School.Application.Domain.UseCase.Data.Mappers
 {
     using System;
     using AutoMapper;
     using Entity;
     using Extensions;
-    using UseCase;
 
     public class InvoiceOutputDataProfile : Profile
     {

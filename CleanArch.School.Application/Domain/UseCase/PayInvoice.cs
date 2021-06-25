@@ -1,6 +1,7 @@
 ﻿namespace CleanArch.School.Application.Domain.UseCase
 {
     using System.Threading.Tasks;
+    using Data;
     using Factory;
     using Repository;
 

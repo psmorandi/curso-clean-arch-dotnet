@@ -1,4 +1,4 @@
-﻿namespace CleanArch.School.Application.Domain.UseCase
+﻿namespace CleanArch.School.Application.Domain.UseCase.Data
 {
     using System;
 

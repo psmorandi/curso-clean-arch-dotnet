@@ -7,6 +7,7 @@
     using Application.Domain.Factory;
     using Application.Domain.Repository;
     using Application.Domain.UseCase;
+    using Application.Domain.UseCase.Data;
     using Application.Extensions;
     using AutoMapper;
 

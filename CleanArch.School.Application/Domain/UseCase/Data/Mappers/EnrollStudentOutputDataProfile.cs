@@ -1,8 +1,7 @@
-﻿namespace CleanArch.School.Application.Domain.UseCase.Mappers
+﻿namespace CleanArch.School.Application.Domain.UseCase.Data.Mappers
 {
+    using AutoMapper;
     using Entity;
-    using global::AutoMapper;
-    using UseCase;
 
     public class EnrollStudentOutputDataProfile : Profile
     {

@@ -3,6 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using AutoMapper;
+    using Data;
     using Extensions;
     using Factory;
     using Repository;

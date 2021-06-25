@@ -4,6 +4,7 @@
     {
         Payment,
         Penalty,
-        Interests
+        Interests,
+        Unknown
     }
 }

@@ -1,26 +1,34 @@
 ﻿namespace CleanArch.School.Application.Adapter.Repository.Database
 {
+    using System;
     using System.Threading.Tasks;
-    using Dapper;
+    using AutoMapper;
     using Domain.Entity;
     using Domain.Repository;
     using Infra.Database;
+    using Database = Entities;
 
-    public class LevelRepositoryDatabase : BaseRepositoryDatabase, ILevelRepository
+    public class LevelRepositoryDatabase : ILevelRepository
     {
-        public LevelRepositoryDatabase(PostgresConnectionPool connectionPool)
-            : base(connectionPool) { }
+        private readonly SchoolDbContext dbContext;
+        private readonly IMapper mapper;
+
+        public LevelRepositoryDatabase(SchoolDbContext dbContext, IMapper mapper)
+        {
+            this.dbContext = dbContext;
+            this.mapper = mapper;
+        }
 
         public async Task Save(Level level)
         {
-            using var connection = this.ConnectionPool.CreateConnection();
-            await connection.ExecuteAsync("insert into system.level (code, description) values (@Code, @Description)", new { level.Code, level.Description });
+            this.dbContext.Levels.Add(this.mapper.Map<Database.Level>(level));
+            await this.dbContext.SaveChangesAsync();
         }
 
         public async Task<Level> FindByCode(string code)
         {
-            using var connection = this.ConnectionPool.CreateConnection();
-            return await connection.QuerySingleAsync<Level>("select code as Code, description as Description from system.level where code = @code", new { code });
+            var level = await this.dbContext.Levels.FindAsync(code) ?? throw new Exception("Level not found.");
+            return this.mapper.Map<Level>(level);
         }
     }
 }
