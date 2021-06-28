@@ -1,8 +1,9 @@
 namespace CleanArch.School.API
 {
-    using Application.Domain.UseCase;
+    using Application.Infra.Database;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -38,7 +39,9 @@ namespace CleanArch.School.API
         {
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "CleanArch.School.API", Version = "v1" }); });
-            services.AddTransient<EnrollStudent>();
+            services.AddDbContext<SchoolDbContext>(
+                options =>
+                    options.UseNpgsql(this.Configuration.GetConnectionString("DefaultConnection")));
         }
     }
 }

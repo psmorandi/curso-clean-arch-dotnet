@@ -9,11 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.Applicatio
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.UnitTests", "CleanArch.School.UnitTests\CleanArch.School.UnitTests.csproj", "{2779E2AF-9318-4068-AC63-B67B7E241870}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Database", "Database", "{8373FE7E-88E1-4895-A88E-C7E13647A6FB}"
-	ProjectSection(SolutionItems) = preProject
-		initialize-database.sql = initialize-database.sql
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
