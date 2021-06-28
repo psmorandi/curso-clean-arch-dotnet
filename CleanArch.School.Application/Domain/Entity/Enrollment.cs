@@ -7,7 +7,24 @@
 
     public class Enrollment
     {
-        public Enrollment(Student student, Level level, Module module, Classroom classroom, int sequence, DateOnly issueDate, int installments = 12)
+        private Enrollment(Student student, Classroom @class, Module module, Level level, EnrollmentCode code, ICollection<Invoice> invoices)
+        {
+            this.Student = student;
+            this.Class = @class;
+            this.Module = module;
+            this.Level = level;
+            this.Code = code;
+            this.Invoices = invoices;
+        }
+
+        public Enrollment(
+            Student student,
+            Level level,
+            Module module,
+            Classroom classroom,
+            int sequence,
+            DateOnly issueDate,
+            int installments = 12)
         {
             if (student.Age < module.MinimumAge) throw new Exception("Student below minimum age.");
             if (classroom.IsFinished(issueDate)) throw new Exception("Class is already finished.");
@@ -24,12 +41,12 @@
             this.Status = EnrollStatus.Active;
         }
 
-        public int Sequence { get; }
+        public int Sequence { get; private set; }
         public Student Student { get; }
         public Classroom Class { get; }
         public Module Module { get; }
         public Level Level { get; }
-        public DateOnly IssueDate { get; }
+        public DateOnly IssueDate { get; private set; }
         public EnrollmentCode Code { get; }
         public ICollection<Invoice> Invoices { get; }
         public EnrollStatus Status { get; private set; }
@@ -69,5 +86,28 @@
         }
 
         public void Cancel() => this.Status = EnrollStatus.Cancelled;
+
+        public static Enrollment Load(
+            int sequence,
+            Student student,
+            Classroom classroom,
+            Level level,
+            Module module,
+            DateOnly issueDate,
+            IEnumerable<Invoice> invoices,
+            EnrollStatus status)
+            => new(
+                   student,
+                   classroom,
+                   module,
+                   level,
+                   new EnrollmentCode(level, module, classroom, sequence, issueDate),
+                   new List<Invoice>(invoices)
+               )
+               {
+                   Sequence = sequence,
+                   IssueDate = issueDate,
+                   Status = status
+               };
     }
 }

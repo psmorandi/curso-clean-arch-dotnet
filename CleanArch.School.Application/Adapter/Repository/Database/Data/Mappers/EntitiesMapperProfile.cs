@@ -1,4 +1,4 @@
-﻿namespace CleanArch.School.Application.Adapter.Repository.Database.Entities.Mappers
+﻿namespace CleanArch.School.Application.Adapter.Repository.Database.Data.Mappers
 {
     using System;
     using AutoMapper;

@@ -1,4 +1,4 @@
-﻿namespace CleanArch.School.Application.Adapter.Repository.Database.Entities
+﻿namespace CleanArch.School.Application.Adapter.Repository.Database.Data
 {
     using System;
 

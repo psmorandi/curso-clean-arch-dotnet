@@ -6,7 +6,7 @@
     using Domain.Entity;
     using Domain.Repository;
     using Infra.Database;
-    using Database = Entities;
+    using Database = Data;
 
     public class LevelRepositoryDatabase : ILevelRepository
     {

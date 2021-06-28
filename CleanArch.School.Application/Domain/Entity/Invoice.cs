@@ -19,9 +19,9 @@
         }
 
         public string Code { get; }
-        public DateOnly DueDate { get; set; }
+        public DateOnly DueDate { get; }
         public decimal Amount { get; }
-        public ICollection<InvoiceEvent> InvoiceEvents { get; }
+        public ICollection<InvoiceEvent> InvoiceEvents { get; private set; }
 
         public void AddEvent(InvoiceEvent invoiceEvent)
         {
@@ -38,8 +38,7 @@
         public InvoiceStatus GetStatus(DateOnly currentDate)
         {
             if (this.GetBalance() == 0) return InvoiceStatus.Paid;
-            if (currentDate > this.DueDate) return InvoiceStatus.Overdue;
-            return InvoiceStatus.Open;
+            return currentDate > this.DueDate ? InvoiceStatus.Overdue : InvoiceStatus.Open;
         }
 
         public decimal GetPenalty(DateOnly currentDate)
@@ -55,6 +54,13 @@
             var balance = this.GetBalance();
             var numberOfOverdueDays = (currentDate.ToDateTime() - this.DueDate.ToDateTime()).Days;
             return Math.Round(balance * numberOfOverdueDays * DAILY_INTERESTS.ToPercentage(), 2).Truncate(2);
+        }
+
+        public static Invoice Load(string code, int day, int month, int year, decimal amount, ICollection<InvoiceEvent> invoiceEvents)
+        {
+            var invoice = new Invoice(code, day, month, year, amount);
+            invoice.InvoiceEvents = invoiceEvents;
+            return invoice;
         }
     }
 }

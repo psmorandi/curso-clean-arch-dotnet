@@ -1,7 +1,7 @@
 ﻿#pragma warning disable 8618
 namespace CleanArch.School.Application.Infra.Database
 {
-    using Adapter.Repository.Database.Entities;
+    using Adapter.Repository.Database.Data;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

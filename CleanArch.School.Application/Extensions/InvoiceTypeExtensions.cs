@@ -13,7 +13,7 @@
                 _ => "unknown"
             };
 
-        public static InvoiceEventType ToEnrollStatus(this string status)
+        public static InvoiceEventType ToInvoiceEventType(this string status)
             => status switch
             {
                 "payment" => InvoiceEventType.Payment,

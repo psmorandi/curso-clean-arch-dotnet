@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace CleanArch.School.Application.Adapter.Repository.Database.Entities
+﻿namespace CleanArch.School.Application.Adapter.Repository.Database.Data
 {
+    using System;
+
     public class Invoice
     {
         public string Enrollment { get; set; } = string.Empty;
