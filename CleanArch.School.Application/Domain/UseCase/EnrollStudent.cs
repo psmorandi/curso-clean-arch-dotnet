@@ -10,7 +10,7 @@
     using Factory;
     using Repository;
 
-    public class EnrollStudent
+    public class EnrollStudent : IEnrollStudent
     {
         private readonly IMapper outputDataMapper;
         private readonly IEnrollmentRepository enrollmentRepository;

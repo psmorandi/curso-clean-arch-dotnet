@@ -99,63 +99,65 @@
         private Task<Student> GetStudentAsync(string cpf)
         {
             return this.dbContext.Students.AsQueryable()
-                       .AsNoTracking()
-                       .Where(e => e.Cpf == cpf)
-                       .Select(e => new Student(e.Name, e.Cpf, e.BirthDate))
-                       .SingleAsync();
+                .AsNoTracking()
+                .Where(e => e.Cpf == cpf)
+                .Select(e => new Student(e.Name, e.Cpf, e.BirthDate))
+                .SingleAsync();
         }
 
         private Task<Level> GetLevelAsync(string level)
         {
             return this.dbContext.Levels.AsQueryable()
-                       .AsNoTracking()
-                       .Where(l => l.Code == level)
-                       .Select(l => new Level(l.Code, l.Description))
-                       .SingleAsync();
+                .AsNoTracking()
+                .Where(l => l.Code == level)
+                .Select(l => new Level(l.Code, l.Description))
+                .SingleAsync();
         }
 
-        private Task<Module> GetModuleAsync(string module)
+        private Task<Module> GetModuleAsync(string module, string level)
         {
             return this.dbContext.Modules.AsQueryable()
-                       .AsNoTracking()
-                       .Where(m => m.Code == module)
-                       .Select(m => new Module(m.Level, m.Code, m.Description, m.MinimumAge, m.Price))
-                       .SingleAsync();
+                .AsNoTracking()
+                .Where(m => m.Code == module && m.Level == level)
+                .Select(m => new Module(m.Level, m.Code, m.Description, m.MinimumAge, m.Price))
+                .SingleAsync();
         }
 
         private Task<Classroom> GetClassroomAsync(string classroom)
         {
             return this.dbContext.Classrooms.AsQueryable()
-                       .AsNoTracking()
-                       .Where(c => c.Code == classroom)
-                       .Select(c => new Classroom(c.Level, c.Module, c.Code, c.Capacity, c.StartDate.ToDateOnly(), c.EndDate.ToDateOnly()))
-                       .SingleAsync();
+                .AsNoTracking()
+                .Where(c => c.Code == classroom)
+                .Select(c => new Classroom(c.Level, c.Module, c.Code, c.Capacity, c.StartDate.ToDateOnly(), c.EndDate.ToDateOnly()))
+                .SingleAsync();
         }
 
         private Task<List<Database.Invoice>> GetInvoicesAsync(Database.Enrollment enrollment)
         {
             return this.dbContext.Invoices.AsQueryable()
-                       .AsNoTracking()
-                       .Where(i => i.Enrollment == enrollment.Code)
-                       .ToListAsync();
+                .AsNoTracking()
+                .Where(i => i.Enrollment == enrollment.Code)
+                .OrderBy(i => i.Year)
+                .ThenBy(i => i.Month)
+                .ToListAsync();
         }
 
         private Task<List<Database.InvoiceEvent>> GetInvoicesAsync(Database.Invoice invoice)
         {
             return this.dbContext.InvoiceEvents.AsQueryable()
-                       .AsNoTracking()
-                       .Where(
-                           e => e.Enrollment == invoice.Enrollment &&
-                                e.Month == invoice.Month &&
-                                e.Year == invoice.Year)
-                       .ToListAsync();
+                .AsNoTracking()
+                .Where(
+                    e => e.Enrollment == invoice.Enrollment &&
+                         e.Month == invoice.Month &&
+                         e.Year == invoice.Year)
+                .ToListAsync();
         }
 
         private async Task<Enrollment?> CreateEnrollmentAsync(Database.Enrollment enrollment)
         {
             var student = await this.GetStudentAsync(enrollment.Student);
             var level = await this.GetLevelAsync(enrollment.Level);
-            var module = await this.GetModuleAsync(enrollment.Module);
+            var module = await this.GetModuleAsync(enrollment.Module, enrollment.Level);
             var classroom = await this.GetClassroomAsync(enrollment.Classroom);
             var dbInvoices = await this.GetInvoicesAsync(enrollment);
 

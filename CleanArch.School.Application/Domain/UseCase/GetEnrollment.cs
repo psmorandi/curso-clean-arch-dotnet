@@ -8,7 +8,7 @@
     using Factory;
     using Repository;
 
-    public class GetEnrollment
+    public class GetEnrollment : IGetEnrollment
     {
         private readonly IMapper outputDataMapper;
         private readonly IEnrollmentRepository enrollmentRepository;

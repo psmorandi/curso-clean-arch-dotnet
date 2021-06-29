@@ -25,7 +25,7 @@
         public BaseDatabaseTests(IMapper mapper)
         {
             var dbContextOptions = new DbContextOptionsBuilder<SchoolDbContext>()
-                .UseNpgsql("User ID=postgres;Password=adm123;Host=localhost;Port=5432;Database=school;Pooling=true;Connection Lifetime=0").Options;
+                .UseNpgsql("User ID=postgres;Password=adm123;Host=localhost;Port=5432;Database=school-ut;Pooling=true;Connection Lifetime=0").Options;
             this.dbContext = new SchoolDbContext(dbContextOptions);
             this.repositoryFactory = new RepositoryDatabaseAbstractFactory(this.dbContext, mapper);
             this.levelRepository = this.repositoryFactory.CreateLevelRepository();

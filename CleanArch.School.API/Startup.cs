@@ -1,6 +1,11 @@
 namespace CleanArch.School.API
 {
+    using Application.Domain.Entity;
+    using Application.Domain.Factory;
+    using Application.Domain.UseCase;
     using Application.Infra.Database;
+    using CleanArch.School.Application.Adapter.Controller;
+    using CleanArch.School.Application.Adapter.Factory;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
@@ -42,6 +47,11 @@ namespace CleanArch.School.API
             services.AddDbContext<SchoolDbContext>(
                 options =>
                     options.UseNpgsql(this.Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<IEnrollmentController, EnrollmentController>();
+            services.AddTransient<IEnrollStudent, EnrollStudent>();
+            services.AddTransient<IGetEnrollment, GetEnrollment>();
+            services.AddAutoMapper(typeof(Enrollment));
+            services.AddTransient<IRepositoryAbstractFactory, RepositoryDatabaseAbstractFactory>();
         }
     }
 }
