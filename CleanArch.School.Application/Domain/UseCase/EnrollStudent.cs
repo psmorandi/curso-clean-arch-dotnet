@@ -37,12 +37,16 @@
             var numberOfStudentsInClass = (await this.enrollmentRepository.FindAllByClass(level.Code, module.Code, classroom.Code)).ToList().Count;
             if (numberOfStudentsInClass + 1 > classroom.Capacity) throw new Exception("Class is over capacity.");
             var sequence = 1 + await this.enrollmentRepository.Count();
-            return this.CreateEnrollment(student, level, module, classroom, currentDate, sequence, inputData.Installments);
+            return await this.CreateEnrollment(student, level, module, classroom, currentDate, sequence, inputData.Installments);
         }
 
-        private async Task<bool> IsAlreadyEnrolled(Student student) => await this.enrollmentRepository.FindByCpf(student.Cpf.Value) != null;
+        private async Task<bool> IsAlreadyEnrolled(Student student)
+        {
+            var enrollment = await this.enrollmentRepository.FindByCpf(student.Cpf.Value);
+            return enrollment != null;
+        }
 
-        private EnrollStudentOutputData CreateEnrollment(
+        private async Task<EnrollStudentOutputData> CreateEnrollment(
             Student student,
             Level level,
             Module module,
@@ -52,7 +56,7 @@
             int installments)
         {
             var enrollment = new Enrollment(student, level, module, classroom, sequence, currentDate, installments);
-            this.enrollmentRepository.Save(enrollment);
+            await this.enrollmentRepository.Save(enrollment);
             return this.outputDataMapper.Map<EnrollStudentOutputData>(enrollment, currentDate);
         }
     }

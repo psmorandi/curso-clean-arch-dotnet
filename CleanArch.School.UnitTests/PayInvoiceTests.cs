@@ -53,7 +53,7 @@
         public async Task Should_pay_overdue_invoice()
         {
             var refDate = DateTime.UtcNow.Date.AddDays(-5).ToDateOnly();
-            var code = this.CreateEnrollmentWith(refDate);
+            var code = await this.CreateEnrollmentWith(refDate);
             var payInvoice = new PayInvoice(this.repositoryFactory);
             var enrollment = await this.GetEnrollment(code, refDate);
             var balanceBeforePayment = enrollment.Balance;

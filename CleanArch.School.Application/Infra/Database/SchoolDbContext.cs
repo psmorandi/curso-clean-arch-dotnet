@@ -106,7 +106,8 @@ namespace CleanArch.School.Application.Infra.Database
         {
             public void Configure(EntityTypeBuilder<InvoiceEvent> builder)
             {
-                builder.HasNoKey();
+                builder.HasKey(_ => _.Id);
+                builder.Property(_ => _.Id).UseIdentityAlwaysColumn();
                 builder.Property(_ => _.Enrollment).IsRequired();
                 builder.Property(_ => _.Month).IsRequired();
                 builder.Property(_ => _.Year).IsRequired();

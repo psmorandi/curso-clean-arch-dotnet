@@ -16,6 +16,7 @@
         {
             var enrollment = await this.enrollmentRepository.FindByCode(request.Code);
             enrollment.PayInvoice(request.Month, request.Year, request.Amount, request.PaymentDate);
+            await this.enrollmentRepository.Update(enrollment);
         }
     }
 }

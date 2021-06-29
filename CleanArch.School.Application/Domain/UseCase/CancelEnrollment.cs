@@ -15,6 +15,7 @@
         {
             var enrollment = await this.enrollmentRepository.FindByCode(code);
             enrollment.Cancel();
+            await this.enrollmentRepository.Update(enrollment);
         }
     }
 }

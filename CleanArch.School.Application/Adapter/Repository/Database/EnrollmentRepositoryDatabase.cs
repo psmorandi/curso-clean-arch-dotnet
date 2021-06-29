@@ -27,21 +27,6 @@
         {
             this.dbContext.Students.Add(this.mapper.Map<Database.Student>(enrollment.Student));
             this.dbContext.Invoices.AddRange(this.mapper.Map<IEnumerable<Database.Invoice>>(enrollment.Invoices));
-            foreach (var invoice in enrollment.Invoices)
-            {
-                var invoiceEvents = invoice.InvoiceEvents
-                    .Select(
-                        _ => new Database.InvoiceEvent
-                             {
-                                 Amount = _.Amount,
-                                 Enrollment = enrollment.Code.Value,
-                                 Month = invoice.DueDate.Month,
-                                 Year = invoice.DueDate.Year,
-                                 Type = _.Type.GetValue()
-                             });
-                this.dbContext.InvoiceEvents.AddRange(invoiceEvents);
-            }
-
             this.dbContext.Enrollments.Add(this.mapper.Map<Database.Enrollment>(enrollment));
             await this.dbContext.SaveChangesAsync();
         }
@@ -80,55 +65,84 @@
             return await this.CreateEnrollmentAsync(enrollment) ?? throw new Exception("Enrollment not found.");
         }
 
+        public async Task Update(Enrollment enrollment)
+        {
+            var enrollmentData = await this.dbContext.Enrollments.FindAsync(enrollment.Code.Value);
+            enrollmentData.Installments = enrollment.Invoices.Count;
+            enrollmentData.Status = enrollment.Status.GetValue();
+            foreach (var invoice in enrollment.Invoices)
+            {
+                var code = invoice.Code;
+                var month = invoice.DueDate.Month;
+                var year = invoice.DueDate.Year;
+                var invoiceData = await this.dbContext.Invoices.FindAsync(code, month, year);
+                invoiceData.Amount = invoice.Amount;
+                await this.RemoveAllInvoicesEvents(code, month, year);
+                var invoiceEvents = invoice.InvoiceEvents
+                    .Select(
+                        _ => new Database.InvoiceEvent
+                             {
+                                 Amount = _.Amount,
+                                 Enrollment = code,
+                                 Month = month,
+                                 Year = year,
+                                 Type = _.Type.GetValue()
+                             });
+                this.dbContext.InvoiceEvents.AddRange(invoiceEvents);
+            }
+
+            await this.dbContext.SaveChangesAsync();
+        }
+
         public async Task<int> Count() => await this.dbContext.Enrollments.CountAsync();
 
-        private async Task<Student> GetStudentAsync(string cpf)
+        private Task<Student> GetStudentAsync(string cpf)
         {
-            return await this.dbContext.Students.AsQueryable()
+            return this.dbContext.Students.AsQueryable()
                        .AsNoTracking()
                        .Where(e => e.Cpf == cpf)
                        .Select(e => new Student(e.Name, e.Cpf, e.BirthDate))
                        .SingleAsync();
         }
 
-        private async Task<Level> GetLevelAsync(string level)
+        private Task<Level> GetLevelAsync(string level)
         {
-            return await this.dbContext.Levels.AsQueryable()
+            return this.dbContext.Levels.AsQueryable()
                        .AsNoTracking()
                        .Where(l => l.Code == level)
                        .Select(l => new Level(l.Code, l.Description))
                        .SingleAsync();
         }
 
-        private async Task<Module> GetModuleAsync(string module)
+        private Task<Module> GetModuleAsync(string module)
         {
-            return await this.dbContext.Modules.AsQueryable()
+            return this.dbContext.Modules.AsQueryable()
                        .AsNoTracking()
                        .Where(m => m.Code == module)
                        .Select(m => new Module(m.Level, m.Code, m.Description, m.MinimumAge, m.Price))
                        .SingleAsync();
         }
 
-        private async Task<Classroom> GetClassroomAsync(string classroom)
+        private Task<Classroom> GetClassroomAsync(string classroom)
         {
-            return await this.dbContext.Classrooms.AsQueryable()
+            return this.dbContext.Classrooms.AsQueryable()
                        .AsNoTracking()
                        .Where(c => c.Code == classroom)
                        .Select(c => new Classroom(c.Level, c.Module, c.Code, c.Capacity, c.StartDate.ToDateOnly(), c.EndDate.ToDateOnly()))
                        .SingleAsync();
         }
 
-        private async Task<List<Database.Invoice>> GetInvoicesAsync(Database.Enrollment enrollment)
+        private Task<List<Database.Invoice>> GetInvoicesAsync(Database.Enrollment enrollment)
         {
-            return await this.dbContext.Invoices.AsQueryable()
+            return this.dbContext.Invoices.AsQueryable()
                        .AsNoTracking()
                        .Where(i => i.Enrollment == enrollment.Code)
                        .ToListAsync();
         }
 
-        private async Task<List<Database.InvoiceEvent>> GetInvoicesAsync(Database.Invoice invoice)
+        private Task<List<Database.InvoiceEvent>> GetInvoicesAsync(Database.Invoice invoice)
         {
-            return await this.dbContext.InvoiceEvents.AsQueryable()
+            return this.dbContext.InvoiceEvents.AsQueryable()
                        .AsNoTracking()
                        .Where(
                            e => e.Enrollment == invoice.Enrollment &&
@@ -179,6 +193,15 @@
                 invoices,
                 enrollment.Status.ToEnrollStatus()
             );
+        }
+
+        private async Task RemoveAllInvoicesEvents(string code, int month, int year)
+        {
+            var invoiceEventsData =
+                await this.dbContext.InvoiceEvents.AsQueryable()
+                    .Where(e => e.Enrollment == code && e.Month == month && e.Year == year)
+                    .ToListAsync();
+            this.dbContext.InvoiceEvents.RemoveRange(invoiceEventsData);
         }
     }
 }

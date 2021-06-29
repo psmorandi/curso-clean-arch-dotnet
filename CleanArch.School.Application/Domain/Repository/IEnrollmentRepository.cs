@@ -14,6 +14,8 @@
 
         Task<Enrollment> FindByCode(string code);
 
+        Task Update(Enrollment enrollment);
+
         Task<int> Count();
     }
 }

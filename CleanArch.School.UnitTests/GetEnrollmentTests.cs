@@ -13,14 +13,13 @@
         [Fact]
         public async Task Should_get_enrollment_by_code_with_invoice_balance()
         {
-            const string cpf = "275.485.810-50";
+            var cpf = new Cpf("275.485.810-50");
             var issueDate = DateTime.UtcNow.Date.ToDateOnly();
-            var student = CreateStudent(cpf, 15);
-            var enrollment = CreateEnrollment(student, issueDate);
-            await this.enrollmentRepository.Save(enrollment);
+            var studentName = $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(4)}";
+            await this.CreateRandomEnrollment(issueDate, 1, cpf.Value, studentName, 17000);
             var response = await this.getEnrollment.Execute($"{issueDate.Year}EM1A0001", issueDate);
-            Assert.Equal(student.Name.Value, response.StudentName);
-            Assert.Equal(student.Cpf.Value, response.StudentCpf);
+            Assert.Equal(studentName, response.StudentName);
+            Assert.Equal(cpf.Value, response.StudentCpf);
             Assert.Equal(new decimal(17000), response.Balance);
         }
 
@@ -38,7 +37,7 @@
         {
             var today = DateTime.UtcNow.ToDateOnly();
             var refDate = today.AddDays(-5);
-            var code = this.CreateEnrollmentWith(refDate);
+            var code = await this.CreateEnrollmentWith(refDate);
             var enrollmentData = await this.getEnrollment.Execute(code, today);
             var overdueInvoice = enrollmentData.Invoices.ElementAt(0);
             Assert.Equal(InvoiceStatus.Overdue, overdueInvoice.Status);

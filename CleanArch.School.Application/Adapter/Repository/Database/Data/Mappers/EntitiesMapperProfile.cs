@@ -21,7 +21,10 @@
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Period.StartDate.ToDateTime()))
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.Period.EndDate.ToDateTime()));
             this.CreateMap<Domain.Entity.Student, Student>()
-                .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.Birthday.ToDateTime()));
+                .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.Birthday.ToDateTime()))
+                .ForMember(dest => dest.Cpf, opt => opt.MapFrom(src => src.Cpf.Value))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.Value))
+                ;
             this.CreateMap<Domain.Entity.Invoice, Invoice>()
                 .ForMember(dest => dest.Enrollment, opt => opt.MapFrom(src => src.Code))
                 .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => src.DueDate.ToDateTime()))

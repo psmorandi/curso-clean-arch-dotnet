@@ -2,47 +2,35 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Application.Adapter.Factory;
     using Application.Domain.Entity;
-    using Application.Domain.Factory;
-    using Application.Domain.Repository;
-    using Application.Domain.UseCase;
     using Application.Domain.UseCase.Data;
     using Application.Extensions;
     using AutoMapper;
 
     // ReSharper disable InconsistentNaming
-    public abstract class BaseEnrollmentTests : BaseTests
+    public abstract class BaseEnrollmentTests : BaseDatabaseTests
     {
-        protected readonly EnrollStudent enrollStudent;
-        protected readonly GetEnrollment getEnrollment;
-        protected readonly IRepositoryAbstractFactory repositoryFactory;
-        protected readonly ILevelRepository levelRepository;
-        protected readonly IModuleRepository moduleRepository;
-        protected readonly IClassroomRepository classroomRepository;
-        protected readonly IEnrollmentRepository enrollmentRepository;
-
         protected BaseEnrollmentTests()
+            : base(new MapperConfiguration(cfg => cfg.AddMaps(typeof(Enrollment).Assembly)).CreateMapper()) { }
+
+        protected Task<EnrollStudentInputData> CreateEnrollmentRequest(string cpf, string level, string module, string classroom, int installments = 1)
         {
-            var configuration =
-                new MapperConfiguration(cfg => cfg.AddMaps(typeof(Enrollment).Assembly));
-            var outputDataMapper = configuration.CreateMapper();
-            this.repositoryFactory = new RepositoryMemoryAbstractFactory();
-            this.levelRepository = this.repositoryFactory.CreateLevelRepository();
-            this.moduleRepository = this.repositoryFactory.CreateModuleRepository();
-            this.classroomRepository = this.repositoryFactory.CreateClassroomRepository();
-            this.enrollmentRepository = this.repositoryFactory.CreateEnrollmentRepository();
-            this.enrollStudent = new EnrollStudent(this.repositoryFactory, outputDataMapper);
-            this.getEnrollment = new GetEnrollment(this.repositoryFactory, outputDataMapper);
+            return this.CreateEnrollmentRequest(
+                cpf,
+                $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
+                level,
+                module,
+                classroom,
+                installments);
         }
 
-        protected async Task<EnrollStudentInputData> CreateEnrollmentRequest(string cpf, string level, string module, string classroom, int installments = 1)
+        protected async Task<EnrollStudentInputData> CreateEnrollmentRequest(string cpf, string name, string level, string module, string classroom, int installments)
         {
             var minimumAge = (await this.moduleRepository.FindByCode(level, module)).MinimumAge;
             var classCode = (await this.classroomRepository.FindByCode(level, module, classroom)).Code;
             return new EnrollStudentInputData
                    {
-                       StudentName = $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
+                       StudentName = name,
                        StudentCpf = cpf,
                        StudentBirthday = DateTime.Now.Date.AddYears(-minimumAge),
                        Level = level,
@@ -52,10 +40,7 @@
                    };
         }
 
-        protected async Task<EnrollStudentOutputData> CreateRandomEnrollment(DateOnly issueDate)
-        {
-            return await this.CreateRandomEnrollment(issueDate, 12);
-        }
+        protected async Task<EnrollStudentOutputData> CreateRandomEnrollment(DateOnly issueDate) => await this.CreateRandomEnrollment(issueDate, 12);
 
         protected async Task<EnrollStudentOutputData> CreateRandomEnrollment(DateOnly issueDate, int installments)
         {
@@ -66,23 +51,32 @@
             return await this.enrollStudent.Execute(enrollmentRequest, issueDate);
         }
 
-        protected string CreateEnrollmentWith(DateOnly issueDate)
+        protected async Task<EnrollStudentOutputData> CreateRandomEnrollment(DateOnly issueDate, int installments, string cpf, string name, int modulePrice)
+        {
+            await this.levelRepository.Save(new Level("EM", "Ensino Médio"));
+            await this.moduleRepository.Save(new Module("EM", "1", "1o Ano", 15, modulePrice));
+            await this.classroomRepository.Save(new Classroom("EM", "1", "A", 10, issueDate, issueDate.AddMonths(12)));
+            var enrollmentRequest = await this.CreateEnrollmentRequest(cpf, name, "EM", "1", "A", installments);
+            return await this.enrollStudent.Execute(enrollmentRequest, issueDate);
+        }
+
+        protected async Task<string> CreateEnrollmentWith(DateOnly issueDate)
         {
             var level = new Level("EM", "Ensino Médio");
-            this.levelRepository.Save(level);
+            await this .levelRepository.Save(level);
             var module = new Module("EM", "1", "1o Ano", 15, 17000);
-            this.moduleRepository.Save(module);
+            await this .moduleRepository.Save(module);
             var classroom = new Classroom("EM", "1", "A", 10, issueDate, issueDate.AddMonths(12));
-            this.classroomRepository.Save(classroom);
+            await this.classroomRepository.Save(classroom);
             var student = new Student(
                 $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
                 "755.525.774-26",
                 DateTime.Now.Date.AddYears(-15));
             var enrollment = new Enrollment(student, level, module, classroom, 1, issueDate);
-            this.enrollmentRepository.Save(enrollment);
+            await this.enrollmentRepository.Save(enrollment);
             return enrollment.Code.Value;
         }
 
-        protected async Task<GetEnrollmentOutputData> GetEnrollment(string code, DateOnly refDate) => await this.getEnrollment.Execute(code, refDate);
+        protected Task<GetEnrollmentOutputData> GetEnrollment(string code, DateOnly refDate) => this.getEnrollment.Execute(code, refDate);
     }
 }

@@ -27,6 +27,8 @@
         public Task<Enrollment> FindByCode(string code) =>
             Task.FromResult(this.enrollments.SingleOrDefault(_ => _.Code.Value == code) ?? throw new Exception("Enrollment not found."));
 
+        public Task Update(Enrollment enrollment) => Task.CompletedTask;
+
         public Task<int> Count() => Task.FromResult(this.enrollments.Count);
     }
 }
