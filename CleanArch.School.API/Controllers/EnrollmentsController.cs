@@ -3,8 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using Application.Adapter.Controller;
-    using CleanArch.School.Application.Adapter.Controller.Data;
-    using CleanArch.School.Application.Domain.UseCase.Data;
+    using Application.UseCase.Data;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
@@ -32,6 +31,7 @@
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
         public async Task<object> Get([FromBody] EnrollStudentInputData enrollRequest)
         {
+            //create enroll dto request and response
             var response = await this.enrollmentController.EnrollStudent(enrollRequest, DateTime.UtcNow);
             if (response.StatusCode != StatusCodes.Status200OK) return this.Problem(response.Data.ToString(), statusCode: response.StatusCode);
             return response.Data;

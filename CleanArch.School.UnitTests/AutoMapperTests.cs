@@ -1,7 +1,7 @@
 ﻿namespace CleanArch.School.UnitTests
 {
-    using Application.Domain.Entity;
     using AutoMapper;
+    using Domain.Entity;
     using Xunit;
 
     public class AutoMapperTests

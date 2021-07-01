@@ -2,9 +2,9 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Application.Domain.Entity;
-    using Application.Domain.UseCase;
-    using Application.Extensions;
+    using Application.UseCase;
+    using Domain.Entity;
+    using TypeExtensions;
     using Xunit;
 
     public class CancelEnrollmentTests : BaseEnrollmentTests

@@ -1,11 +1,11 @@
 namespace CleanArch.School.API
 {
-    using Application.Domain.Entity;
-    using Application.Domain.Factory;
-    using Application.Domain.UseCase;
-    using Application.Infra.Database;
-    using CleanArch.School.Application.Adapter.Controller;
-    using CleanArch.School.Application.Adapter.Factory;
+    using Application.Adapter.Controller;
+    using Application.Factory;
+    using Application.UseCase;
+    using Domain.Entity;
+    using Infrastructure.Database;
+    using Infrastructure.Factory;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;

@@ -3,8 +3,8 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using Application.Domain.Entity;
-    using Application.Extensions;
+    using Domain.Entity;
+    using TypeExtensions;
     using Xunit;
 
     public class GetEnrollmentTests : BaseEnrollmentTests

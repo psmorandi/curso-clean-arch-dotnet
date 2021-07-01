@@ -1,10 +1,11 @@
 ﻿namespace CleanArch.School.UnitTests
 {
-    using Application.Adapter.Factory;
-    using Application.Domain.Factory;
-    using Application.Domain.Repository;
-    using Application.Domain.UseCase;
+    using Application.Factory;
+    using Application.Repository;
+    using Application.UseCase;
     using AutoMapper;
+    using Domain.Entity;
+    using Infrastructure.Factory;
 
     // ReSharper disable InconsistentNaming
     public abstract class BaseInMemoryTests : BaseTests
@@ -17,8 +18,14 @@
         protected readonly IClassroomRepository classroomRepository;
         protected readonly IEnrollmentRepository enrollmentRepository;
 
-        protected BaseInMemoryTests(IMapper mapper)
+        protected BaseInMemoryTests()
         {
+            var mapper = new MapperConfiguration(
+                cfg =>
+                    cfg.AddMaps(
+                        typeof(Enrollment).Assembly,
+                        typeof(Infrastructure.Database.Data.Enrollment).Assembly,
+                        typeof(PayInvoice).Assembly)).CreateMapper();
             this.repositoryFactory = new RepositoryMemoryAbstractFactory();
             this.levelRepository = this.repositoryFactory.CreateLevelRepository();
             this.moduleRepository = this.repositoryFactory.CreateModuleRepository();

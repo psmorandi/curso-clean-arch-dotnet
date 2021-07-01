@@ -3,9 +3,9 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using Application.Domain.UseCase;
-    using Application.Domain.UseCase.Data;
-    using Application.Extensions;
+    using Application.UseCase;
+    using Application.UseCase.Data;
+    using TypeExtensions;
     using Xunit;
 
     public class PayInvoiceTests : BaseEnrollmentTests
@@ -25,7 +25,7 @@
                                         Amount = invoiceToPay.Amount
                                     };
             var payInvoice = new PayInvoice(this.repositoryFactory);
-            await payInvoice .Execute(payInvoiceRequest);
+            await payInvoice.Execute(payInvoiceRequest);
             var updatedEnrollment = await this.GetEnrollment(enrollment.Code, date);
             Assert.Equal(expectedBalanceAfterPayment, updatedEnrollment.Balance);
         }
@@ -66,7 +66,7 @@
                                         Amount = invoiceToPay.Amount + invoiceToPay.Interests + invoiceToPay.Penalty
                                     };
             await payInvoice.Execute(payInvoiceRequest);
-            var updatedEnrollment = await this .GetEnrollment(enrollment.Code, refDate);
+            var updatedEnrollment = await this.GetEnrollment(enrollment.Code, refDate);
             Assert.Equal(balanceBeforePayment - invoiceToPay.Amount, updatedEnrollment.Balance);
         }
     }

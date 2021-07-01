@@ -1,7 +1,7 @@
 ﻿namespace CleanArch.School.UnitTests
 {
     using System;
-    using Application.Domain.Entity;
+    using Domain.Entity;
     using Xunit;
 
     public class CpfValidatorTests

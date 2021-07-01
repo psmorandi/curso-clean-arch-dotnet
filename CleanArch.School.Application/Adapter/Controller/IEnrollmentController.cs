@@ -3,7 +3,7 @@
     using System;
     using System.Threading.Tasks;
     using Data;
-    using Domain.UseCase.Data;
+    using UseCase.Data;
 
     public interface IEnrollmentController
     {

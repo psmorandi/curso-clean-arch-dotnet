@@ -2,12 +2,13 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Application.Adapter.Factory;
-    using Application.Domain.Factory;
-    using Application.Domain.Repository;
-    using Application.Domain.UseCase;
-    using Application.Infra.Database;
+    using Application.Factory;
+    using Application.Repository;
+    using Application.UseCase;
     using AutoMapper;
+    using Domain.Entity;
+    using Infrastructure.Database;
+    using Infrastructure.Factory;
     using Microsoft.EntityFrameworkCore;
 
     // ReSharper disable InconsistentNaming
@@ -22,8 +23,14 @@
         protected readonly IClassroomRepository classroomRepository;
         protected readonly IEnrollmentRepository enrollmentRepository;
 
-        public BaseDatabaseTests(IMapper mapper)
+        public BaseDatabaseTests()
         {
+            var mapper = new MapperConfiguration(
+                cfg =>
+                    cfg.AddMaps(
+                        typeof(Enrollment).Assembly,
+                        typeof(Infrastructure.Database.Data.Enrollment).Assembly,
+                        typeof(PayInvoice).Assembly)).CreateMapper();
             var dbContextOptions = new DbContextOptionsBuilder<SchoolDbContext>()
                 .UseNpgsql("User ID=postgres;Password=adm123;Host=localhost;Port=5432;Database=school-ut;Pooling=true;Connection Lifetime=0").Options;
             this.dbContext = new SchoolDbContext(dbContextOptions);

@@ -4,9 +4,9 @@ namespace CleanArch.School.UnitTests
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Application.Domain.Entity;
-    using Application.Domain.UseCase.Data;
-    using Application.Extensions;
+    using Application.UseCase.Data;
+    using Domain.Entity;
+    using TypeExtensions;
     using Xunit;
 
     public class EnrollStudentTests : BaseEnrollmentTests

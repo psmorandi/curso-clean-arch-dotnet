@@ -3,9 +3,9 @@
     using System;
     using System.Threading.Tasks;
     using Data;
-    using Domain.UseCase;
-    using Domain.UseCase.Data;
-    using Extensions;
+    using TypeExtensions;
+    using UseCase;
+    using UseCase.Data;
 
     public class EnrollmentController : IEnrollmentController
     {

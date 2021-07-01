@@ -2,27 +2,25 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Application.Domain.Entity;
-    using Application.Domain.UseCase.Data;
-    using Application.Extensions;
+    using Application.UseCase.Data;
     using AutoMapper;
+    using Domain.Entity;
+    using TypeExtensions;
 
     // ReSharper disable InconsistentNaming
-    public abstract class BaseEnrollmentTests : BaseDatabaseTests
+    public abstract class BaseEnrollmentTests : BaseInMemoryTests
     {
         protected BaseEnrollmentTests()
-            : base(new MapperConfiguration(cfg => cfg.AddMaps(typeof(Enrollment).Assembly)).CreateMapper()) { }
+            : base() { }
 
-        protected Task<EnrollStudentInputData> CreateEnrollmentRequest(string cpf, string level, string module, string classroom, int installments = 1)
-        {
-            return this.CreateEnrollmentRequest(
+        protected Task<EnrollStudentInputData> CreateEnrollmentRequest(string cpf, string level, string module, string classroom, int installments = 1) =>
+            this.CreateEnrollmentRequest(
                 cpf,
                 $"{StringExtensions.GenerateRandomString(5)} {StringExtensions.GenerateRandomString(7)}",
                 level,
                 module,
                 classroom,
                 installments);
-        }
 
         protected async Task<EnrollStudentInputData> CreateEnrollmentRequest(string cpf, string name, string level, string module, string classroom, int installments)
         {
@@ -63,9 +61,9 @@
         protected async Task<string> CreateEnrollmentWith(DateOnly issueDate)
         {
             var level = new Level("EM", "Ensino Médio");
-            await this .levelRepository.Save(level);
+            await this.levelRepository.Save(level);
             var module = new Module("EM", "1", "1o Ano", 15, 17000);
-            await this .moduleRepository.Save(module);
+            await this.moduleRepository.Save(module);
             var classroom = new Classroom("EM", "1", "A", 10, issueDate, issueDate.AddMonths(12));
             await this.classroomRepository.Save(classroom);
             var student = new Student(
