@@ -1,8 +1,11 @@
 namespace CleanArch.School.API
 {
-    using Application.Adapter.Controller;
+    using System;
     using Application.Factory;
     using Application.UseCase;
+    using CleanArch.School.API.Filters;
+    using CleanArch.School.API.Injection;
+    using Controllers;
     using Domain.Entity;
     using Infrastructure.Database;
     using Infrastructure.Factory;
@@ -13,6 +16,7 @@ namespace CleanArch.School.API
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.OpenApi.Models;
+    using System.Runtime.CompilerServices;
 
     public class Startup
     {
@@ -42,16 +46,23 @@ namespace CleanArch.School.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "CleanArch.School.API", Version = "v1" }); });
+            services.AddControllers(
+                options =>
+                {
+                    options.Filters.Add(typeof(ValidateModelAttribute));
+                });
+            services.AddSwaggerGen(
+                c =>
+                {
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "CleanArch.School.API", Version = "v1" });
+                    c.MapType<DateOnly>(() => new OpenApiSchema { Type = "string" });
+                });
             services.AddDbContext<SchoolDbContext>(
                 options =>
                     options.UseNpgsql(this.Configuration.GetConnectionString("DefaultConnection")));
-            services.AddTransient<IEnrollmentController, EnrollmentController>();
-            services.AddTransient<IEnrollStudent, EnrollStudent>();
-            services.AddTransient<IGetEnrollment, GetEnrollment>();
-            services.AddAutoMapper(typeof(Enrollment));
-            services.AddTransient<IRepositoryAbstractFactory, RepositoryDatabaseAbstractFactory>();
+            services.AddUseCases();
+            services.AddRepositories();
+            services.ConfigureAutoMapper();
         }
     }
 }

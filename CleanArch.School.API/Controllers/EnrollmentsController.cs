@@ -2,39 +2,50 @@
 {
     using System;
     using System.Threading.Tasks;
-    using Application.Adapter.Controller;
+    using Application.UseCase;
     using Application.UseCase.Data;
+    using AutoMapper;
+    using Data;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using TypeExtensions;
 
     [ApiController]
+    [Route("[controller]")]
     public class EnrollmentsController : ControllerBase
     {
-        private readonly IEnrollmentController enrollmentController;
+        private readonly IEnrollStudent enrollStudentUseCase;
+        private readonly IGetEnrollment getEnrollmentUseCase;
+        private readonly IMapper mapper;
 
-        public EnrollmentsController(IEnrollmentController enrollmentController) => this.enrollmentController = enrollmentController;
+        public EnrollmentsController(
+            IEnrollStudent enrollStudentUseCase,
+            IGetEnrollment getEnrollmentUseCase,
+            IMapper mapper)
+        {
+            this.enrollStudentUseCase = enrollStudentUseCase;
+            this.getEnrollmentUseCase = getEnrollmentUseCase;
+            this.mapper = mapper;
+        }
 
         [HttpGet]
-        [Route("~/enrollments/{code}")]
-        [ProducesResponseType(typeof(EnrollStudentOutputData), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<object> Get(string code)
+        [Route("{code}")]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(EnrollmentResponse), StatusCodes.Status200OK)]
+        public async Task<EnrollmentResponse> Get(string code)
         {
-            var response = await this.enrollmentController.GetEnrollment(code, DateTime.UtcNow);
-            if (response.StatusCode != StatusCodes.Status200OK) return this.Problem(response.Data.ToString(), statusCode: response.StatusCode);
-            return response.Data;
+            var outputData = await this.getEnrollmentUseCase.Execute(code, DateTime.UtcNow.ToDateOnly());
+            return this.mapper.Map<EnrollmentResponse>(outputData);
         }
 
         [HttpPost]
-        [Route("~/enrollments")]
-        [ProducesResponseType(typeof(GetEnrollmentOutputData), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<object> Get([FromBody] EnrollStudentInputData enrollRequest)
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(EnrollStudentResponse), StatusCodes.Status200OK)]
+        public async Task<EnrollStudentResponse> Post([FromBody] EnrollStudentRequest enrollRequest)
         {
-            //create enroll dto request and response
-            var response = await this.enrollmentController.EnrollStudent(enrollRequest, DateTime.UtcNow);
-            if (response.StatusCode != StatusCodes.Status200OK) return this.Problem(response.Data.ToString(), statusCode: response.StatusCode);
-            return response.Data;
+            var inputData = this.mapper.Map<EnrollStudentInputData>(enrollRequest);
+            var outputData = await this.enrollStudentUseCase.Execute(inputData, DateTime.UtcNow.ToDateOnly());
+            return this.mapper.Map<EnrollStudentResponse>(outputData);
         }
     }
 }

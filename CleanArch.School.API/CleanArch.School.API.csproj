@@ -24,4 +24,8 @@
     <ProjectReference Include="..\CleanArch.School.Infrastructure\CleanArch.School.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Mappers\" />
+  </ItemGroup>
+
 </Project>
