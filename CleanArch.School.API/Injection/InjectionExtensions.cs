@@ -13,6 +13,7 @@
         {
             services.AddTransient<IEnrollStudent, EnrollStudent>();
             services.AddTransient<IGetEnrollment, GetEnrollment>();
+            services.AddTransient<IPayInvoice, PayInvoice>();
         }
 
         public static void ConfigureAutoMapper(this IServiceCollection services)

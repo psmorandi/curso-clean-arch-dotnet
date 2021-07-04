@@ -5,7 +5,7 @@
     using Factory;
     using Repository;
 
-    public class PayInvoice
+    public class PayInvoice : IPayInvoice
     {
         private readonly IEnrollmentRepository enrollmentRepository;
 

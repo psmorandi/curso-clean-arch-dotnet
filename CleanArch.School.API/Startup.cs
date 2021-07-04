@@ -1,14 +1,9 @@
 namespace CleanArch.School.API
 {
     using System;
-    using Application.Factory;
-    using Application.UseCase;
-    using CleanArch.School.API.Filters;
-    using CleanArch.School.API.Injection;
-    using Controllers;
-    using Domain.Entity;
+    using Filters;
     using Infrastructure.Database;
-    using Infrastructure.Factory;
+    using Injection;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.EntityFrameworkCore;
@@ -16,7 +11,6 @@ namespace CleanArch.School.API
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.OpenApi.Models;
-    using System.Runtime.CompilerServices;
 
     public class Startup
     {
@@ -47,10 +41,7 @@ namespace CleanArch.School.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers(
-                options =>
-                {
-                    options.Filters.Add(typeof(ValidateModelAttribute));
-                });
+                options => { options.Filters.Add(typeof(ValidateModelAttribute)); });
             services.AddSwaggerGen(
                 c =>
                 {
