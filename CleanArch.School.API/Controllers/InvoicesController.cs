@@ -1,26 +1,20 @@
 ﻿namespace CleanArch.School.API.Controllers
 {
-    using AutoMapper;
-    using CleanArch.School.Application.UseCase;
-    using Microsoft.AspNetCore.Mvc;
+    using System;
     using System.Threading.Tasks;
+    using Application.UseCase;
     using Application.UseCase.Data;
     using Data;
-    using System;
-    using CleanArch.School.TypeExtensions;
+    using Microsoft.AspNetCore.Mvc;
+    using TypeExtensions;
 
     [ApiController]
     [Route("[controller]")]
-    public class InvoicesController: ControllerBase
+    public class InvoicesController : ControllerBase
     {
         private readonly IPayInvoice payInvoice;
-        private readonly IMapper mapper;
 
-        public InvoicesController(IPayInvoice payInvoice, IMapper mapper)
-        {
-            this.payInvoice = payInvoice;
-            this.mapper = mapper;
-        }
+        public InvoicesController(IPayInvoice payInvoice) => this.payInvoice = payInvoice;
 
         [HttpPost]
         [Route("~/enrollments/{code}/invoices/{year:int}/{month:int}")]

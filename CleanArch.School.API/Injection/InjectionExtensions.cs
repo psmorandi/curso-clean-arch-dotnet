@@ -14,6 +14,7 @@
             services.AddTransient<IEnrollStudent, EnrollStudent>();
             services.AddTransient<IGetEnrollment, GetEnrollment>();
             services.AddTransient<IPayInvoice, PayInvoice>();
+            services.AddTransient<ICancelEnrollment, CancelEnrollment>();
         }
 
         public static void ConfigureAutoMapper(this IServiceCollection services)

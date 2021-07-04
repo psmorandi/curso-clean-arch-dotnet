@@ -16,15 +16,18 @@
     {
         private readonly IEnrollStudent enrollStudentUseCase;
         private readonly IGetEnrollment getEnrollmentUseCase;
+        private readonly ICancelEnrollment cancelEnrollmentUseCase;
         private readonly IMapper mapper;
 
         public EnrollmentsController(
             IEnrollStudent enrollStudentUseCase,
             IGetEnrollment getEnrollmentUseCase,
+            ICancelEnrollment cancelEnrollmentUseCase,
             IMapper mapper)
         {
             this.enrollStudentUseCase = enrollStudentUseCase;
             this.getEnrollmentUseCase = getEnrollmentUseCase;
+            this.cancelEnrollmentUseCase = cancelEnrollmentUseCase;
             this.mapper = mapper;
         }
 
@@ -46,6 +49,14 @@
             var inputData = this.mapper.Map<EnrollStudentInputData>(enrollRequest);
             var outputData = await this.enrollStudentUseCase.Execute(inputData, DateTime.UtcNow.ToDateOnly());
             return this.mapper.Map<EnrollStudentResponse>(outputData);
+        }
+
+        [HttpPut]
+        [Route("{code}/cancel")]
+        public async Task<IActionResult> ChangeEnrollmentStatus(string code)
+        {
+            await this.cancelEnrollmentUseCase.Execute(code);
+            return this.Ok();
         }
     }
 }

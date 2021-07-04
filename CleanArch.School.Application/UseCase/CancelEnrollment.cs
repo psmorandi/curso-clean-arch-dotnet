@@ -4,7 +4,7 @@
     using Factory;
     using Repository;
 
-    public class CancelEnrollment
+    public class CancelEnrollment : ICancelEnrollment
     {
         private readonly IEnrollmentRepository enrollmentRepository;
 
