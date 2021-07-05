@@ -17,17 +17,20 @@
         private readonly IEnrollStudent enrollStudentUseCase;
         private readonly IGetEnrollment getEnrollmentUseCase;
         private readonly ICancelEnrollment cancelEnrollmentUseCase;
+        private readonly IPayInvoice payInvoice;
         private readonly IMapper mapper;
 
         public EnrollmentsController(
             IEnrollStudent enrollStudentUseCase,
             IGetEnrollment getEnrollmentUseCase,
             ICancelEnrollment cancelEnrollmentUseCase,
+            IPayInvoice payInvoice,
             IMapper mapper)
         {
             this.enrollStudentUseCase = enrollStudentUseCase;
             this.getEnrollmentUseCase = getEnrollmentUseCase;
             this.cancelEnrollmentUseCase = cancelEnrollmentUseCase;
+            this.payInvoice = payInvoice;
             this.mapper = mapper;
         }
 
@@ -53,9 +56,26 @@
 
         [HttpPut]
         [Route("{code}/cancel")]
-        public async Task<IActionResult> ChangeEnrollmentStatus(string code)
+        public async Task<IActionResult> CancelEnrollment(string code)
         {
             await this.cancelEnrollmentUseCase.Execute(code);
+            return this.Ok();
+        }
+
+        [HttpPost]
+        [Route("{code}/invoices/{year:int}/{month:int}")]
+        public async Task<IActionResult> PayInvoice(string code, int year, int month, [FromBody] PayInvoiceRequest payInvoiceRequest)
+        {
+            await this.payInvoice.Execute(
+                new PayInvoiceInputData
+                {
+                    Code = code,
+                    Year = year,
+                    Month = month,
+                    Amount = payInvoiceRequest.Amount!.Value,
+                    PaymentDate = DateTime.UtcNow.ToDateOnly()
+                });
+
             return this.Ok();
         }
     }

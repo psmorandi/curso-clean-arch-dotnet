@@ -32,6 +32,8 @@ namespace CleanArch.School.API
 
             app.UseRouting();
 
+            app.UseCors("Any");
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
@@ -51,6 +53,15 @@ namespace CleanArch.School.API
             services.AddDbContext<SchoolDbContext>(
                 options =>
                     options.UseNpgsql(this.Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddCors(
+                options =>
+                {
+                    options.AddPolicy(
+                        "Any",
+                        builder => { builder.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader(); });
+                });
+
             services.AddUseCases();
             services.AddRepositories();
             services.ConfigureAutoMapper();
