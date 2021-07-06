@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.Domain", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.Infrastructure", "CleanArch.School.Infrastructure\CleanArch.School.Infrastructure.csproj", "{31EC64FB-2C44-48AF-92ED-6DB0F70AA2AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArch.School.TypeExtensions", "CleanArch.School.TypeExtensions\CleanArch.School.TypeExtensions.csproj", "{6A17A908-AF52-4F00-B53A-630DF64C8494}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.TypeExtensions", "CleanArch.School.TypeExtensions\CleanArch.School.TypeExtensions.csproj", "{6A17A908-AF52-4F00-B53A-630DF64C8494}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArch.School.WebApp", "CleanArch.School.WebApp\CleanArch.School.WebApp.csproj", "{FA31AFDA-7205-47FF-B76F-39934C032BED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{6A17A908-AF52-4F00-B53A-630DF64C8494}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A17A908-AF52-4F00-B53A-630DF64C8494}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A17A908-AF52-4F00-B53A-630DF64C8494}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA31AFDA-7205-47FF-B76F-39934C032BED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA31AFDA-7205-47FF-B76F-39934C032BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA31AFDA-7205-47FF-B76F-39934C032BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA31AFDA-7205-47FF-B76F-39934C032BED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
