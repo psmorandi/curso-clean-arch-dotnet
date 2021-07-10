@@ -80,6 +80,7 @@
         public async Task Update(Enrollment enrollment)
         {
             var enrollmentData = await this.dbContext.Enrollments.FindAsync(enrollment.Code.Value);
+            if (enrollmentData == null) throw new Exception("Enrollment not found.");
             enrollmentData.Installments = enrollment.Invoices.Count;
             enrollmentData.Status = enrollment.Status.GetValue();
             foreach (var invoice in enrollment.Invoices)
