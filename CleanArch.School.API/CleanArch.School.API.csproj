@@ -22,10 +22,7 @@
     <ProjectReference Include="..\CleanArch.School.Application\CleanArch.School.Application.csproj" />
     <ProjectReference Include="..\CleanArch.School.Domain\CleanArch.School.Domain.csproj" />
     <ProjectReference Include="..\CleanArch.School.Infrastructure\CleanArch.School.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Data\Mappers\" />
+    <ProjectReference Include="..\CleanArch.School.WebApp\Shared\CleanArch.School.WebApp.Shared.csproj" />
   </ItemGroup>
 
 </Project>

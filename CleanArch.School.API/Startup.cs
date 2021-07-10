@@ -42,8 +42,21 @@ namespace CleanArch.School.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(
+                options =>
+                {
+                    options.AddPolicy(
+                        "Any",
+                        builder => { builder.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader(); });
+                });
+
             services.AddControllers(
-                options => { options.Filters.Add(typeof(ValidateModelAttribute)); });
+                options =>
+                {
+                    options.Filters.Add(typeof(ExceptionFilter));
+                    options.Filters.Add(typeof(ValidateModelAttribute));
+                });
+            
             services.AddSwaggerGen(
                 c =>
                 {
@@ -53,14 +66,6 @@ namespace CleanArch.School.API
             services.AddDbContext<SchoolDbContext>(
                 options =>
                     options.UseNpgsql(this.Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddCors(
-                options =>
-                {
-                    options.AddPolicy(
-                        "Any",
-                        builder => { builder.AllowAnyMethod().AllowAnyOrigin().AllowAnyHeader(); });
-                });
 
             services.AddUseCases();
             services.AddRepositories();

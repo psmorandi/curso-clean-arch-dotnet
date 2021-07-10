@@ -34,6 +34,15 @@
             await this.dbContext.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Enrollment>> GetAll()
+        {
+            var dbEnrollments = await this.dbContext.Enrollments.ToListAsync();
+            var enrollments = new List<Enrollment>();
+            foreach (var enrollment in dbEnrollments) enrollments.Add((await this.CreateEnrollmentAsync(enrollment))!);
+
+            return enrollments;
+        }
+
         public async Task<IEnumerable<Enrollment>> FindAllByClass(string level, string module, string classroom)
         {
             var dbEnrollments = await this.dbContext.Enrollments.AsQueryable()

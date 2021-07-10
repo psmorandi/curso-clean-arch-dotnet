@@ -1,14 +1,15 @@
 ﻿namespace CleanArch.School.API.Controllers
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Application.UseCase;
     using Application.UseCase.Data;
     using AutoMapper;
-    using Data;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using TypeExtensions;
+    using WebApp.Shared.Data;
 
     [ApiController]
     [Route("[controller]")]
@@ -18,6 +19,7 @@
         private readonly IGetEnrollment getEnrollmentUseCase;
         private readonly ICancelEnrollment cancelEnrollmentUseCase;
         private readonly IPayInvoice payInvoice;
+        private readonly IGetAllEnrollments getAllEnrollmentsUseCase;
         private readonly IMapper mapper;
 
         public EnrollmentsController(
@@ -25,12 +27,14 @@
             IGetEnrollment getEnrollmentUseCase,
             ICancelEnrollment cancelEnrollmentUseCase,
             IPayInvoice payInvoice,
+            IGetAllEnrollments getAllEnrollmentsUseCase,
             IMapper mapper)
         {
             this.enrollStudentUseCase = enrollStudentUseCase;
             this.getEnrollmentUseCase = getEnrollmentUseCase;
             this.cancelEnrollmentUseCase = cancelEnrollmentUseCase;
             this.payInvoice = payInvoice;
+            this.getAllEnrollmentsUseCase = getAllEnrollmentsUseCase;
             this.mapper = mapper;
         }
 
@@ -42,6 +46,15 @@
         {
             var outputData = await this.getEnrollmentUseCase.Execute(code, DateTime.UtcNow.ToDateOnly());
             return this.mapper.Map<EnrollmentResponse>(outputData);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(IEnumerable<EnrollmentResponse>), StatusCodes.Status200OK)]
+        public async Task<IEnumerable<EnrollmentResponse>> Get()
+        {
+            var outputData = await this.getAllEnrollmentsUseCase.Execute(DateTime.UtcNow.ToDateOnly());
+            return this.mapper.Map<IEnumerable<EnrollmentResponse>>(outputData);
         }
 
         [HttpPost]
@@ -62,7 +75,7 @@
             return this.Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("{code}/invoices/{year:int}/{month:int}")]
         public async Task<IActionResult> PayInvoice(string code, int year, int month, [FromBody] PayInvoiceRequest payInvoiceRequest)
         {

@@ -1,0 +1,119 @@
+﻿@using CleanArch.School.WebApp.Shared.Data
+@using CleanArch.School.Domain.Entity
+@using System.Globalization
+@inject IHttpClientFactory ClientFactory
+@inject IModalService ModalService
+
+<h4>Student Info</h4>
+<div class="container">
+    <div class="row">
+        <div class="col-6 col-sm-4">
+            <b>Enroll code:</b> @Enrollment.Code
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 col-sm-4">
+            <b>Name:</b> @Enrollment.StudentName
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 col-sm-4">
+            <b>CPF:</b> @Enrollment.StudentCpf
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 col-sm-4">
+            <b>Balance:</b> @GetDecimalAsCurrency(Enrollment.Balance)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 col-sm-4">
+            <b>Status:</b> @GetStatusAsString(Enrollment.Status)
+        </div>
+    </div>
+</div>
+<h5>Invoices</h5>
+<div class="container">
+    @if (Enrollment.Invoices.Count == 0)
+    {
+        <b>Student without invoices.</b>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Due Date</th>
+                <th>Penalty</th>
+                <th>Interests</th>
+                <th>Amount</th>
+                <th>Balance</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var invoice in Enrollment.Invoices)
+            {
+                <tr>
+                    <td>@invoice.DueDate.ToString("dd-MM-yyyy")</td>
+                    <td>@GetDecimalAsCurrency(invoice.Penalty)</td>
+                    <td>@GetDecimalAsCurrency(invoice.Interests)</td>
+                    <td>@GetDecimalAsCurrency(invoice.Amount)</td>
+                    <td>@GetDecimalAsCurrency(invoice.Balance)</td>
+                    <td>
+                        <button class="btn btn-primary" 
+                                disabled="@(!this.CanPayInvoice(invoice))" 
+                                @onclick="@(async () => await PayInvoice(Enrollment.Code, invoice))">Pay</button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
+
+<hr class="mt-2 mb-3"/>
+
+@code {
+
+    [Parameter]
+    public EnrollmentResponse Enrollment { get; set; }
+
+    private static string GetStatusAsString(EnrollStatus status)
+    {
+        return status switch
+               {
+               EnrollStatus.Active => "Enrolled",
+               EnrollStatus.Cancelled => "Cancelled",
+               _ => "Unknown"
+               };
+    }
+
+    private static string GetDecimalAsCurrency(decimal value) => value.ToString("C", CultureInfo.GetCultureInfo("pt-BR"));
+
+    private async Task PayInvoice(string code, InvoiceResponse invoice)
+    {
+        var payRequest = new PayInvoiceRequest { Amount = invoice.Balance };
+        var year = invoice.DueDate.Year;
+        var month = invoice.DueDate.Month;
+        var client = ClientFactory.CreateClient("CleanArch.School.API");
+        var response = await client.PutAsJsonAsync($"Enrollments/{code}/invoices/{year}/{month}", payRequest);
+        var parameters = new ModalParameters();
+        if (!response.IsSuccessStatusCode)
+        {
+            var statusCode = (int)response.StatusCode;
+            var message = await response.Content.ReadAsStringAsync();
+            message = string.IsNullOrEmpty(message) ? $"Error to pay invoice {invoice.DueDate:dd-MM-yyyy}" : message;
+            parameters.Add(nameof(ErrorModal.ErrorMessage), $"{message} (code={statusCode}).");
+            this.ModalService.Show<ErrorModal>("Error", parameters);
+        }
+        else
+        {
+            parameters.Add(nameof(DisplayMessageModal.Message), $"Invoice paid with success.");
+            this.ModalService.Show<DisplayMessageModal>($"Invoice ({invoice.DueDate:dd-MM-yyyy}) Paid", parameters);
+        }
+        StateHasChanged();
+    }
+
+    private bool CanPayInvoice(InvoiceResponse invoice) => invoice.Status != InvoiceStatus.Paid && this.Enrollment.Status == EnrollStatus.Active;
+}

@@ -19,6 +19,8 @@
             return Task.CompletedTask;
         }
 
+        public Task<IEnumerable<Enrollment>> GetAll() => Task.FromResult(this.enrollments.AsEnumerable());
+
         public Task<IEnumerable<Enrollment>> FindAllByClass(string level, string module, string classroom) =>
             Task.FromResult(this.enrollments.Where(e => e.Level.Code == level && e.Module.Code == module && e.Class.Code == classroom));
 

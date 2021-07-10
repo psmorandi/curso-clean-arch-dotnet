@@ -15,7 +15,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.Infrastruc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.TypeExtensions", "CleanArch.School.TypeExtensions\CleanArch.School.TypeExtensions.csproj", "{6A17A908-AF52-4F00-B53A-630DF64C8494}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArch.School.WebApp", "CleanArch.School.WebApp\CleanArch.School.WebApp.csproj", "{FA31AFDA-7205-47FF-B76F-39934C032BED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.WebApp.Server", "CleanArch.School.WebApp\Server\CleanArch.School.WebApp.Server.csproj", "{495E1CD6-B7A7-444C-92F6-E6C46B0BE32C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.WebApp.Client", "CleanArch.School.WebApp\Client\CleanArch.School.WebApp.Client.csproj", "{BA9D7868-9F2C-4041-825A-72474FCCAA20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArch.School.WebApp.Shared", "CleanArch.School.WebApp\Shared\CleanArch.School.WebApp.Shared.csproj", "{36336B37-BE01-4B80-AE6C-4ED842399EC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebClient", "WebClient", "{47CB0E65-3673-47D3-9659-BB7441A56506}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,13 +53,25 @@ Global
 		{6A17A908-AF52-4F00-B53A-630DF64C8494}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A17A908-AF52-4F00-B53A-630DF64C8494}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A17A908-AF52-4F00-B53A-630DF64C8494}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA31AFDA-7205-47FF-B76F-39934C032BED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA31AFDA-7205-47FF-B76F-39934C032BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA31AFDA-7205-47FF-B76F-39934C032BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA31AFDA-7205-47FF-B76F-39934C032BED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{495E1CD6-B7A7-444C-92F6-E6C46B0BE32C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{495E1CD6-B7A7-444C-92F6-E6C46B0BE32C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{495E1CD6-B7A7-444C-92F6-E6C46B0BE32C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{495E1CD6-B7A7-444C-92F6-E6C46B0BE32C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA9D7868-9F2C-4041-825A-72474FCCAA20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA9D7868-9F2C-4041-825A-72474FCCAA20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA9D7868-9F2C-4041-825A-72474FCCAA20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA9D7868-9F2C-4041-825A-72474FCCAA20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36336B37-BE01-4B80-AE6C-4ED842399EC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36336B37-BE01-4B80-AE6C-4ED842399EC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36336B37-BE01-4B80-AE6C-4ED842399EC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36336B37-BE01-4B80-AE6C-4ED842399EC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{495E1CD6-B7A7-444C-92F6-E6C46B0BE32C} = {47CB0E65-3673-47D3-9659-BB7441A56506}
+		{BA9D7868-9F2C-4041-825A-72474FCCAA20} = {47CB0E65-3673-47D3-9659-BB7441A56506}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5118D9DE-08BC-45C9-9052-BE9BF3EC2D47}

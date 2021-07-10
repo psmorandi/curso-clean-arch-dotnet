@@ -2,10 +2,10 @@
 {
     using Application.Factory;
     using Application.UseCase;
-    using CleanArch.School.API.Controllers;
     using Domain.Entity;
     using Infrastructure.Factory;
     using Microsoft.Extensions.DependencyInjection;
+    using WebApp.Shared.Data;
 
     public static class InjectionExtensions
     {
@@ -13,6 +13,7 @@
         {
             services.AddTransient<IEnrollStudent, EnrollStudent>();
             services.AddTransient<IGetEnrollment, GetEnrollment>();
+            services.AddTransient<IGetAllEnrollments, GetAllEnrollments>();
             services.AddTransient<IPayInvoice, PayInvoice>();
             services.AddTransient<ICancelEnrollment, CancelEnrollment>();
         }
@@ -23,7 +24,7 @@
                 typeof(Enrollment).Assembly,
                 typeof(Infrastructure.Database.Data.Enrollment).Assembly,
                 typeof(PayInvoice).Assembly,
-                typeof(EnrollmentsController).Assembly);
+                typeof(EnrollmentResponse).Assembly);
         }
 
         public static void AddRepositories(this IServiceCollection services)

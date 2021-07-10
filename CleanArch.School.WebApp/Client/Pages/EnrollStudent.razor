@@ -1,0 +1,82 @@
+﻿@page "/enroll"
+@using CleanArch.School.WebApp.Shared.Data
+@inject IHttpClientFactory ClientFactory
+@inject IModalService ModalService
+
+<h1>Enroll New Student</h1>
+
+<EditForm Model="EnrollRequest" OnValidSubmit="EnrollStudentAsync" OnInvalidSubmit="ShowErrorModal">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+
+    <div class="form-group">
+        <label>Name</label>
+        <ValidationMessage For="@(() => EnrollRequest.StudentName)"/>
+        <InputText class="form-control" @bind-Value="EnrollRequest.StudentName"/>
+    </div>
+    <div class="form-group">
+        <label>CPF</label>
+        <ValidationMessage For="@(() => EnrollRequest.StudentCpf)"/>
+        <InputText class="form-control" @bind-Value="EnrollRequest.StudentCpf"/>
+    </div>
+    <div class="form-group">
+        <label>CPF</label>
+        <ValidationMessage For="@(() => EnrollRequest.StudentBirthday)"/>
+        <InputDate class="form-control" @bind-Value="EnrollRequest.StudentBirthday"/>
+    </div>
+    <div class="form-group">
+        <label>Level</label>
+        <ValidationMessage For="@(() => EnrollRequest.Level)"/>
+        <InputText class="form-control" @bind-Value="EnrollRequest.Level"/>
+    </div>
+    <div class="form-group">
+        <label>Module</label>
+        <ValidationMessage For="@(() => EnrollRequest.Module)"/>
+        <InputText class="form-control" @bind-Value="EnrollRequest.Module"/>
+    </div>
+    <div class="form-group">
+        <label>Classroom</label>
+        <ValidationMessage For="@(() => EnrollRequest.Class)"/>
+        <InputText class="form-control" @bind-Value="EnrollRequest.Class"/>
+    </div>
+    <div class="form-group">
+        <label>Installments</label>
+        <ValidationMessage For="@(() => EnrollRequest.Installments)"/>
+        <InputNumber class="form-control" @bind-Value="EnrollRequest.Installments"/>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Enroll</button>
+    </div>
+</EditForm>
+
+@code {
+
+    public EnrollStudentRequest EnrollRequest = new();
+
+    public async Task EnrollStudentAsync()
+    {
+        var client = ClientFactory.CreateClient("CleanArch.School.API");
+        var response = await client.PostAsJsonAsync("/enrollments", EnrollRequest);
+        if (response.IsSuccessStatusCode)
+        {
+            EnrollRequest = new EnrollStudentRequest();
+            StateHasChanged();
+            return;
+        }
+
+        var message = await response.Content.ReadAsStringAsync();
+        this.ShowErrorModal(message);
+    }
+
+    public void ShowErrorModal()
+    {
+        this.ShowErrorModal("Invalid input, check the errors.");
+    }
+
+    private void ShowErrorModal(string message)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(ErrorModal.ErrorMessage), message);
+        ModalService.Show<ErrorModal>("Error", parameters);
+    }
+}

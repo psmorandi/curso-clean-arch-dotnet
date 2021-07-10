@@ -1,0 +1,40 @@
+﻿@page "/enrollments"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using CleanArch.School.WebApp.Shared.Data
+
+@inject IHttpClientFactory ClientFactory
+
+<h1>Enrollments</h1>
+
+<p>List of all students enrolled with this school.</p>
+
+@if (enrollments == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @foreach (var enrollment in enrollments)
+    {
+        <EnrollmentSummary Enrollment="@enrollment" />
+    }
+}
+
+@code {
+    private EnrollmentResponse[] enrollments;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = ClientFactory.CreateClient("CleanArch.School.API");
+            enrollments = await client.GetFromJsonAsync<EnrollmentResponse[]>("Enrollments");
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+    }
+
+}
