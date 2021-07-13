@@ -14,6 +14,7 @@ Technologies used in this implementation:
 - Blazor WebAssembly (preview)
 
 ## TODOs
+- [ ] Fix use of Domain enumerations all across the solution
 - [ ] Better exception handling
      - [ ] Better domain exception handling
      - [ ] Better infrastructure exeption handling
