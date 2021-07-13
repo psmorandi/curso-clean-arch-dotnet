@@ -20,7 +20,7 @@ Technologies used in this implementation:
 - [ ] Add authetication to Web API
 - [ ] Use the Web API authetnciation in Blazor
 - [ ] Better HttpClient injection in Blazor (we can use the factory to inject a "typed" http client, would make easier than ref with a string)
-- [ ] Refreshing the page after paying an invoice is not working (to disable the button)
+- [x] ~~Refreshing the page after paying an invoice is not working (to disable the button)~~
 - [ ] Load Level, Module and Classrooms as a combobox
 - [ ] A web page to show all invoice events (details of paid invoice maybe)
 - [ ] CRUD for Level, Module and Classrooms

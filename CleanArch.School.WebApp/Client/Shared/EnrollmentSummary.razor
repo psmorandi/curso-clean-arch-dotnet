@@ -111,6 +111,7 @@
         {
             parameters.Add(nameof(DisplayMessageModal.Message), $"Invoice paid with success.");
             this.ModalService.Show<DisplayMessageModal>($"Invoice ({invoice.DueDate:dd-MM-yyyy}) Paid", parameters);
+            this.Enrollment = await client.GetFromJsonAsync<EnrollmentResponse>($"Enrollments/{code}");
         }
         StateHasChanged();
     }
