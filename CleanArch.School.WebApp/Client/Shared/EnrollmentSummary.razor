@@ -1,6 +1,6 @@
 ﻿@using CleanArch.School.WebApp.Shared.Data
 @using CleanArch.School.Domain.Entity
-@using System.Globalization
+@using CleanArch.School.WebApp.Client.Extensions
 @inject IHttpClientFactory ClientFactory
 @inject IModalService ModalService
 
@@ -23,12 +23,12 @@
     </div>
     <div class="row">
         <div class="col-6 col-sm-4">
-            <b>Balance:</b> @GetDecimalAsCurrency(Enrollment.Balance)
+            <b>Balance:</b> @Enrollment.Balance.FormatAsBrlCurrency()
         </div>
     </div>
     <div class="row">
         <div class="col-6 col-sm-4">
-            <b>Status:</b> @GetStatusAsString(Enrollment.Status)
+            <b>Status:</b> @Enrollment.Status.AsString()
         </div>
     </div>
 </div>
@@ -56,10 +56,10 @@
             {
                 <tr>
                     <td>@invoice.DueDate.ToString("dd-MM-yyyy")</td>
-                    <td>@GetDecimalAsCurrency(invoice.Penalty)</td>
-                    <td>@GetDecimalAsCurrency(invoice.Interests)</td>
-                    <td>@GetDecimalAsCurrency(invoice.Amount)</td>
-                    <td>@GetDecimalAsCurrency(invoice.Balance)</td>
+                    <td>@invoice.Penalty.FormatAsBrlCurrency()</td>
+                    <td>@invoice.Interests.FormatAsBrlCurrency()</td>
+                    <td>@invoice.Amount.FormatAsBrlCurrency()</td>
+                    <td>@invoice.Balance.FormatAsBrlCurrency()</td>
                     <td>
                         <button class="btn btn-primary" 
                                 disabled="@(!this.CanPayInvoice(invoice))" 
@@ -78,18 +78,6 @@
 
     [Parameter]
     public EnrollmentResponse Enrollment { get; set; }
-
-    private static string GetStatusAsString(EnrollStatus status)
-    {
-        return status switch
-               {
-               EnrollStatus.Active => "Enrolled",
-               EnrollStatus.Cancelled => "Cancelled",
-               _ => "Unknown"
-               };
-    }
-
-    private static string GetDecimalAsCurrency(decimal value) => value.ToString("C", CultureInfo.GetCultureInfo("pt-BR"));
 
     private async Task PayInvoice(string code, InvoiceResponse invoice)
     {
