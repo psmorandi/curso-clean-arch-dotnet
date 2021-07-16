@@ -1,7 +1,7 @@
 ﻿namespace CleanArch.School.Domain.Entity
 {
-    using System;
     using System.Linq;
+    using Exceptions;
     using TypeExtensions;
 
     public class Cpf
@@ -14,7 +14,7 @@
 
         public Cpf(string value)
         {
-            if (!IsValid(value)) throw new Exception("Invalid cpf.");
+            if (!IsValid(value)) throw new InvalidCpfException($"CPF {value} is invalid.");
             this.Value = value.OnlyNumbers();
         }
 

@@ -1,13 +1,14 @@
 ﻿namespace CleanArch.School.Domain.Entity
 {
     using System;
+    using Exceptions;
     using TypeExtensions;
 
     public class Period
     {
         public Period(DateOnly startDate, DateOnly endDate)
         {
-            if (startDate > endDate) throw new Exception("Start date can't be after the end.");
+            if (startDate > endDate) throw new InvalidPeriodException($"Start date ({startDate}) can't be after the end ({endDate}).");
             this.StartDate = startDate;
             this.EndDate = endDate;
         }

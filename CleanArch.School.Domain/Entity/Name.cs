@@ -1,7 +1,7 @@
 ﻿namespace CleanArch.School.Domain.Entity
 {
-    using System;
     using System.Text.RegularExpressions;
+    using Exceptions;
 
     public class Name
     {
@@ -9,7 +9,7 @@
 
         public Name(string value)
         {
-            if (!this.nameValidationRegex.IsMatch(value)) throw new Exception("Invalid name.");
+            if (!this.nameValidationRegex.IsMatch(value)) throw new InvalidNameException($"Name '{value}' is invalid.");
             this.Value = value;
         }
 

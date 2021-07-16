@@ -1,12 +1,12 @@
 ﻿namespace CleanArch.School.Infrastructure.Repository.Database
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Application.Repository;
     using AutoMapper;
     using Domain.Entity;
+    using Exceptions;
     using Infrastructure.Database;
     using Infrastructure.Database.Data.Extensions;
     using Microsoft.EntityFrameworkCore;
@@ -72,15 +72,14 @@
             var enrollment = await this.dbContext.Enrollments
                                  .AsQueryable()
                                  .AsNoTracking()
-                                 .SingleOrDefaultAsync(e => e.Code == code) ?? throw new Exception("Enrollment not found.");
-            if (enrollment == null) throw new Exception("Enrollment not found.");
-            return await this.CreateEnrollmentAsync(enrollment) ?? throw new Exception("Enrollment not found.");
+                                 .SingleOrDefaultAsync(e => e.Code == code) ?? throw new EnrollmentNotFoundException("Enrollment not found.");
+            return await this.CreateEnrollmentAsync(enrollment) ?? throw new EnrollmentNotFoundException("Enrollment not found.");
         }
 
         public async Task Update(Enrollment enrollment)
         {
             var enrollmentData = await this.dbContext.Enrollments.FindAsync(enrollment.Code.Value);
-            if (enrollmentData == null) throw new Exception("Enrollment not found.");
+            if (enrollmentData == null) throw new EnrollmentNotFoundException("Enrollment not found.");
             enrollmentData.Installments = enrollment.Invoices.Count;
             enrollmentData.Status = enrollment.Status.GetValue();
             foreach (var invoice in enrollment.Invoices)
@@ -89,7 +88,7 @@
                 var month = invoice.DueDate.Month;
                 var year = invoice.DueDate.Year;
                 var invoiceData = await this.dbContext.Invoices.FindAsync(code, month, year);
-                invoiceData.Amount = invoice.Amount;
+                invoiceData!.Amount = invoice.Amount;
                 await this.RemoveAllInvoicesEvents(code, month, year);
                 var invoiceEvents = invoice.InvoiceEvents
                     .Select(
@@ -184,7 +183,7 @@
                             InvoiceEventType.Payment => new InvoicePaidEvent(i.Amount),
                             InvoiceEventType.Penalty => new InvoicePenaltyEvent(i.Amount),
                             InvoiceEventType.Interests => new InvoiceInterestsEvent(i.Amount),
-                            _ => throw new Exception("Invalid invoice event type.")
+                            _ => throw new InvalidInvoiceTypeException("Invalid invoice event type.")
                         });
                 invoices.Add(
                     Invoice.Load(

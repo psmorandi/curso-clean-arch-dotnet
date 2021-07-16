@@ -1,10 +1,10 @@
 ﻿namespace CleanArch.School.Infrastructure.Repository.Database
 {
-    using System;
     using System.Threading.Tasks;
     using Application.Repository;
     using AutoMapper;
     using Domain.Entity;
+    using Exceptions;
     using Infrastructure.Database;
     using Database = Infrastructure.Database.Data;
 
@@ -27,7 +27,7 @@
 
         public async Task<Level> FindByCode(string code)
         {
-            var level = await this.dbContext.Levels.FindAsync(code) ?? throw new Exception("Level not found.");
+            var level = await this.dbContext.Levels.FindAsync(code) ?? throw new LevelNotFoundException("Level not found.");
             return this.mapper.Map<Level>(level);
         }
     }

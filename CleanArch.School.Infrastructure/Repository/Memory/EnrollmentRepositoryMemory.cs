@@ -1,11 +1,11 @@
 ﻿namespace CleanArch.School.Infrastructure.Repository.Memory
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Application.Repository;
     using Domain.Entity;
+    using Exceptions;
 
     public class EnrollmentRepositoryMemory : IEnrollmentRepository
     {
@@ -27,7 +27,7 @@
         public Task<Enrollment?> FindByCpf(string cpf) => Task.FromResult(this.enrollments.SingleOrDefault(_ => _.Student.Cpf.Value == cpf));
 
         public Task<Enrollment> FindByCode(string code) =>
-            Task.FromResult(this.enrollments.SingleOrDefault(_ => _.Code.Value == code) ?? throw new Exception("Enrollment not found."));
+            Task.FromResult(this.enrollments.SingleOrDefault(_ => _.Code.Value == code) ?? throw new EnrollmentNotFoundException("Enrollment not found."));
 
         public Task Update(Enrollment enrollment) => Task.CompletedTask;
 

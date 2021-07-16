@@ -1,10 +1,10 @@
 ﻿namespace CleanArch.School.Infrastructure.Repository.Database
 {
-    using System;
     using System.Threading.Tasks;
     using Application.Repository;
     using AutoMapper;
     using Domain.Entity;
+    using Exceptions;
     using Infrastructure.Database;
     using Database = Infrastructure.Database.Data;
 
@@ -27,7 +27,7 @@
 
         public async Task<Classroom> FindByCode(string level, string module, string classroom)
         {
-            var dbClassroom = await this.dbContext.Classrooms.FindAsync(classroom, level, module) ?? throw new Exception("Classroom not found");
+            var dbClassroom = await this.dbContext.Classrooms.FindAsync(classroom, level, module) ?? throw new ClassroomNotFoundException("Classroom not found");
             return this.mapper.Map<Classroom>(dbClassroom);
         }
     }

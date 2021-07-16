@@ -1,11 +1,11 @@
 ﻿namespace CleanArch.School.Infrastructure.Repository.Memory
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Application.Repository;
     using Domain.Entity;
+    using Exceptions;
     using TypeExtensions;
 
     public class ClassroomRepositoryMemory : IClassroomRepository
@@ -23,6 +23,6 @@
         public Task<Classroom> FindByCode(string level, string module, string classroom) =>
             Task.FromResult(
                 this.classes.SingleOrDefault(c => c.Level == level.ToUp() && c.Module == module.ToUp() && c.Code == classroom.ToUp())
-                ?? throw new Exception("Invalid class."));
+                ?? throw new ClassroomNotFoundException("Invalid class."));
     }
 }

@@ -1,11 +1,11 @@
 ﻿namespace CleanArch.School.Infrastructure.Repository.Memory
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Application.Repository;
     using Domain.Entity;
+    using Exceptions;
 
     public class LevelRepositoryMemory : ILevelRepository
     {
@@ -20,6 +20,6 @@
         }
 
         public Task<Level> FindByCode(string code) =>
-            Task.FromResult(this.levels.SingleOrDefault(l => l.Code == code) ?? throw new Exception("Invalid level"));
+            Task.FromResult(this.levels.SingleOrDefault(l => l.Code == code) ?? throw new LevelNotFoundException("Invalid level"));
     }
 }

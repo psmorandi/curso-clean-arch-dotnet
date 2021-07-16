@@ -1,11 +1,11 @@
 ﻿namespace CleanArch.School.Infrastructure.Repository.Memory
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Application.Repository;
     using Domain.Entity;
+    using Exceptions;
     using TypeExtensions;
 
     public class ModuleRepositoryMemory : IModuleRepository
@@ -21,6 +21,7 @@
         }
 
         public Task<Module> FindByCode(string level, string module) =>
-            Task.FromResult(this.modules.SingleOrDefault(m => m.Code == module.ToUp() && m.Level == level.ToUp()) ?? throw new Exception("Invalid Module."));
+            Task.FromResult(
+                this.modules.SingleOrDefault(m => m.Code == module.ToUp() && m.Level == level.ToUp()) ?? throw new ModuleNotFoundException("Invalid Module."));
     }
 }

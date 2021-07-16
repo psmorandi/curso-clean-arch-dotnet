@@ -4,8 +4,10 @@ namespace CleanArch.School.UnitTests
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Application.Exceptions;
     using Application.UseCase.Data;
     using Domain.Entity;
+    using Domain.Exceptions;
     using TypeExtensions;
     using Xunit;
 
@@ -18,16 +20,14 @@ namespace CleanArch.School.UnitTests
                                     {
                                         StudentName = "Ana"
                                     };
-            var exception = await Assert.ThrowsAsync<Exception>(() => this.enrollStudent.Execute(enrollmentRequest, new DateOnly().UtcNow()));
-            Assert.Equal("Invalid name.", exception.Message);
+            await Assert.ThrowsAsync<InvalidNameException>(() => this.enrollStudent.Execute(enrollmentRequest, new DateOnly().UtcNow()));
         }
 
         [Theory]
         [MemberData(nameof(GenerateInvalidCpfData))]
         public async Task Should_not_enroll_without_valid_student_cpf(EnrollStudentInputData enrollmentRequest)
         {
-            var exception = await Assert.ThrowsAsync<Exception>(() => this.enrollStudent.Execute(enrollmentRequest, new DateOnly().UtcNow()));
-            Assert.Equal("Invalid cpf.", exception.Message);
+            await Assert.ThrowsAsync<InvalidCpfException>(() => this.enrollStudent.Execute(enrollmentRequest, new DateOnly().UtcNow()));
         }
 
         [Fact]
@@ -39,8 +39,7 @@ namespace CleanArch.School.UnitTests
             await this.classroomRepository.Save(new Classroom("EM", "3", "A", 5, refDate, refDate.AddMonths(6)));
             var enrollmentRequest = await this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "A");
             await this.enrollStudent.Execute(enrollmentRequest, refDate);
-            var exception = await Assert.ThrowsAsync<Exception>(() => this.enrollStudent.Execute(enrollmentRequest, refDate));
-            Assert.Equal("Enrollment with duplicated student is not allowed.", exception.Message);
+            await Assert.ThrowsAsync<StudentAlreadyEnrolledException>(() => this.enrollStudent.Execute(enrollmentRequest, refDate));
         }
 
         [Fact]
@@ -66,8 +65,7 @@ namespace CleanArch.School.UnitTests
             await this.classroomRepository.Save(new Classroom("EM", "3", "A", 5, refDate, refDate.AddMonths(6)));
             var enrollmentRequest = await this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "A");
             enrollmentRequest.StudentBirthday = enrollmentRequest.StudentBirthday.AddYears(2);
-            var exception = await Assert.ThrowsAsync<Exception>(() => this.enrollStudent.Execute(enrollmentRequest, refDate));
-            Assert.Equal("Student below minimum age.", exception.Message);
+            await Assert.ThrowsAsync<StudentBelowMinimumAgeException>(() => this.enrollStudent.Execute(enrollmentRequest, refDate));
         }
 
         [Fact]
@@ -82,8 +80,7 @@ namespace CleanArch.School.UnitTests
             var enrollmentRequest3 = await this.CreateEnrollmentRequest("046.934.190-44", "EM", "3", "A");
             await this.enrollStudent.Execute(enrollmentRequest1, refDate);
             await this.enrollStudent.Execute(enrollmentRequest2, refDate);
-            var exception = await Assert.ThrowsAsync<Exception>(() => this.enrollStudent.Execute(enrollmentRequest3, refDate));
-            Assert.Equal("Class is over capacity.", exception.Message);
+            await Assert.ThrowsAsync<ClassroomOverCapacityException>(() => this.enrollStudent.Execute(enrollmentRequest3, refDate));
         }
 
         [Fact]
@@ -94,8 +91,7 @@ namespace CleanArch.School.UnitTests
             await this.moduleRepository.Save(new Module("EM", "3", "3o Ano", 17, 17000));
             await this.classroomRepository.Save(new Classroom("EM", "3", "B", 5, refDate.AddDays(-30), refDate.AddDays(-2)));
             var enrollmentRequest = await this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "B");
-            var exception = await Assert.ThrowsAsync<Exception>(() => this.enrollStudent.Execute(enrollmentRequest, refDate));
-            Assert.Equal("Class is already finished.", exception.Message);
+            await Assert.ThrowsAsync<ClassroomAlreadyFinishedException>(() => this.enrollStudent.Execute(enrollmentRequest, refDate));
         }
 
         [Fact]
@@ -106,8 +102,7 @@ namespace CleanArch.School.UnitTests
             await this.moduleRepository.Save(new Module("EM", "3", "3o Ano", 17, 17000));
             await this.classroomRepository.Save(new Classroom("EM", "3", "C", 5, refDate.AddDays(-50), refDate.AddDays(50)));
             var enrollmentRequest = await this.CreateEnrollmentRequest("755.525.774-26", "EM", "3", "C");
-            var exception = await Assert.ThrowsAsync<Exception>(() => this.enrollStudent.Execute(enrollmentRequest, refDate));
-            Assert.Equal("Class is already started.", exception.Message);
+            await Assert.ThrowsAsync<ClassroomAlreadyStartedException>(() => this.enrollStudent.Execute(enrollmentRequest, refDate));
         }
 
         [Fact]

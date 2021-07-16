@@ -6,6 +6,7 @@
     using AutoMapper;
     using Data;
     using Domain.Entity;
+    using Exceptions;
     using Extensions;
     using Factory;
     using Repository;
@@ -33,9 +34,9 @@
             var level = await this.levelRepository.FindByCode(inputData.Level);
             var module = await this.moduleRepository.FindByCode(level.Code, inputData.Module);
             var classroom = await this.classRepository.FindByCode(level.Code, module.Code, inputData.Class);
-            if (await this.IsAlreadyEnrolled(student)) throw new Exception("Enrollment with duplicated student is not allowed.");
+            if (await this.IsAlreadyEnrolled(student)) throw new StudentAlreadyEnrolledException("Enrollment with duplicated student is not allowed.");
             var numberOfStudentsInClass = (await this.enrollmentRepository.FindAllByClass(level.Code, module.Code, classroom.Code)).ToList().Count;
-            if (numberOfStudentsInClass + 1 > classroom.Capacity) throw new Exception("Class is over capacity.");
+            if (numberOfStudentsInClass + 1 > classroom.Capacity) throw new ClassroomOverCapacityException("Class is over capacity.");
             var sequence = 1 + await this.enrollmentRepository.Count();
             return await this.CreateEnrollment(student, level, module, classroom, currentDate, sequence, inputData.Installments);
         }

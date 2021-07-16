@@ -2,6 +2,7 @@
 {
     using System;
     using Domain.Entity;
+    using Domain.Exceptions;
     using Xunit;
 
     public class CpfValidatorTests
@@ -15,7 +16,7 @@
         [InlineData("444.444.444-44")]
         public void Should_Return_Invalid_To_Cpf_With_Repeated_Digits(string cpf)
         {
-            Assert.Throws<Exception>(() => new Cpf(cpf));
+            Assert.Throws<InvalidCpfException>(() => new Cpf(cpf));
         }
 
         [Theory]
@@ -24,7 +25,7 @@
         [InlineData("")]
         public void Should_Return_Invalid_To_Invalid_Verification_Digits(string cpf)
         {
-            Assert.Throws<Exception>(() => new Cpf(cpf));
+            Assert.Throws<InvalidCpfException>(() => new Cpf(cpf));
         }
 
         [Theory]

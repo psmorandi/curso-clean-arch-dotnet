@@ -15,9 +15,9 @@ Technologies used in this implementation:
 
 ## TODOs
 - [ ] Fix use of Domain enumerations all across the solution
-- [ ] Better exception handling
-     - [ ] Better domain exception handling
-     - [ ] Better infrastructure exeption handling
+- [x] ~~Better exception handling~~
+     - [x] ~~Better domain exception handling~~
+     - [x] ~~Better infrastructure exeption handling~~
 - [ ] Add authetication to Web API
 - [ ] Use the Web API authetnciation in Blazor
 - [ ] Better HttpClient injection in Blazor (we can use the factory to inject a "typed" http client, would make easier than ref with a string)
@@ -30,4 +30,4 @@ Technologies used in this implementation:
 It's a collection of design principles to avoid coupling between each component, enabling the separation of concerns through an "onion" like design. Check out more [here](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html).
 
 ## About The Course
-If you're interested in take the course (pt-BR only) checkout [this link]( https://app.agilecode.com.br/public/products/cd4aea57-4b43-41e9-bda5-f487c3817b29).
+If you're interested in take the course (pt-BR only) checkout [this link](https://app.branas.io/public/products).
