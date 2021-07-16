@@ -1,4 +1,4 @@
-﻿namespace CleanArch.School.Domain
+﻿namespace CleanArch.School.Domain.Exceptions
 {
     using System;
 

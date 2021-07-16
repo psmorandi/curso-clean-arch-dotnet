@@ -6,6 +6,7 @@ namespace CleanArch.School.API.Filters
     using System.Text.Json;
     using Application.Exceptions;
     using Domain;
+    using Domain.Exceptions;
     using Microsoft.AspNetCore.Mvc;
 
     public class ExceptionFilter : IExceptionFilter
